@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slide template library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Be Vietnam Pro",system-ui,sans-serif;background:#0b0f17;color:#f4efe9;-webkit-font-smoothing:antialiased;
+  padding:clamp(2rem,6vw,5rem);min-height:100vh;
+  background-image:radial-gradient(60% 50% at 80% 0%,rgba(95,211,95,.10),transparent 70%),radial-gradient(50% 45% at 0% 100%,rgba(124,58,237,.12),transparent 70%)}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:.7rem;margin-bottom:1.3rem;opacity:0;animation:rise .5s 0s both}
+.brand img{width:44px;height:44px;border-radius:12px;box-shadow:0 8px 20px -8px rgba(56,160,255,.6)}
+.brand .bname{font-family:"Fraunces",serif;font-weight:600;font-size:1.25rem;color:#f4efe9;letter-spacing:-.01em}
+.kicker{font-size:.74rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#7fd1c4;opacity:0;animation:rise .5s .02s both}
+h1{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(2.1rem,5vw,3.4rem);line-height:1.04;margin:.35em 0 .35em;opacity:0;animation:rise .5s .08s both}
+.sub{color:#9aa6b8;max-width:48ch;line-height:1.55;margin-bottom:1.4rem;opacity:0;animation:rise .5s .14s both}
+/* search */
+.searchbar{max-width:520px;margin-bottom:2.2rem;opacity:0;animation:rise .5s .18s both}
+.searchfield{position:relative}
+.searchfield svg{position:absolute;left:1rem;top:50%;margin-top:-9px;width:18px;height:18px;stroke:#6b7689;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+#q{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:12px;
+  color:#f4efe9;font:inherit;font-size:.92rem;padding:.85rem 2.6rem .85rem 2.8rem;outline:none;transition:border-color .2s,background .2s}
+#q::placeholder{color:#6b7689}
+#q:focus{border-color:rgba(127,209,196,.55);background:rgba(255,255,255,.07)}
+#qclear{position:absolute;right:.6rem;top:50%;margin-top:-13px;width:26px;height:26px;border:0;border-radius:7px;cursor:pointer;
+  background:rgba(255,255,255,.08);color:#9aa6b8;font-size:1rem;line-height:1;display:none}
+#qclear:hover{background:rgba(255,255,255,.15);color:#fff}
+.chipsrow{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem}
+.qchip{font-size:.72rem;color:#9aa6b8;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:99px;padding:.28rem .7rem;cursor:pointer;transition:all .18s}
+.qchip:hover{color:#0b0f17;background:#7fd1c4;border-color:#7fd1c4}
+.cat{margin-bottom:2rem}
+.cat.empty{display:none}
+.cat-label{font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#7fd1c4;
+  margin:0 0 .85rem .15rem;display:flex;align-items:center;gap:.6rem}
+.cat-label::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.08)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1rem}
+a.card{display:block;text-decoration:none;color:inherit;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);
+  border-radius:18px;padding:1.3rem 1.45rem;transition:transform .22s cubic-bezier(.16,1,.3,1),background .22s,border-color .22s,box-shadow .22s}
+a.card.hide{display:none}
+a.card:hover{transform:translateY(-4px);background:rgba(255,255,255,.08);border-color:rgba(127,209,196,.45);box-shadow:0 18px 40px -20px rgba(0,0,0,.7)}
+.swatch{display:flex;gap:6px;margin-bottom:.9rem}
+.swatch span{width:22px;height:22px;border-radius:7px;transition:transform .22s}
+a.card:hover .swatch span{transform:translateY(-2px)}
+.name{font-family:"Fraunces",serif;font-weight:600;font-size:1.22rem;margin-bottom:.22rem;display:flex;align-items:baseline;gap:.5rem}
+.name b{font-size:.78rem;font-weight:600;color:#5b6678;font-family:"Be Vietnam Pro",sans-serif}
+.desc{font-size:.83rem;color:#9aa6b8;line-height:1.4}
+.nores{display:none;color:#9aa6b8;font-size:.9rem;padding:2rem 0;text-align:center}
+.nores.show{display:block}
+.foot{margin-top:1.2rem;font-size:.78rem;color:#5b6678}
+@keyframes rise{to{opacity:1;transform:none}}
+
+/* floating live preview popover */
+#pvpop{position:fixed;z-index:50;width:480px;aspect-ratio:16/9;border-radius:14px;overflow:hidden;
+  background:#0d1119;border:1px solid rgba(127,209,196,.35);box-shadow:0 26px 60px -18px rgba(0,0,0,.8);
+  opacity:0;transform:translateY(8px) scale(.98);transform-origin:bottom center;pointer-events:none;
+  transition:opacity .18s ease,transform .18s cubic-bezier(.16,1,.3,1);will-change:transform,opacity}
+#pvpop.show{opacity:1;transform:translateY(0) scale(1)}
+#pvpop .pvif{position:absolute;top:0;left:0;width:1280px;height:720px;border:0;transform-origin:top left;pointer-events:none;background:#fff}
+#pvpop .pvload{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:.5rem;font-size:.78rem;color:#7a8698;background:#0d1119}
+#pvpop .pvload svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:680px){.grid{grid-template-columns:1fr}#pvpop{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}#pvpop{transition:opacity .18s}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><img src="penguin.png" alt="Penguin"><span class="bname">Penguin</span></div>
+  <div class="kicker">Template library</div>
+  <h1>Pick a style</h1>
+
+  <div class="searchbar">
+    <div class="searchfield">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="q" type="text" placeholder="Search color or style — e.g. blue, dark, minimal, jewel…" autocomplete="off" spellcheck="false">
+      <button id="qclear" title="Clear" aria-label="Clear">&times;</button>
+    </div>
+    <div class="chipsrow" id="chips">
+      <span class="qchip">blue</span><span class="qchip">green</span><span class="qchip">gold</span><span class="qchip">purple</span><span class="qchip">dark</span><span class="qchip">light</span><span class="qchip">minimal</span><span class="qchip">gradient</span><span class="qchip">jewel</span>
+    </div>
+  </div>
+
+  <section class="cat">
+    <h2 class="cat-label">Pitch &amp; startup</h2>
+    <div class="grid">
+      <a class="card" href="06-bold-pitch.html" data-pv="06-bold-pitch.html" data-tags="dark toi den indigo tim violet lime pink high energy bold pitch startup event" target="_blank">
+        <div class="swatch"><span style="background:#160f3d"></span><span style="background:#d8ff4d"></span><span style="background:#3df0d8"></span><span style="background:#ff5d8f"></span></div>
+        <div class="name">Bold Pitch <b>06</b></div>
+        <div class="desc">Electric indigo, high energy. Startup pitches &amp; events.</div>
+      </a>
+      <a class="card" href="07-saas-gradient.html" data-pv="07-saas-gradient.html" data-tags="dark toi den indigo purple tim magenta gradient glassy fintech saas" target="_blank">
+        <div class="swatch"><span style="background:#0b0b14"></span><span style="background:#4f46e5"></span><span style="background:#7c3aed"></span><span style="background:#db2777"></span></div>
+        <div class="name">SaaS Gradient <b>07</b></div>
+        <div class="desc">Indigo gradients, glassy. Fintech &amp; SaaS.</div>
+      </a>
+      <a class="card" href="08-soft-blue.html" data-pv="08-soft-blue.html" data-tags="blue xanh duong white trang light sang minimal soft donut chart clean pitch" target="_blank">
+        <div class="swatch"><span style="background:#3a6fe4"></span><span style="background:#e9edf4;border:1px solid #d8d8d2"></span><span style="background:#ffffff;border:1px solid #d8d8d2"></span><span style="background:#1b1f2a"></span></div>
+        <div class="name">Soft Blue <b>08</b></div>
+        <div class="desc">Minimalist soft-UI, mono blue. Clean pitch deck, donut charts.</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="cat">
+    <h2 class="cat-label">Corporate &amp; report</h2>
+    <div class="grid">
+      <a class="card" href="09-corporate-navy.html" data-pv="09-corporate-navy.html" data-tags="navy blue xanh duong gold vang serif corporate consulting finance" target="_blank">
+        <div class="swatch"><span style="background:#0a2540"></span><span style="background:#c8a04f"></span><span style="background:#f7f6f2;border:1px solid #d8d8d2"></span></div>
+        <div class="name">Corporate Navy <b>09</b></div>
+        <div class="desc">Navy + gold, serif. Consulting &amp; finance.</div>
+      </a>
+      <a class="card" href="10-minimal-light.html" data-pv="10-minimal-light.html" data-tags="white trang blue xanh duong cobalt white trang light sang minimal swiss corporate academic" target="_blank">
+        <div class="swatch"><span style="background:#ffffff;border:1px solid #d8d8d2"></span><span style="background:#2f54eb"></span><span style="background:#16181d"></span></div>
+        <div class="name">Minimal Light <b>10</b></div>
+        <div class="desc">Clean Swiss white, cobalt. Corporate &amp; academic.</div>
+      </a>
+      <a class="card" href="13-bento-report.html" data-pv="13-bento-report.html" data-tags="jewel blue xanh duong sapphire gold vang emerald green xanh la white trang light sang bento kpi monthly report" target="_blank">
+        <div class="swatch"><span style="background:#faf7f2;border:1px solid #d8d8d2"></span><span style="background:#1e40af"></span><span style="background:#b8902f"></span><span style="background:#047857"></span></div>
+        <div class="name">Bento Report <b>13</b></div>
+        <div class="desc">Modern light bento-grid, KPI tiles + icons. Monthly reports &amp; metric summaries.</div>
+      </a>
+      <a class="card" href="16-compare-plans.html" data-pv="16-compare-plans.html" data-tags="jewel green xanh la emerald blue xanh duong sapphire white trang light sang comparison table pricing plans" target="_blank">
+        <div class="swatch"><span style="background:#faf7f2;border:1px solid #d8d8d2"></span><span style="background:#047857"></span><span style="background:#1e3a8a"></span><span style="background:#14181c"></span></div>
+        <div class="name">Compare &amp; Plans <b>16</b></div>
+        <div class="desc">Light. Comparison table + plan cards + pricing. Product comparison &amp; solution selection.</div>
+      </a>
+      <a class="card" href="18-case-study.html" data-pv="18-case-study.html" data-tags="jewel blue xanh duong sapphire green xanh la emerald red do crimson white trang light sang case study before after results" target="_blank">
+        <div class="swatch"><span style="background:#faf7f2;border:1px solid #d8d8d2"></span><span style="background:#1e40af"></span><span style="background:#047857"></span><span style="background:#b3324a"></span></div>
+        <div class="name">Case Study <b>18</b></div>
+        <div class="desc">Light. Challenge → approach → results, before/after metrics + quote. Project write-ups.</div>
+      </a>
+      <a class="card" href="19-executive-brief.html" data-pv="19-executive-brief.html" data-tags="jewel blue xanh duong navy sapphire emerald green xanh la gold vang white trang light sang dense dashboard board exec review" target="_blank">
+        <div class="swatch"><span style="background:#faf7f2;border:1px solid #d8d8d2"></span><span style="background:#1e3a8a"></span><span style="background:#1e40af"></span><span style="background:#047857"></span></div>
+        <div class="name">Executive Brief <b>19</b></div>
+        <div class="desc">Dense light dashboard: KPI row + chart + table + segments on one screen. Board &amp; exec reviews.</div>
+      </a>
+      <a class="card" href="20-strategy-deck.html" data-pv="20-strategy-deck.html" data-tags="jewel blue xanh duong navy sapphire plum purple tim gold vang white trang light sang consulting matrix strategy recommendation dense" target="_blank">
+        <div class="swatch"><span style="background:#f6f5f2;border:1px solid #d8d8d2"></span><span style="background:#1e3a8a"></span><span style="background:#6d28d9"></span><span style="background:#b8902f"></span></div>
+        <div class="name">Strategy Deck <b>20</b></div>
+        <div class="desc">Consulting style: 2×2 matrix, options scoring table, multi-column analysis. Strategy &amp; recommendations.</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="cat">
+    <h2 class="cat-label">Editorial</h2>
+    <div class="grid">
+      <a class="card" href="11-editorial-dark.html" data-pv="11-editorial-dark.html" data-tags="dark toi den orange cam teal xanh ngoc serif luxe warm editorial premium report" target="_blank">
+        <div class="swatch"><span style="background:#0e1420;border:1px solid #2a3344"></span><span style="background:#f0a868"></span><span style="background:#7fd1c4"></span></div>
+        <div class="name">Editorial Dark <b>11</b></div>
+        <div class="desc">Luxe serif, warm accent. Reports &amp; premium brands.</div>
+      </a>
+      <a class="card" href="14-warm-editorial.html" data-pv="14-warm-editorial.html" data-tags="jewel green xanh la emerald gold vang cream kem warm light sang playfair serif drop-cap pull-quote premium" target="_blank">
+        <div class="swatch"><span style="background:#f7f3ec;border:1px solid #d8d8d2"></span><span style="background:#047857"></span><span style="background:#b08440"></span><span style="background:#221d18"></span></div>
+        <div class="name">Warm Editorial <b>14</b></div>
+        <div class="desc">Light cream, Playfair serif, drop-cap &amp; pull-quote. Premium reports &amp; thought pieces.</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="cat">
+    <h2 class="cat-label">Infographic, data &amp; planning</h2>
+    <div class="grid">
+      <a class="card" href="01-infographic-fresh.html" data-pv="01-infographic-fresh.html" data-tags="green xanh la navy blue xanh duong red do white trang light sang infographic steps journey comparison" target="_blank">
+        <div class="swatch"><span style="background:#46c14f"></span><span style="background:#0f8a8c"></span><span style="background:#0d1f4a"></span><span style="background:#ef5350"></span></div>
+        <div class="name">Infographic Fresh <b>01</b></div>
+        <div class="desc">Light infographic, green→navy. Steps, journey, comparison.</div>
+      </a>
+      <a class="card" href="02-spectrum-steps.html" data-pv="02-spectrum-steps.html" data-tags="blue xanh duong white trang light sang versatile agenda roadmap radar table stats comparison" target="_blank">
+        <div class="swatch"><span style="background:#eef0f3;border:1px solid #d8dde3"></span><span style="background:#2fb8d4"></span><span style="background:#2c80c8"></span><span style="background:#2a63bc"></span><span style="background:#16356b"></span></div>
+        <div class="name">Spectrum <b>02</b></div>
+        <div class="desc">Versatile blue deck. Agenda, arc roadmap, phase-flow, capability radar, tables, stats, comparison.</div>
+      </a>
+      <a class="card" href="03-aurora-flow.html" data-pv="03-aurora-flow.html" data-tags="teal xanh ngoc green xanh la white trang light sang versatile agenda timeline pyramid donut table stats" target="_blank">
+        <div class="swatch"><span style="background:#edf2f2;border:1px solid #d6e2e0"></span><span style="background:#46cf90"></span><span style="background:#15a890"></span><span style="background:#0f8d86"></span><span style="background:#0a5455"></span></div>
+        <div class="name">Aurora Flow <b>03</b></div>
+        <div class="desc">Versatile teal deck. Agenda, horizontal timeline, 3D pyramid, half-donut, tables, stats, comparison.</div>
+      </a>
+      <a class="card" href="04-nova.html" data-pv="04-nova.html" data-tags="blue xanh duong cobalt white trang light sang versatile agenda capsule radial hub comparison table stats" target="_blank">
+        <div class="swatch"><span style="background:#eef1f8;border:1px solid #dde2ee"></span><span style="background:#5d7bf2"></span><span style="background:#2f54eb"></span><span style="background:#2442c9"></span><span style="background:#162a72"></span></div>
+        <div class="name">Nova <b>04</b></div>
+        <div class="desc">Versatile cobalt deck. Number-card agenda, capsules, radial hub, VS comparison, tables, stats.</div>
+      </a>
+      <a class="card" href="05-pulse.html" data-pv="05-pulse.html" data-tags="green xanh la indigo tim purple white trang light sang agile funnel process growth wave table stats comparison" target="_blank">
+        <div class="swatch"><span style="background:#eef1f6;border:1px solid #d8e0ea"></span><span style="background:#15bf9b"></span><span style="background:#0d8fc4"></span><span style="background:#2f70dd"></span><span style="background:#342a88"></span></div>
+        <div class="name">Pulse <b>05</b></div>
+        <div class="desc">Agile deck, green → indigo. 3D funnel, arc process, growth wave, tables, stats, comparison.</div>
+      </a>
+      <a class="card" href="15-roadmap.html" data-pv="15-roadmap.html" data-tags="jewel purple tim plum violet green xanh la emerald white trang light sang timeline now next later targets roadmap plan quarterly" target="_blank">
+        <div class="swatch"><span style="background:#faf7f2;border:1px solid #d8dde6"></span><span style="background:#6d28d9"></span><span style="background:#047857"></span><span style="background:#131722"></span></div>
+        <div class="name">Roadmap <b>15</b></div>
+        <div class="desc">Light, plum→emerald. Horizontal timeline, now/next/later, targets. Plans &amp; quarterly roadmaps.</div>
+      </a>
+      <a class="card" href="17-midnight-analytics.html" data-pv="17-midnight-analytics.html" data-tags="jewel dark toi den emerald green xanh la gold vang plum purple tim analytics dashboard data review chart kpi" target="_blank">
+        <div class="swatch"><span style="background:#0f1419"></span><span style="background:#34d399"></span><span style="background:#e0b44a"></span><span style="background:#a78bfa"></span></div>
+        <div class="name">Midnight Analytics <b>17</b></div>
+        <div class="desc">Dark analytical deck, glowing KPIs + charts. Data reviews &amp; operational dashboards.</div>
+      </a>
+    </div>
+  </section>
+
+  <div class="nores" id="nores">No template matches that. Try a color (blue, green, gold) or a style (dark, minimal, gradient).</div>
+  <p class="foot">All fonts support Vietnamese. Photos are yours to drop in — they auto-fit each frame.</p>
+</div>
+
+<!-- shared floating preview popover -->
+<div id="pvpop" aria-hidden="true">
+  <div class="pvload"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.2-8.6"/></svg>Loading preview…</div>
+  <iframe class="pvif" title="slide preview"></iframe>
+</div>
+
+<script>
+// ---- search / filter (color + style, accent-insensitive, EN + VI) ----
+(function(){
+  function norm(s){return (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/đ/g,"d");}
+  var q = document.getElementById('q');
+  var clear = document.getElementById('qclear');
+  var nores = document.getElementById('nores');
+  var cards = [].slice.call(document.querySelectorAll('a.card'));
+  var cats = [].slice.call(document.querySelectorAll('.cat'));
+  cards.forEach(function(c){
+    var txt = norm(c.querySelector('.name').textContent + ' ' + c.querySelector('.desc').textContent + ' ' + (c.getAttribute('data-tags')||''));
+    c._tok = txt.split(/[^a-z0-9]+/).filter(Boolean);
+  });
+  // A term matches a card if some token equals it, or (for terms >=4 chars) a
+  // token starts with it. Whole-word match stops short queries like "do" (đỏ)
+  // from hitting "donut", or "tim" (tím) from hitting "timeline".
+  function matchTerm(term, toks){
+    for(var i=0;i<toks.length;i++){
+      var t = toks[i];
+      if(t === term) return true;
+      if(term.length >= 4 && t.indexOf(term) === 0) return true;
+    }
+    return false;
+  }
+  function apply(){
+    var terms = norm(q.value.trim()).split(/[^a-z0-9]+/).filter(Boolean);
+    clear.style.display = q.value ? 'block' : 'none';
+    var any = false;
+    cards.forEach(function(c){
+      var hit = terms.length === 0 || terms.every(function(t){ return matchTerm(t, c._tok); });
+      c.classList.toggle('hide', !hit);
+      if(hit) any = true;
+    });
+    cats.forEach(function(cat){
+      var vis = cat.querySelectorAll('a.card:not(.hide)').length;
+      cat.classList.toggle('empty', vis === 0);
+    });
+    nores.classList.toggle('show', !any);
+  }
+  q.addEventListener('input', apply);
+  clear.addEventListener('click', function(){ q.value=''; apply(); q.focus(); });
+  [].slice.call(document.querySelectorAll('.qchip')).forEach(function(ch){
+    ch.addEventListener('click', function(){ q.value = ch.textContent; apply(); q.focus(); });
+  });
+})();
+
+// ---- floating live preview popover ----
+(function(){
+  var pop = document.getElementById('pvpop');
+  var ifr = pop.querySelector('.pvif');
+  var load = pop.querySelector('.pvload');
+  var cards = [].slice.call(document.querySelectorAll('a.card[data-pv]'));
+  var POPW = 480, POPH = POPW * 9 / 16, GAP = 14, M = 10;
+  var current = null, hideT = null;
+  ifr.style.transform = 'scale(' + (POPW / 1280) + ')';
+  function place(card){
+    var r = card.getBoundingClientRect();
+    var left = r.left + r.width / 2 - POPW / 2;
+    left = Math.max(M, Math.min(left, innerWidth - POPW - M));
+    var top = r.top - POPH - GAP;
+    pop.style.transformOrigin = 'bottom center';
+    if(top < M){ top = r.bottom + GAP; pop.style.transformOrigin = 'top center'; }
+    pop.style.left = left + 'px'; pop.style.top = top + 'px';
+  }
+  function show(card){
+    if(hideT){ clearTimeout(hideT); hideT = null; }
+    current = card; place(card); load.style.display = 'flex';
+    ifr.addEventListener('load', function(){ if(current === card){ load.style.display = 'none'; } }, {once:true});
+    ifr.src = card.getAttribute('data-pv') + '#preview';
+    pop.classList.add('show');
+  }
+  function hide(){
+    current = null; pop.classList.remove('show');
+    hideT = setTimeout(function(){ if(!current){ ifr.removeAttribute('src'); load.style.display = 'flex'; } }, 220);
+  }
+  cards.forEach(function(card){
+    card.addEventListener('mouseenter', function(){ show(card); });
+    card.addEventListener('mouseleave', function(){ hide(); });
+  });
+  addEventListener('scroll', function(){ if(current) place(current); }, {passive:true});
+})();
+</script>
+</body>
+</html>

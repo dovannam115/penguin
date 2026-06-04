@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>15 · Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf7f2; --panel:#ffffff; --ink:#131722; --muted:#5b6675; --line:#eae4da;
+  --accent:#6d28d9; --accent-soft:#efe9fb; --cyan:#047857; --cyan-soft:#e3f1ec;
+  --pad: clamp(1.9rem, 5.5vw, 5rem);
+  --gap: clamp(.9rem, 1.6vw, 1.4rem);
+  --display: clamp(2.4rem, 6vw, 4.8rem);
+  --h1: clamp(1.7rem, 3.6vw, 2.8rem);
+  --body: clamp(1rem, 1.45vw, 1.18rem);
+  --kicker: clamp(.66rem,.92vw,.78rem);
+  --cap: clamp(.66rem,.9vw,.8rem);
+  --radius: 18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:"Be Vietnam Pro",system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.slide{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:var(--pad)}
+.inner{width:100%;max-width:1180px;margin:0 auto}
+.mono{font-family:"Space Grotesk",monospace;font-variant-numeric:tabular-nums}
+.kicker{display:inline-flex;align-items:center;gap:.5rem;font-family:"Space Grotesk";font-size:var(--kicker);font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.kicker .dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.display{font-weight:800;font-size:var(--display);line-height:1.03;letter-spacing:-.025em;margin:.5em 0 .42em}
+.display .grad{background:linear-gradient(100deg,#6d28d9,#047857);-webkit-background-clip:text;background-clip:text;color:transparent}
+.h1{font-weight:800;font-size:var(--h1);line-height:1.1;letter-spacing:-.02em}
+.lead{font-size:var(--body);line-height:1.62;color:var(--muted);max-width:52ch}
+.footer{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(var(--pad)*.5);display:flex;justify-content:space-between;font-size:var(--cap);color:var(--muted);border-top:1px solid var(--line);padding-top:.8rem}
+.footer .num{font-family:"Space Grotesk";font-weight:700;color:var(--ink)}
+.ico{display:inline-flex}
+.ico svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* cover meta chips */
+.chips{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.7rem}
+.chip{font-size:var(--cap);font-weight:600;padding:.45rem .9rem;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--muted)}
+.chip b{color:var(--accent)}
+
+/* horizontal timeline */
+.tl{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);margin-top:2.6rem}
+.tl::before{content:"";position:absolute;left:0;right:0;top:11px;height:2px;background:linear-gradient(90deg,#6d28d9,#047857)}
+.ph{position:relative;padding-top:2.5rem}
+.ph .node{position:absolute;top:3px;left:0;width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid var(--accent);box-shadow:0 0 0 4px var(--bg)}
+.ph:nth-child(3) .node,.ph:nth-child(4) .node{border-color:var(--cyan)}
+.ph .per{font-family:"Space Grotesk";font-weight:700;font-size:var(--cap);color:var(--accent)}
+.ph:nth-child(3) .per,.ph:nth-child(4) .per{color:var(--cyan)}
+.ph .card{margin-top:.7rem;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(1rem,1.7vw,1.4rem)}
+.ph .pi{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent);font-size:1.15rem;margin-bottom:.7rem}
+.ph:nth-child(3) .pi,.ph:nth-child(4) .pi{background:var(--cyan-soft);color:var(--cyan)}
+.ph h3{font-weight:700;font-size:clamp(1rem,1.5vw,1.18rem);margin-bottom:.45rem}
+.ph ul{list-style:none;font-size:var(--cap);color:var(--muted);line-height:1.5}
+.ph ul li{padding-left:.95rem;position:relative;margin-bottom:.3rem}
+.ph ul li::before{content:"";position:absolute;left:0;top:.55em;width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.5}
+
+/* now/next/later */
+.lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);margin-top:2rem}
+.lane{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(1.1rem,1.9vw,1.6rem)}
+.lane .lh{display:flex;align-items:center;gap:.6rem;font-family:"Space Grotesk";font-weight:700;font-size:var(--cap);text-transform:uppercase;letter-spacing:.12em;margin-bottom:1rem}
+.lane .lh .pill{width:10px;height:10px;border-radius:50%}
+.lane.now .lh .pill{background:var(--accent)} .lane.next .lh .pill{background:var(--cyan)} .lane.later .lh .pill{background:#94a3b8}
+.task{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:.85rem 1rem;margin-bottom:.7rem}
+.task b{display:block;font-weight:600;font-size:var(--cap);margin-bottom:.2rem}
+.task span{font-size:calc(var(--cap) - 1px);color:var(--muted)}
+
+/* targets */
+.targets{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);margin-top:2.2rem}
+.tg{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(1.1rem,1.9vw,1.6rem)}
+.tg .kn{font-family:"Space Grotesk";font-weight:700;font-size:clamp(1.8rem,3.6vw,2.8rem);line-height:1;letter-spacing:-.02em}
+.tg .kn .u{font-size:.45em;color:var(--muted);margin-left:.1em}
+.tg .kl{font-size:var(--cap);color:var(--muted);line-height:1.5;margin-top:.5rem}
+.tg .barwrap{height:7px;border-radius:99px;background:var(--accent-soft);margin-top:.9rem;overflow:hidden}
+.tg .barwrap i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#6d28d9,#047857)}
+
+/* closing */
+.close-card{border-radius:calc(var(--radius) + 6px);background:linear-gradient(120deg,#5b21b6,#047857);color:#fff;padding:clamp(2.2rem,5vw,4rem);position:relative;overflow:hidden}
+.close-card::after{content:"";position:absolute;right:-50px;bottom:-70px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.1)}
+.close-card .kicker{color:#dbe9ff}.close-card .kicker .dot{background:#dbe9ff}
+.close-card h2{font-weight:800;font-size:clamp(1.9rem,4.4vw,3.2rem);line-height:1.07;letter-spacing:-.02em;margin:.5em 0 .4em;max-width:20ch}
+.close-card p{color:rgba(255,255,255,.88);font-size:var(--body);line-height:1.6;max-width:48ch}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+.slide.in .reveal{opacity:1;transform:none}
+.slide.in .d1{transition-delay:.05s}.slide.in .d2{transition-delay:.11s}.slide.in .d3{transition-delay:.17s}.slide.in .d4{transition-delay:.23s}
+@media(max-width:860px){.tl{grid-template-columns:1fr;}.tl::before{display:none}.ph{padding-top:0;padding-left:1.6rem}.ph .node{top:6px}.lanes,.targets{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<!-- 1 · COVER -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal d1"><span class="dot"></span>Lộ trình sản phẩm · 2026</div>
+    <h1 class="display reveal d2">Lộ trình <span class="grad">nửa cuối năm</span></h1>
+    <p class="lead reveal d3">Bốn giai đoạn từ nền tảng đến mở rộng, kèm mục tiêu rõ ràng cho từng mốc để cả nhóm cùng nhìn về một hướng.</p>
+    <div class="chips reveal d4">
+      <span class="chip">Bắt đầu <b>Q3</b></span>
+      <span class="chip">Hoàn tất <b>Q4</b></span>
+      <span class="chip">Đội ngũ <b>5 nhóm</b></span>
+    </div>
+  </div>
+  <div class="footer"><span>Sản phẩm ABC</span><span class="num">01</span></div>
+</section>
+
+<!-- 2 · TIMELINE -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal d1"><span class="dot"></span>Bốn giai đoạn</div>
+    <h2 class="h1 reveal d2" style="margin-top:.4em">Từ nền tảng đến mở rộng</h2>
+    <div class="tl">
+      <div class="ph reveal d1"><div class="node"></div><div class="per">Tháng 7</div>
+        <div class="card"><div class="pi"><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span></div>
+        <h3>Nền tảng</h3><ul><li>Chuẩn hóa dữ liệu</li><li>Dựng hạ tầng lõi</li></ul></div>
+      </div>
+      <div class="ph reveal d2"><div class="node"></div><div class="per">Tháng 8</div>
+        <div class="card"><div class="pi"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg></span></div>
+        <h3>Thử nghiệm</h3><ul><li>Bản beta nội bộ</li><li>Thu thập phản hồi</li></ul></div>
+      </div>
+      <div class="ph reveal d3"><div class="node"></div><div class="per">Tháng 10</div>
+        <div class="card"><div class="pi"><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span></div>
+        <h3>Ra mắt</h3><ul><li>Phát hành chính thức</li><li>Đào tạo người dùng</li></ul></div>
+      </div>
+      <div class="ph reveal d4"><div class="node"></div><div class="per">Tháng 12</div>
+        <div class="card"><div class="pi"><span class="ico"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span></div>
+        <h3>Mở rộng</h3><ul><li>Tích hợp đối tác</li><li>Mở thêm thị trường</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Sản phẩm ABC</span><span class="num">02</span></div>
+</section>
+
+<!-- 3 · NOW / NEXT / LATER -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal d1"><span class="dot"></span>Ưu tiên</div>
+    <h2 class="h1 reveal d2" style="margin-top:.4em">Đang làm · Tiếp theo · Về sau</h2>
+    <div class="lanes">
+      <div class="lane now reveal d2"><div class="lh"><span class="pill"></span>Đang làm</div>
+        <div class="task"><b>Chuẩn hóa dữ liệu</b><span>Hợp nhất nguồn về một mối</span></div>
+        <div class="task"><b>API lõi</b><span>Hoàn thiện và kiểm thử</span></div>
+      </div>
+      <div class="lane next reveal d3"><div class="lh"><span class="pill"></span>Tiếp theo</div>
+        <div class="task"><b>Bản beta</b><span>Mời nhóm dùng thử nội bộ</span></div>
+        <div class="task"><b>Bảng điều khiển</b><span>Theo dõi chỉ số theo thời gian thực</span></div>
+      </div>
+      <div class="lane later reveal d4"><div class="lh"><span class="pill"></span>Về sau</div>
+        <div class="task"><b>Tích hợp đối tác</b><span>Kết nối hệ thống bên ngoài</span></div>
+        <div class="task"><b>Ứng dụng di động</b><span>Mở rộng kênh tiếp cận</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Sản phẩm ABC</span><span class="num">03</span></div>
+</section>
+
+<!-- 4 · TARGETS -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal d1"><span class="dot"></span>Mục tiêu cuối năm</div>
+    <h2 class="h1 reveal d2" style="margin-top:.4em">Đích đến đo lường được</h2>
+    <div class="targets">
+      <div class="tg reveal d1"><div class="kn">10<span class="u">K</span></div><div class="kl">Người dùng hoạt động</div><div class="barwrap"><i style="width:72%"></i></div></div>
+      <div class="tg reveal d2"><div class="kn">99,9<span class="u">%</span></div><div class="kl">Thời gian hệ thống ổn định</div><div class="barwrap"><i style="width:90%"></i></div></div>
+      <div class="tg reveal d3"><div class="kn">5<span class="u">đối tác</span></div><div class="kl">Tích hợp được ký kết</div><div class="barwrap"><i style="width:40%"></i></div></div>
+      <div class="tg reveal d4"><div class="kn">4,7<span class="u">/5</span></div><div class="kl">Điểm hài lòng mục tiêu</div><div class="barwrap"><i style="width:84%"></i></div></div>
+    </div>
+  </div>
+  <div class="footer"><span>Sản phẩm ABC</span><span class="num">04</span></div>
+</section>
+
+<!-- 5 · CLOSING -->
+<section class="slide">
+  <div class="inner">
+    <div class="close-card reveal d1">
+      <div class="kicker"><span class="dot"></span>Cùng nhau</div>
+      <h2>Một lộ trình rõ ràng, một đội ngũ đồng lòng.</h2>
+      <p>Mỗi mốc là một cam kết. Cùng theo dõi tiến độ mỗi tuần và điều chỉnh kịp thời khi cần.</p>
+    </div>
+  </div>
+  <div class="footer"><span>Sản phẩm ABC</span><span class="num">05</span></div>
+</section>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.3});
+document.querySelectorAll('.slide').forEach(function(s){io.observe(s)});
+var sl=[].slice.call(document.querySelectorAll('.slide'));
+addEventListener('keydown',function(e){var i=sl.findIndex(function(s){return Math.abs(s.getBoundingClientRect().top)<innerHeight/2});
+if(['ArrowDown','ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();if(sl[i+1])sl[i+1].scrollIntoView()}
+if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();if(sl[i-1])sl[i-1].scrollIntoView()}});
+</script>
+<script>/*pv-preview-mode*/(function(){if(location.hash!=='#preview')return;
+var de=document.documentElement;
+var st=document.createElement('style');st.textContent='::-webkit-scrollbar{display:none}html{scrollbar-width:none!important}';document.head.appendChild(st);
+de.style.scrollSnapType='none';
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+var DWELL=1400;
+function ih(){return innerHeight;}
+function n(){return Math.max(1,Math.round(de.scrollHeight/ih()));}
+var i=0;
+function show(idx,smooth){de.style.scrollBehavior=(smooth&&!reduce)?'smooth':'auto';scrollTo(0,idx*ih());}
+function tick(){var c=n();var ni=(i+1)%c;show(ni,ni!==0);i=ni;}
+setTimeout(function(){setInterval(tick,DWELL);},DWELL);})();</script>
+</body>
+</html>

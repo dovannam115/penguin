@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>05 · Pulse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;800&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef1f6; --ink:#152038; --body:#5a6377; --card:#ffffff; --line:#dce2ec;
+  --s1:#15bf9b; --s2:#0aa6ab; --s3:#0d8fc4; --s4:#2f70dd; --s5:#4843dd; --s6:#342a88;
+  --pad:clamp(1.5rem,4vw,3rem);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:"Be Vietnam Pro",system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.slide{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:var(--pad);background:var(--bg)}
+.head{text-align:center;max-width:64ch;margin:0 auto clamp(1.8rem,5vh,3.2rem);flex:0 0 auto}
+.title{font-weight:800;font-size:clamp(1.7rem,3.7vw,2.75rem);letter-spacing:-.02em;line-height:1.1}
+.sub{font-weight:500;color:var(--body);font-size:clamp(.92rem,1.5vw,1.18rem);margin-top:.6rem;line-height:1.5}
+.stage{flex:0 1 auto;display:flex;align-items:center;justify-content:center;width:100%;max-width:1200px;margin:0 auto}
+.foot{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(var(--pad)*.45);display:flex;justify-content:space-between;font-size:.7rem;color:var(--body);opacity:.65}
+.foot .num{font-weight:800;color:var(--s4)}
+svg.ic{width:100%;height:100%;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.kick{display:inline-block;font-weight:800;font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:#fff;background:var(--s2);padding:.45em 1em;border-radius:999px}
+
+/* ===== COVER / CLOSING ===== */
+.cover{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;max-width:1100px;margin:0 auto;width:100%}
+.cover h1{font-weight:800;font-size:clamp(2.4rem,6vw,4.6rem);line-height:1.02;letter-spacing:-.025em;margin:.5em 0 .35em}
+.cover h1 em{font-style:normal;background:linear-gradient(90deg,var(--s1),var(--s4));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.cover p{font-size:clamp(1rem,1.6vw,1.3rem);color:var(--body);max-width:46ch;line-height:1.55;font-weight:500}
+.sweep{display:flex;gap:8px;margin-top:2.2rem}
+.sweep span{height:12px;width:64px;border-radius:999px}
+.sweep span:nth-child(1){background:var(--s1)}.sweep span:nth-child(2){background:var(--s2)}.sweep span:nth-child(3){background:var(--s3)}.sweep span:nth-child(4){background:var(--s4)}.sweep span:nth-child(5){background:var(--s5)}.sweep span:nth-child(6){background:var(--s6)}
+.cend{margin-top:2rem;display:flex;flex-direction:column;gap:.5rem}
+.cend span{font-weight:600;color:var(--body);font-size:clamp(.9rem,1.2vw,1.05rem)}
+.cend b{color:var(--ink);font-weight:800}
+
+/* ===== AGENDA ===== */
+.agenda{display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(2rem,5vw,4.5rem);align-items:center;width:100%;max-width:1120px;margin:0 auto}
+.ag-l h2{font-weight:800;font-size:clamp(2rem,4.2vw,3.3rem);line-height:1.04;letter-spacing:-.025em;margin:.7rem 0 0}
+.ag-l p{color:var(--body);margin-top:1rem;max-width:30ch;line-height:1.55;font-weight:500}
+.aglist{display:flex;flex-direction:column}
+.agitem{display:flex;align-items:center;gap:1.3rem;padding:1rem .3rem;border-bottom:1px solid var(--line)}
+.agitem:last-child{border-bottom:0}
+.agnum{flex:none;width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:1.05rem;box-shadow:0 10px 18px -7px rgba(22,40,70,.4)}
+.agitem:nth-child(1) .agnum{background:var(--s1)}.agitem:nth-child(2) .agnum{background:var(--s2)}.agitem:nth-child(3) .agnum{background:var(--s3)}.agitem:nth-child(4) .agnum{background:var(--s4)}.agitem:nth-child(5) .agnum{background:var(--s6)}
+.agitem h4{font-weight:800;font-size:clamp(1rem,1.35vw,1.2rem);line-height:1.2}
+.agitem p{font-size:.84rem;color:var(--body);margin-top:.12rem;line-height:1.4}
+.agitem .agar{margin-left:auto;flex:none;width:22px;height:22px;color:#b9c3d2}
+
+/* ===== PROSE ===== */
+.prose{width:100%;max-width:1000px;margin:0 auto}
+.prose .lead{font-size:clamp(1.05rem,1.7vw,1.32rem);color:var(--ink);line-height:1.6;font-weight:600;border-left:4px solid var(--s2);padding-left:1.3rem;margin-bottom:2rem}
+.blist{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem 2.8rem}
+.bli{display:flex;gap:1rem;align-items:flex-start}
+.bli .bic{flex:none;width:34px;height:34px;border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;margin-top:1px;box-shadow:0 8px 15px -6px rgba(22,40,70,.4)}
+.bli .bic .glyph{width:18px;height:18px}
+.bli:nth-child(1) .bic{background:var(--s1)}.bli:nth-child(2) .bic{background:var(--s2)}.bli:nth-child(3) .bic{background:var(--s3)}.bli:nth-child(4) .bic{background:var(--s4)}.bli:nth-child(5) .bic{background:var(--s5)}.bli:nth-child(6) .bic{background:var(--s6)}
+.bli h4{font-weight:800;font-size:clamp(1rem,1.3vw,1.14rem);line-height:1.2}
+.bli p{font-size:.86rem;color:var(--body);line-height:1.48;margin-top:.2rem}
+
+/* ===== SPLIT (TEXT + CHART) ===== */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4.5rem);align-items:center;width:100%;max-width:1120px;margin:0 auto}
+.split-text h2{font-weight:800;font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1.08;letter-spacing:-.02em}
+.split-text .lead{color:var(--body);line-height:1.6;margin:1rem 0 1.6rem;font-weight:500;font-size:clamp(.95rem,1.3vw,1.08rem)}
+.split-text ul{list-style:none;display:flex;flex-direction:column;gap:.85rem}
+.split-text li{display:flex;gap:.8rem;align-items:center;font-weight:600;font-size:clamp(.9rem,1.2vw,1.02rem)}
+.split-text li b{color:var(--s4);font-weight:800}
+.split-text li::before{content:"";width:11px;height:11px;border-radius:4px;background:var(--s2);flex:none}
+.chartcard{background:var(--card);border-radius:18px;padding:clamp(1.4rem,2.6vw,2.2rem);box-shadow:0 26px 50px -24px rgba(22,40,70,.26),0 8px 18px -10px rgba(22,40,70,.12)}
+.chartcard h5{font-weight:800;font-size:.92rem;color:var(--ink);margin-bottom:1rem}
+.chartcard svg{width:100%;height:auto;display:block}
+
+/* ===== PHASE FLOW (ref 3) ===== */
+.phases{display:flex;align-items:flex-start;justify-content:center;width:100%;max-width:1180px;margin:0 auto}
+.phase{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 clamp(.4rem,1vw,.9rem)}
+.phase .plab{font-weight:800;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:.34em .95em;border-radius:999px;margin-bottom:clamp(1.2rem,3vh,2rem)}
+.phase:nth-child(1) .plab{background:var(--s1)}.phase:nth-child(3) .plab{background:var(--s2)}.phase:nth-child(5) .plab{background:var(--s3)}.phase:nth-child(7) .plab{background:var(--s4)}.phase:nth-child(9) .plab{background:var(--s6)}
+.phase .pic{width:clamp(56px,5.8vw,72px);height:clamp(56px,5.8vw,72px);border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;box-shadow:0 16px 30px -14px rgba(22,40,70,.34);margin-bottom:clamp(1rem,2.6vh,1.7rem)}
+.phase .pic .glyph{width:46%;height:46%}
+.phase:nth-child(1) .pic{color:var(--s1)}.phase:nth-child(3) .pic{color:var(--s2)}.phase:nth-child(5) .pic{color:var(--s3)}.phase:nth-child(7) .pic{color:var(--s4)}.phase:nth-child(9) .pic{color:var(--s6)}
+.phase h4{font-weight:800;font-size:clamp(.92rem,1.2vw,1.1rem);margin-bottom:.4rem;line-height:1.2}
+.phase p{font-size:clamp(.74rem,.92vw,.84rem);color:var(--body);line-height:1.45;max-width:20ch}
+.parrow{flex:none;align-self:flex-start;margin-top:clamp(62px,9vh,98px);width:clamp(30px,3vw,40px);height:clamp(30px,3vw,40px);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 10px 18px -7px rgba(22,40,70,.4)}
+.parrow .glyph{width:48%;height:48%}
+.parrow.a1{background:var(--s1)}.parrow.a2{background:var(--s2)}.parrow.a3{background:var(--s4)}.parrow.a4{background:var(--s6)}
+
+/* ===== RADIAL HUB (ref 2) ===== */
+.hub{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(1.4rem,4vw,3.4rem);width:100%;max-width:1180px;margin:0 auto}
+.hubcol{display:flex;flex-direction:column;gap:clamp(1.4rem,4.5vh,2.8rem)}
+.hubcol.left{align-items:flex-end}
+.hubitem{display:flex;gap:1rem;align-items:center;max-width:300px}
+.hubcol.left .hubitem{flex-direction:row-reverse;text-align:right}
+.hubitem .hico{flex:none;width:clamp(46px,4.8vw,58px);height:clamp(46px,4.8vw,58px);border-radius:15px;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 22px -8px rgba(22,40,70,.42)}
+.hubitem .hico .glyph{width:48%;height:48%}
+.hubcol.left .hubitem:nth-child(1) .hico{background:var(--s1)}.hubcol.left .hubitem:nth-child(2) .hico{background:var(--s2)}.hubcol.left .hubitem:nth-child(3) .hico{background:var(--s3)}
+.hubcol.right .hubitem:nth-child(1) .hico{background:var(--s2)}.hubcol.right .hubitem:nth-child(2) .hico{background:var(--s4)}.hubcol.right .hubitem:nth-child(3) .hico{background:var(--s6)}
+.hubitem h4{font-weight:800;font-size:clamp(.92rem,1.2vw,1.08rem);line-height:1.2}
+.hubitem p{font-size:clamp(.72rem,.9vw,.82rem);color:var(--body);line-height:1.42;margin-top:.15rem}
+.hubcenter{width:clamp(168px,17vw,222px);aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:1rem;background:radial-gradient(circle at 35% 30%,var(--s3),var(--s6));box-shadow:0 26px 50px -20px rgba(22,40,70,.55)}
+.hubcenter .hsub{font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
+.hubcenter h3{font-weight:800;font-size:clamp(1.3rem,2vw,1.8rem);line-height:1.06;margin-top:.3rem}
+
+/* ===== SEMICIRCLE ARCH (ref 1) ===== */
+.archwrap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(.8rem,2.4vw,2.2rem);width:100%;max-width:1200px;margin:0 auto}
+.archcol{display:flex;flex-direction:column;gap:clamp(1.4rem,5vh,3rem)}
+.archcol.left{align-items:flex-end;text-align:right}
+.archcol.right{align-items:flex-start;text-align:left}
+.archlab{max-width:248px}
+.archcol.left .archlab{border-right:3px solid;padding-right:1rem}
+.archcol.right .archlab{border-left:3px solid;padding-left:1rem}
+.archcol.left .archlab:nth-child(1){border-color:var(--s1)}.archcol.left .archlab:nth-child(2){border-color:var(--s2)}.archcol.left .archlab:nth-child(3){border-color:var(--s3)}
+.archcol.right .archlab:nth-child(1){border-color:var(--s4)}.archcol.right .archlab:nth-child(2){border-color:var(--s5)}.archcol.right .archlab:nth-child(3){border-color:var(--s6)}
+.archlab h4{font-weight:800;font-size:clamp(.95rem,1.25vw,1.16rem);line-height:1.2;margin-bottom:.25rem}
+.archlab p{font-size:clamp(.74rem,.92vw,.84rem);color:var(--body);line-height:1.42}
+.archsvg{width:clamp(330px,37vw,500px)}
+.archsvg svg{width:100%;height:auto;display:block;overflow:visible;filter:drop-shadow(0 16px 24px rgba(22,40,70,.22))}
+
+/* ===== TABLE ===== */
+.tblwrap{width:100%;max-width:1040px;margin:0 auto;border-radius:16px;overflow:hidden;box-shadow:0 26px 50px -24px rgba(22,40,70,.24),0 8px 18px -10px rgba(22,40,70,.12)}
+table.tbl{width:100%;border-collapse:collapse;background:var(--card);font-size:clamp(.82rem,1.05vw,.98rem)}
+.tbl thead th{background:var(--s6);color:#fff;font-weight:700;text-align:left;padding:1rem 1.4rem;font-size:.92rem;letter-spacing:.01em}
+.tbl thead th:not(:first-child){text-align:center}
+.tbl tbody td{padding:.9rem 1.4rem;border-top:1px solid var(--line);color:var(--ink);vertical-align:middle}
+.tbl tbody td:not(:first-child){text-align:center}
+.tbl tbody td:first-child{font-weight:700}
+.tbl tbody tr:nth-child(even){background:#f4f7fa}
+.tbl .hl{font-weight:800;color:var(--s4);font-variant-numeric:tabular-nums}
+.tbl .tag{display:inline-block;padding:.22em .8em;border-radius:999px;font-size:.78rem;font-weight:700}
+.tag.good{background:#dcf3ea;color:#0e8f6e}.tag.warn{background:#fcefdc;color:#b9772a}.tag.bad{background:#fae6e6;color:#bd3a3a}
+
+/* ===== STATS + DONUT ===== */
+.results{display:flex;flex-direction:column;gap:clamp(1.4rem,3.4vh,2.8rem);width:100%;max-width:1060px;margin:0 auto}
+.kpi3{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(.8rem,1.6vw,1.3rem)}
+.kbox{border-radius:16px;padding:clamp(1.1rem,2vw,1.7rem);color:#fff;box-shadow:0 20px 40px -20px rgba(22,40,70,.42)}
+.kbox:nth-child(1){background:var(--s2)}.kbox:nth-child(2){background:var(--s3)}.kbox:nth-child(3){background:var(--s4)}.kbox:nth-child(4){background:var(--s6)}
+.kbox .kn{font-weight:800;font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kbox .kl{margin-top:.55rem;font-size:.85rem;font-weight:600;opacity:.92;line-height:1.45}
+.donutrow{display:flex;align-items:center;justify-content:center;gap:clamp(1.8rem,4.5vw,3.6rem);flex-wrap:wrap}
+.donutrow svg{width:clamp(150px,17vw,196px);height:auto;filter:drop-shadow(0 12px 18px rgba(22,40,70,.16))}
+.dleg{font-size:.9rem;color:var(--body);line-height:2.3}
+.dleg b{color:var(--ink);font-weight:800}
+.dleg .dt{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:.6rem;vertical-align:middle}
+
+/* ===== COMPARISON ===== */
+.cmp{display:grid;grid-template-columns:1fr 1px 1fr;gap:clamp(1.4rem,3.5vw,3rem);align-items:start;width:100%;max-width:1060px;margin:0 auto}
+.cmp-div{align-self:stretch;background:var(--line)}
+.cmp-head{display:inline-flex;align-items:center;border-radius:999px;padding:.55rem 1.7rem;font-weight:800;font-size:clamp(1rem,1.6vw,1.3rem);margin-bottom:clamp(.8rem,1.6vw,1.3rem)}
+.cmp-head.old{background:var(--card);color:var(--body);border:1.5px solid var(--line)}
+.cmp-head.new{background:var(--s3);color:#fff;box-shadow:0 10px 22px -10px var(--s3)}
+.cmp-li{display:flex;gap:.85rem;padding:clamp(.78rem,1.45vw,1.1rem) 0;border-bottom:1px solid var(--line)}
+.cmp-li:last-child{border-bottom:none}
+.cmp-li .cico{width:clamp(38px,3.8vw,46px);height:clamp(38px,3.8vw,46px);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cmp-li.old .cico{background:#e6eaef;color:var(--body)}
+.cmp-li.new .cico{background:var(--s1);color:#fff}
+.cmp-li .cico .glyph{width:52%;height:52%}
+.cmp-li h4{font-weight:800;font-size:clamp(.95rem,1.3vw,1.1rem);line-height:1.2}
+.cmp-li p{font-size:clamp(.74rem,.92vw,.84rem);color:var(--body);line-height:1.45;margin-top:.18rem}
+
+/* ===== OUTLINE COVER (faint rings) ===== */
+.slide--out{overflow:hidden}
+.slide--out::before{content:"";position:absolute;width:min(92vh,780px);aspect-ratio:1;border:2px solid var(--line);border-radius:50%;right:-13%;top:50%;transform:translateY(-50%);z-index:0}
+.slide--out::after{content:"";position:absolute;width:min(60vh,540px);aspect-ratio:1;border:2px solid var(--s1);opacity:.45;border-radius:50%;right:4%;top:50%;transform:translateY(-50%);z-index:0}
+.slide--out .cover{position:relative;z-index:1}
+
+/* ===== FUNNEL ===== */
+.funnel{display:grid;grid-template-columns:minmax(300px,1fr) 1fr;align-items:center;gap:clamp(1.5rem,4vw,3.2rem);width:100%;max-width:1060px;margin:0 auto}
+.fnl{width:100%;max-width:430px;margin:0 auto}
+.fnl svg{width:100%;height:auto;display:block;overflow:visible;filter:drop-shadow(0 18px 24px rgba(22,40,70,.32))}
+.fside{display:flex;flex-direction:column;gap:clamp(.7rem,1.8vh,1.3rem)}
+.frow{display:flex;align-items:flex-start;gap:1rem}
+.frow .fnum{flex:none;width:38px;height:38px;border-radius:11px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.98rem}
+.frow:nth-child(1) .fnum{background:var(--s1)}.frow:nth-child(2) .fnum{background:var(--s3)}.frow:nth-child(3) .fnum{background:var(--s4)}.frow:nth-child(4) .fnum{background:var(--s6)}
+.frow h4{font-weight:800;font-size:clamp(.95rem,1.2vw,1.1rem);line-height:1.2}
+.frow p{font-size:clamp(.76rem,.95vw,.86rem);color:var(--body);line-height:1.45;margin-top:.12rem}
+
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.reveal{opacity:0;transition:opacity .55s ease}
+.slide.in .reveal,.slide.visible .reveal{opacity:1}
+.slide.in .r1{transition-delay:.06s}.slide.in .r2{transition-delay:.12s}.slide.in .r3{transition-delay:.18s}.slide.in .r4{transition-delay:.24s}.slide.in .r5{transition-delay:.3s}.slide.in .r6{transition-delay:.36s}
+.wavewrap{width:100%;max-width:1080px;margin:0 auto}
+.wavewrap svg{width:100%;height:auto;display:block;overflow:visible}
+</style>
+</head>
+<body>
+
+<!-- ===== SLIDE 1 — COVER ===== -->
+<section class="slide slide--out">
+  <div class="cover">
+    <span class="kick reveal">Phương pháp Agile</span>
+    <h1 class="reveal r1">Làm việc <em>linh hoạt</em><br>và hiệu quả</h1>
+    <p class="reveal r2">Khung tư duy Agile giúp đội ngũ thích ứng nhanh, giao giá trị liên tục và lấy khách hàng làm trung tâm.</p>
+    <div class="sweep reveal r3"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+  <div class="foot"><span>Pulse</span><span class="num">01</span></div>
+</section>
+
+<!-- ===== SLIDE 2 — AGENDA ===== -->
+<section class="slide">
+  <div class="stage">
+    <div class="agenda">
+      <div class="ag-l">
+        <span class="kick reveal">Mục lục</span>
+        <h2 class="reveal r1">Nội dung<br>trình bày</h2>
+        <p class="reveal r2">Năm phần giúp bạn nắm trọn tư duy và cách vận hành Agile.</p>
+      </div>
+      <div class="aglist">
+        <div class="agitem reveal r1"><div class="agnum">01</div><div><h4>Agile là gì</h4><p>Tư duy và bối cảnh ra đời.</p></div><div class="agar"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+        <div class="agitem reveal r2"><div class="agnum">02</div><div><h4>Quy trình vận hành</h4><p>Vòng đời một sprint Agile.</p></div><div class="agar"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+        <div class="agitem reveal r3"><div class="agnum">03</div><div><h4>Giá trị cốt lõi</h4><p>Bốn giá trị và sáu nguyên tắc nền tảng.</p></div><div class="agar"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+        <div class="agitem reveal r4"><div class="agnum">04</div><div><h4>Kết quả &amp; lợi ích</h4><p>Số liệu chứng minh hiệu quả.</p></div><div class="agar"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+        <div class="agitem reveal r5"><div class="agnum">05</div><div><h4>Agile và truyền thống</h4><p>So sánh và lộ trình chuyển đổi.</p></div><div class="agar"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Pulse</span><span class="num">02</span></div>
+</section>
+
+<!-- ===== SLIDE 3 — FUNNEL ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Từ ý tưởng đến sản phẩm</h2>
+    <p class="sub">Phễu lọc và ưu tiên backlog: nhiều ý tưởng đi vào, giá trị tinh gọn đi ra.</p>
+  </div>
+  <div class="stage">
+    <div class="funnel">
+      <div class="fnl reveal r2">
+        <svg viewBox="0 0 440 372" aria-hidden="true">
+          <defs><linearGradient id="cyl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".3"/><stop offset=".42" stop-color="#fff" stop-opacity=".34"/><stop offset="1" stop-color="#000" stop-opacity=".34"/></linearGradient></defs>
+          <ellipse cx="220" cy="34" rx="188" ry="30" fill="var(--s1)"/>
+          <ellipse cx="220" cy="34" rx="188" ry="30" fill="#fff" opacity=".2"/>
+          <path d="M32,34 A188,30 0 0 0 408,34 L346,152 A126,21 0 0 1 94,152 Z" fill="var(--s1)"/>
+          <path d="M32,34 A188,30 0 0 0 408,34 L346,152 A126,21 0 0 1 94,152 Z" fill="url(#cyl)"/>
+          <path d="M94,152 A126,21 0 0 0 346,152 L296,234 A76,13 0 0 1 144,234 Z" fill="var(--s3)"/>
+          <path d="M94,152 A126,21 0 0 0 346,152 L296,234 A76,13 0 0 1 144,234 Z" fill="url(#cyl)"/>
+          <path d="M144,234 A76,13 0 0 0 296,234 L262,294 A42,8 0 0 1 178,294 Z" fill="var(--s4)"/>
+          <path d="M144,234 A76,13 0 0 0 296,234 L262,294 A42,8 0 0 1 178,294 Z" fill="url(#cyl)"/>
+          <path d="M178,294 A42,8 0 0 0 262,294 L240,342 A20,5 0 0 1 200,342 Z" fill="var(--s6)"/>
+          <path d="M178,294 A42,8 0 0 0 262,294 L240,342 A20,5 0 0 1 200,342 Z" fill="url(#cyl)"/>
+          <g fill="#fff" font-family="Be Vietnam Pro" font-weight="800" text-anchor="middle" style="text-shadow:0 1px 2px rgba(0,0,0,.3)">
+            <text x="220" y="116" font-size="30">120</text>
+            <text x="220" y="202" font-size="24">45</text>
+            <text x="220" y="268" font-size="19">18</text>
+            <text x="220" y="320" font-size="14">8</text>
+          </g>
+        </svg>
+      </div>
+      <div class="fside">
+        <div class="frow reveal r1"><div class="fnum">1</div><div><h4>Toàn bộ ý tưởng</h4><p>Thu thập mọi đề xuất từ đội ngũ và khách hàng.</p></div></div>
+        <div class="frow reveal r2"><div class="fnum">2</div><div><h4>Đã sàng lọc</h4><p>Loại trùng lặp, giữ lại ý tưởng khả thi và đáng giá.</p></div></div>
+        <div class="frow reveal r3"><div class="fnum">3</div><div><h4>Đang phát triển</h4><p>Đưa vào sprint và xây dựng theo từng phần.</p></div></div>
+        <div class="frow reveal r4"><div class="fnum">4</div><div><h4>Bàn giao thực tế</h4><p>Phát hành sản phẩm và thu phản hồi để cải tiến.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Pulse</span><span class="num">03</span></div>
+</section>
+
+<!-- ===== SLIDE 4 — PROSE ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Vì sao nên chọn Agile</h2>
+    <p class="sub">Sáu lợi thế khiến Agile trở thành lựa chọn của các đội ngũ hiện đại.</p>
+  </div>
+  <div class="stage">
+    <div class="prose">
+      <p class="lead reveal r1">Agile không chỉ là quy trình mà là một tư duy: ưu tiên con người, sản phẩm chạy được và khả năng thích ứng hơn là bám cứng kế hoạch ban đầu.</p>
+      <div class="blist">
+        <div class="bli reveal r1"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Thích ứng nhanh</h4><p>Phản ứng kịp thời với thay đổi của thị trường và khách hàng.</p></div></div>
+        <div class="bli reveal r2"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Giao giá trị liên tục</h4><p>Ra mắt từng phần nhỏ thay vì chờ một bản hoàn chỉnh.</p></div></div>
+        <div class="bli reveal r3"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Minh bạch tiến độ</h4><p>Mọi người đều thấy rõ trạng thái công việc mỗi ngày.</p></div></div>
+        <div class="bli reveal r4"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Giảm rủi ro</h4><p>Phát hiện sớm vấn đề qua các vòng lặp ngắn.</p></div></div>
+        <div class="bli reveal r5"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Đội ngũ gắn kết</h4><p>Tự chủ và trách nhiệm tạo động lực làm việc cao.</p></div></div>
+        <div class="bli reveal r6"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Khách hàng hài lòng</h4><p>Sản phẩm bám sát nhu cầu thực nhờ phản hồi liên tục.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Pulse</span><span class="num">04</span></div>
+</section>
+
+<!-- ===== SLIDE 6 — SPLIT (TEXT + CHART) ===== -->
+<section class="slide">
+  <div class="stage">
+    <div class="split">
+      <div class="split-text">
+        <h2 class="reveal r1">Tốc độ giao hàng tăng vọt</h2>
+        <p class="lead reveal r2">Sau khi áp dụng Agile, số tính năng bàn giao mỗi quý tăng đều nhờ các vòng lặp ngắn và phản hồi nhanh.</p>
+        <ul>
+          <li class="reveal r3"><b>2,6×</b> số tính năng bàn giao / quý</li>
+          <li class="reveal r4"><b>-35%</b> thời gian từ ý tưởng đến ra mắt</li>
+          <li class="reveal r5"><b>+44%</b> mức độ hài lòng của khách hàng</li>
+        </ul>
+      </div>
+      <div class="chartcard reveal r2">
+        <h5>Tính năng bàn giao theo quý</h5>
+        <svg viewBox="0 0 340 220" aria-label="Biểu đồ cột bàn giao">
+          <line x1="20" y1="190" x2="330" y2="190" stroke="var(--line)" stroke-width="2"/>
+          <g font-size="12" font-weight="800" fill="var(--ink)" text-anchor="middle">
+            <rect x="34" y="140" width="42" height="50" rx="6" fill="var(--s1)"/><text x="55" y="130">12</text>
+            <rect x="94" y="116" width="42" height="74" rx="6" fill="var(--s2)"/><text x="115" y="106">19</text>
+            <rect x="154" y="88" width="42" height="102" rx="6" fill="var(--s3)"/><text x="175" y="78">26</text>
+            <rect x="214" y="62" width="42" height="128" rx="6" fill="var(--s4)"/><text x="235" y="52">28</text>
+            <rect x="274" y="40" width="42" height="150" rx="6" fill="var(--s6)"/><text x="295" y="30">31</text>
+          </g>
+          <g font-size="11" font-weight="600" fill="var(--body)" text-anchor="middle">
+            <text x="55" y="207">Q1</text><text x="115" y="207">Q2</text><text x="175" y="207">Q3</text><text x="235" y="207">Q4</text><text x="295" y="207">Q5</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Pulse</span><span class="num">05</span></div>
+</section>
+
+<!-- ===== SLIDE 7 — SEMICIRCLE ARCH (ref 1) ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Sáu nguyên tắc Agile</h2>
+    <p class="sub">Những nguyên tắc nền tảng dẫn dắt mọi quyết định trong cách làm việc Agile.</p>
+  </div>
+  <div class="stage">
+    <div class="archwrap">
+      <div class="archcol left">
+        <div class="archlab reveal r1"><h4>Hài lòng khách hàng</h4><p>Ưu tiên giao giá trị sớm và liên tục.</p></div>
+        <div class="archlab reveal r2"><h4>Đón nhận thay đổi</h4><p>Tận dụng thay đổi làm lợi thế cạnh tranh.</p></div>
+        <div class="archlab reveal r3"><h4>Bàn giao thường xuyên</h4><p>Ra mắt sản phẩm chạy được theo chu kỳ ngắn.</p></div>
+      </div>
+      <div class="archsvg reveal r2">
+        <svg viewBox="0 0 600 330" aria-hidden="true">
+          <g stroke="#fff" stroke-width="3">
+            <path d="M45,300 A255,255 0 0 1 79.2,172.5 L170.1,225 A150,150 0 0 0 150,300 Z" fill="var(--s1)"/>
+            <path d="M79.2,172.5 A255,255 0 0 1 172.5,79.2 L225,170.1 A150,150 0 0 0 170.1,225 Z" fill="var(--s2)"/>
+            <path d="M172.5,79.2 A255,255 0 0 1 300,45 L300,150 A150,150 0 0 0 225,170.1 Z" fill="var(--s3)"/>
+            <path d="M300,45 A255,255 0 0 1 427.5,79.2 L375,170.1 A150,150 0 0 0 300,150 Z" fill="var(--s4)"/>
+            <path d="M427.5,79.2 A255,255 0 0 1 520.8,172.5 L429.9,225 A150,150 0 0 0 375,170.1 Z" fill="var(--s5)"/>
+            <path d="M520.8,172.5 A255,255 0 0 1 555,300 L450,300 A150,150 0 0 0 429.9,225 Z" fill="var(--s6)"/>
+          </g>
+          <g fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <g transform="translate(92,236)"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/></g>
+            <g transform="translate(145,145)"><path d="M3 17 9 11l4 4 8-8M21 7v5h-5"/></g>
+            <g transform="translate(236,92)"><path d="M4.5 16.5 3 21l4.5-1.5M12 15l-3-3a9 9 0 0 1 9-9 9 9 0 0 1-9 9Z"/></g>
+            <g transform="translate(340,92)"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 6a3 3 0 0 1 0 6"/><path d="M19 20a6 6 0 0 0-4-5.6"/></g>
+            <g transform="translate(431,145)"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 1 4 10.5c-.7.6-1 1.2-1 2H9c0-.8-.3-1.4-1-2A6 6 0 0 1 12 3Z"/></g>
+            <g transform="translate(484,236)"><path d="M5 12.5 10 17l9-10"/></g>
+          </g>
+          <text x="300" y="252" text-anchor="middle" font-family="Be Vietnam Pro" font-size="12" font-weight="800" letter-spacing="2.5" fill="var(--body)">NGUYÊN TẮC</text>
+          <text x="300" y="282" text-anchor="middle" font-family="Be Vietnam Pro" font-size="24" font-weight="800" fill="var(--ink)">AGILE</text>
+        </svg>
+      </div>
+      <div class="archcol right">
+        <div class="archlab reveal r2"><h4>Cộng tác mỗi ngày</h4><p>Kinh doanh và kỹ thuật làm việc cùng nhau.</p></div>
+        <div class="archlab reveal r3"><h4>Đội ngũ tạo động lực</h4><p>Tin tưởng và trao quyền cho con người.</p></div>
+        <div class="archlab reveal r4"><h4>Đơn giản &amp; bền vững</h4><p>Giữ nhịp độ ổn định và tối giản công việc.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Pulse</span><span class="num">06</span></div>
+</section>
+
+<!-- ===== SLIDE 8 — TABLE ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Agile so với Waterfall</h2>
+    <p class="sub">Bảng so sánh nhanh hai cách tiếp cận quản lý dự án phổ biến.</p>
+  </div>
+  <div class="stage">
+    <div class="tblwrap reveal r1">
+      <table class="tbl">
+        <thead><tr><th>Tiêu chí</th><th>Waterfall</th><th>Agile</th></tr></thead>
+        <tbody>
+          <tr><td>Cách tiếp cận</td><td>Tuần tự</td><td class="hl">Lặp &amp; tăng dần</td></tr>
+          <tr><td>Phản hồi khách hàng</td><td><span class="tag bad">Cuối dự án</span></td><td><span class="tag good">Liên tục</span></td></tr>
+          <tr><td>Thích ứng thay đổi</td><td><span class="tag bad">Khó</span></td><td><span class="tag good">Dễ dàng</span></td></tr>
+          <tr><td>Thời gian ra mắt</td><td class="hl">Dài</td><td class="hl">Ngắn</td></tr>
+          <tr><td>Quản lý rủi ro</td><td><span class="tag warn">Muộn</span></td><td><span class="tag good">Sớm</span></td></tr>
+          <tr><td>Tài liệu</td><td><span class="tag warn">Nặng</span></td><td><span class="tag good">Vừa đủ</span></td></tr>
+          <tr><td>Phù hợp với</td><td>Yêu cầu cố định</td><td class="hl">Yêu cầu thay đổi</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="foot"><span>Pulse</span><span class="num">07</span></div>
+</section>
+
+<!-- ===== SLIDE 9 — STATS + DONUT ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Kết quả khi áp dụng Agile</h2>
+    <p class="sub">Tác động thực tế lên tốc độ, chất lượng và sự hài lòng.</p>
+  </div>
+  <div class="stage">
+    <div class="results">
+      <div class="kpi3">
+        <div class="kbox reveal r1"><div class="kn">2,6×</div><div class="kl">Tốc độ bàn giao tính năng</div></div>
+        <div class="kbox reveal r2"><div class="kn">-35%</div><div class="kl">Thời gian từ ý tưởng đến ra mắt</div></div>
+        <div class="kbox reveal r3"><div class="kn">+44%</div><div class="kl">Mức độ hài lòng của khách hàng</div></div>
+        <div class="kbox reveal r4"><div class="kn">-28%</div><div class="kl">Tỷ lệ lỗi phát hiện sau phát hành</div></div>
+      </div>
+      <div class="donutrow reveal r2">
+        <svg viewBox="0 0 130 130" aria-label="Mức độ áp dụng Agile">
+          <circle cx="65" cy="65" r="50" fill="none" stroke="#d8e1ea" stroke-width="20"/>
+          <circle cx="65" cy="65" r="50" fill="none" stroke="var(--s1)" stroke-width="20" stroke-dasharray="182 314" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+          <circle cx="65" cy="65" r="50" fill="none" stroke="var(--s4)" stroke-width="20" stroke-dasharray="85 314" stroke-dashoffset="-182" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+          <text x="65" y="61" text-anchor="middle" fill="var(--ink)" font-size="21" font-weight="800">100%</text>
+          <text x="65" y="80" text-anchor="middle" fill="var(--body)" font-size="9">Mức áp dụng</text>
+        </svg>
+        <div class="dleg">
+          <div><span class="dt" style="background:var(--s1)"></span><b>58%</b> &nbsp;Đã áp dụng toàn diện</div>
+          <div><span class="dt" style="background:var(--s4)"></span><b>27%</b> &nbsp;Đang triển khai từng phần</div>
+          <div><span class="dt" style="background:#d8e1ea"></span><b>15%</b> &nbsp;Đang tìm hiểu</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Pulse</span><span class="num">08</span></div>
+</section>
+
+<!-- ===== SLIDE 10 — COMPARISON ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Tư duy cũ và tư duy Agile</h2>
+    <p class="sub">Chuyển đổi không chỉ ở quy trình mà ở cách tư duy của cả đội ngũ.</p>
+  </div>
+  <div class="stage">
+    <div class="cmp">
+      <div>
+        <span class="cmp-head old reveal r1">Tư duy cũ</span>
+        <div class="cmp-li old reveal r1"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Kế hoạch là bất biến</h4><p>Bám cứng kế hoạch dù bối cảnh đã đổi.</p></div></div>
+        <div class="cmp-li old reveal r2"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Giao một lần cuối</h4><p>Khách hàng chỉ thấy kết quả ở phút chót.</p></div></div>
+        <div class="cmp-li old reveal r3"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Sợ thất bại</h4><p>Tránh thử nghiệm vì ngại sai sót.</p></div></div>
+        <div class="cmp-li old reveal r4"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Làm việc tách biệt</h4><p>Các bộ phận hoạt động riêng lẻ.</p></div></div>
+      </div>
+      <div class="cmp-div reveal r1"></div>
+      <div>
+        <span class="cmp-head new reveal r1">Tư duy Agile</span>
+        <div class="cmp-li new reveal r1"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Linh hoạt theo bối cảnh</h4><p>Điều chỉnh kế hoạch theo thực tế.</p></div></div>
+        <div class="cmp-li new reveal r2"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Giao giá trị liên tục</h4><p>Ra mắt từng phần và lấy phản hồi sớm.</p></div></div>
+        <div class="cmp-li new reveal r3"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Học từ thử nghiệm</h4><p>Coi sai sót là cơ hội học hỏi.</p></div></div>
+        <div class="cmp-li new reveal r4"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Cộng tác đa chức năng</h4><p>Một đội ngũ cùng mục tiêu chung.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Pulse</span><span class="num">09</span></div>
+</section>
+
+<!-- ===== SLIDE 10 — WAVE ===== -->
+<section class="slide">
+  <div class="head"><h2 class="title">Đà trưởng thành Agile</h2><p class="sub">Hiệu suất đội nhóm cải thiện đều qua từng giai đoạn khi quy trình chín muồi.</p></div>
+  <div class="stage">
+    <div class="wavewrap reveal r1"><svg viewBox="0 0 1000 392" aria-hidden="true"><defs><linearGradient id="warea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--s1)" stop-opacity=".34"/><stop offset="1" stop-color="var(--s4)" stop-opacity=".02"/></linearGradient><linearGradient id="wline" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--s1)"/><stop offset=".5" stop-color="var(--s3)"/><stop offset="1" stop-color="var(--s5)"/></linearGradient></defs><line x1="60" y1="90" x2="960" y2="90" stroke="var(--line)" stroke-width="1"/><line x1="60" y1="160" x2="960" y2="160" stroke="var(--line)" stroke-width="1"/><line x1="60" y1="230" x2="960" y2="230" stroke="var(--line)" stroke-width="1"/><line x1="60" y1="300" x2="960" y2="300" stroke="var(--line)" stroke-width="1"/><line x1="60" y1="330" x2="960" y2="330" stroke="var(--line)" stroke-width="2"/><path d="M95,272 C197.5,272 197.5,224 300,224 C405.0,224 405.0,162 510,162 C615.0,162 615.0,110 720,110 C822.5,110 822.5,60 925,60 L925,330 L95,330 Z" fill="url(#warea)"/><path d="M95,272 C197.5,272 197.5,224 300,224 C405.0,224 405.0,162 510,162 C615.0,162 615.0,110 720,110 C822.5,110 822.5,60 925,60" fill="none" stroke="url(#wline)" stroke-width="4.5" stroke-linecap="round"/><circle cx="95" cy="272" r="8" fill="#fff" stroke="var(--s1)" stroke-width="3.5"/><circle cx="300" cy="224" r="8" fill="#fff" stroke="var(--s2)" stroke-width="3.5"/><circle cx="510" cy="162" r="8" fill="#fff" stroke="var(--s3)" stroke-width="3.5"/><circle cx="720" cy="110" r="8" fill="#fff" stroke="var(--s4)" stroke-width="3.5"/><circle cx="925" cy="60" r="8" fill="#fff" stroke="var(--s5)" stroke-width="3.5"/><text x="95" y="252" fill="var(--ink)" font-size="27" font-weight="800" text-anchor="middle">12%</text><text x="300" y="204" fill="var(--ink)" font-size="27" font-weight="800" text-anchor="middle">28%</text><text x="510" y="142" fill="var(--ink)" font-size="27" font-weight="800" text-anchor="middle">45%</text><text x="720" y="90" fill="var(--ink)" font-size="27" font-weight="800" text-anchor="middle">68%</text><text x="925" y="40" fill="var(--ink)" font-size="27" font-weight="800" text-anchor="middle">90%</text><text x="95" y="362" fill="var(--body)" font-size="18" font-weight="600" text-anchor="middle">Khởi động</text><text x="300" y="362" fill="var(--body)" font-size="18" font-weight="600" text-anchor="middle">Thử nghiệm</text><text x="510" y="362" fill="var(--body)" font-size="18" font-weight="600" text-anchor="middle">Mở rộng</text><text x="720" y="362" fill="var(--body)" font-size="18" font-weight="600" text-anchor="middle">Tăng tốc</text><text x="925" y="362" fill="var(--body)" font-size="18" font-weight="600" text-anchor="middle">Trưởng thành</text></svg></div>
+  </div>
+  <div class="foot"><span>Pulse</span><span class="num">10</span></div>
+</section>
+
+<!-- ===== SLIDE 11 — CLOSING ===== -->
+<section class="slide">
+  <div class="cover">
+    <span class="kick reveal">Cảm ơn</span>
+    <h1 class="reveal r1">Bắt đầu <em>sprint</em><br>đầu tiên</h1>
+    <p class="reveal r2">Agile bắt đầu từ một bước nhỏ. Hãy chọn một đội, một mục tiêu và bắt tay vào ngay hôm nay.</p>
+    <div class="cend reveal r3">
+      <span><b>Email</b>&nbsp;&nbsp;hello@pulse.vn</span>
+      <span><b>Website</b>&nbsp;&nbsp;www.pulse.vn</span>
+    </div>
+    <div class="sweep reveal r4"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+  <div class="foot"><span>Pulse</span><span class="num">11</span></div>
+</section>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.3});
+document.querySelectorAll('.slide').forEach(function(s){io.observe(s)});
+</script>
+<script>/*pv-preview-mode*/(function(){if(location.hash!=='#preview')return;
+var de=document.documentElement;
+var st=document.createElement('style');st.textContent='::-webkit-scrollbar{display:none}html{scrollbar-width:none!important}';document.head.appendChild(st);
+de.style.scrollSnapType='none';
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+var DWELL=1400;
+function ih(){return innerHeight;}
+function n(){return Math.max(1,Math.round(de.scrollHeight/ih()));}
+var i=0;
+function show(idx,smooth){de.style.scrollBehavior=(smooth&&!reduce)?'smooth':'auto';scrollTo(0,idx*ih());}
+function tick(){var c=n();var ni=(i+1)%c;show(ni,ni!==0);i=ni;}
+setTimeout(function(){setInterval(tick,DWELL);},DWELL);})();</script>
+</body>
+</html>

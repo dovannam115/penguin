@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>09 · Corporate Navy</title>
+<!--
+  ============================================================
+  IMAGE FRAMES — each image area is a .duo element.
+  Drop an <img> inside any .duo and it auto-applies the overlay:
+
+      <div class="duo">
+        <img src="your-photo.jpg" alt="">
+      </div>
+
+  — No <img> present → placeholder label shown.
+  — Add class .circle  → circular crop.
+  — Add class .r       → rounded rectangle crop.
+  — Adjust --tint (0–1) to control overlay strength.
+  — The visual editor can set --obj-pos and --obj-scale.
+  ============================================================
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a2540;          /* primary dark background */
+  --navy-mid:#0e3060;      /* mid-depth navy panel */
+  --navy-light:#163a72;    /* lighter navy accent panel */
+  --gold:#c8a04f;          /* primary accent — amber/gold */
+  --gold-dim:#a07e38;      /* darker gold for on-light use */
+  --cream:#f7f6f2;         /* light slide background */
+  --ink:#0a2540;           /* dark text on light slides */
+  --ink-soft:#3a4e65;      /* secondary text on light slides */
+  --rule:rgba(200,160,79,.35); /* hairline rule color */
+
+  --pad: clamp(2rem, 5.5vw, 5rem);
+  --display: clamp(2.4rem, 6.5vw, 5rem);
+  --h1: clamp(1.8rem, 4vw, 3.2rem);
+  --h2: clamp(1.3rem, 2.4vw, 2rem);
+  --stat: clamp(2.2rem, 5vw, 3.8rem);
+  --body: clamp(.95rem, 1.45vw, 1.15rem);
+  --small: clamp(.78rem, 1vw, .92rem);
+  --kicker: clamp(.64rem, .88vw, .78rem);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:"Be Vietnam Pro",system-ui,sans-serif;background:var(--navy);color:var(--cream);-webkit-font-smoothing:antialiased}
+
+/* ===== SLIDE BASE ===== */
+.slide{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start}
+.bg-navy{background:var(--navy)}
+.bg-mid{background:var(--navy-mid)}
+.bg-cream{background:var(--cream)}
+.on-dark{color:var(--cream)}
+.on-light{color:var(--ink)}
+.pad{padding:var(--pad)}
+.center{display:flex;flex-direction:column;justify-content:center;height:100%}
+
+/* ===== TYPOGRAPHY ===== */
+.web{position:absolute;top:var(--pad);right:var(--pad);font-size:var(--kicker);letter-spacing:.08em;z-index:5;font-family:"Be Vietnam Pro",sans-serif;font-weight:500}
+.on-dark .web{color:rgba(247,246,242,.5)}
+.on-light .web{color:var(--ink-soft)}
+
+.kicker{display:inline-block;font-family:"Be Vietnam Pro",sans-serif;font-weight:600;font-size:var(--kicker);letter-spacing:.2em;text-transform:uppercase;font-variant:small-caps;color:var(--gold);border-bottom:1px solid var(--gold);padding-bottom:.25em;margin-bottom:1.2em}
+
+.display{font-family:"Lora",Georgia,serif;font-weight:700;font-size:var(--display);line-height:1.04;letter-spacing:-.015em}
+.display.gold{color:var(--gold)}
+.display em{font-style:italic;color:var(--gold)}
+
+.h1{font-family:"Lora",Georgia,serif;font-weight:600;font-size:var(--h1);line-height:1.08;letter-spacing:-.01em}
+.on-light .h1{color:var(--navy)}
+.on-dark .h1{color:var(--cream)}
+
+.h2{font-family:"Lora",Georgia,serif;font-weight:600;font-size:var(--h2);line-height:1.12;letter-spacing:-.008em}
+.on-light .h2{color:var(--navy)}
+.on-dark .h2{color:var(--cream)}
+
+.lead{font-family:"Be Vietnam Pro",sans-serif;font-size:var(--body);line-height:1.65;font-weight:400;max-width:44ch}
+.on-dark .lead{color:rgba(247,246,242,.78)}
+.on-light .lead{color:var(--ink-soft)}
+
+.body{font-family:"Be Vietnam Pro",sans-serif;font-size:var(--small);line-height:1.7}
+.on-dark .body{color:rgba(247,246,242,.72)}
+.on-light .body{color:var(--ink-soft)}
+
+/* hairline rule */
+.rule{border:none;border-top:1px solid var(--rule);margin:1.4rem 0}
+
+/* footer */
+.footer{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(var(--pad)*.5);display:flex;justify-content:space-between;align-items:center;font-size:var(--kicker);font-family:"Be Vietnam Pro",sans-serif;letter-spacing:.06em;z-index:5}
+.on-dark .footer{color:rgba(247,246,242,.45)}
+.on-light .footer{color:rgba(10,37,64,.4)}
+.footer .num{font-weight:700;color:var(--gold);letter-spacing:.04em}
+
+/* ===== IMAGE FRAMES (VERBATIM from 05-green-overlay, tint-color adapted) ===== */
+/* --tint = overlay strength (0=full color, 1=B&W+full color block)
+   --tint-color = overlay hue  ·  --img-opacity = image alpha
+   --obj-pos = crop anchor     ·  --obj-scale = zoom */
+.duo{position:relative;overflow:hidden;background:linear-gradient(135deg,#163a72,#0a2540);
+  --tint:.82;--tint-color:#0a2540;--obj-pos:50% 50%;--obj-scale:1}
+.duo>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--obj-pos);
+  transform:scale(var(--obj-scale));transform-origin:center;filter:grayscale(var(--tint));opacity:var(--img-opacity,1);pointer-events:none;z-index:1}
+.duo>[data-tint]{position:absolute;inset:0;background:var(--tint-color);opacity:var(--tint);mix-blend-mode:multiply;pointer-events:none;z-index:2}
+.duo .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.5rem;
+  z-index:4;color:rgba(247,246,242,.45);font-size:var(--kicker);letter-spacing:.05em;pointer-events:none;text-align:center;font-family:"Be Vietnam Pro",sans-serif}
+.duo .ph svg{width:34px;height:34px;opacity:.6}
+.duo:has(img) .ph{display:none}
+.duo.circle{border-radius:50%}
+.duo.r{border-radius:16px}
+
+/* thin gold border variant */
+.duo.framed{box-shadow:0 0 0 1.5px var(--rule)}
+
+/* ===== LAYOUT GRIDS ===== */
+.split{display:grid;height:100%}
+.s5050{grid-template-columns:1fr 1fr}
+.s6040{grid-template-columns:1.5fr 1fr}
+.s4060{grid-template-columns:1fr 1.5fr}
+.s3070{grid-template-columns:1fr 2.1fr}
+.cell{position:relative}
+
+/* ===== AGENDA / CONTENTS LIST ===== */
+.agenda{list-style:none;margin-top:1.6rem;display:flex;flex-direction:column;gap:0}
+.agenda li{display:flex;align-items:baseline;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--rule);font-size:var(--body)}
+.agenda li:first-child{border-top:1px solid var(--rule)}
+.agenda .n{font-family:"Lora",Georgia,serif;font-weight:600;font-size:var(--h2);color:var(--gold);min-width:2.2rem;line-height:1}
+.agenda .label{font-family:"Be Vietnam Pro",sans-serif;font-weight:500}
+.on-dark .agenda .label{color:rgba(247,246,242,.85)}
+.on-light .agenda .label{color:var(--navy)}
+.agenda .sub{font-size:var(--kicker);margin-top:.18em;font-weight:400}
+.on-dark .agenda .sub{color:rgba(247,246,242,.45)}
+.on-light .agenda .sub{color:var(--ink-soft)}
+
+/* ===== CONTEXT PILLARS (slide 3) ===== */
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.8rem,1.8vw,1.4rem);margin-top:1.8rem}
+.pillar{border-top:2px solid var(--gold);padding-top:1.2rem}
+.pillar .big{font-family:"Lora",Georgia,serif;font-weight:700;font-size:clamp(2rem,4.5vw,3.2rem);line-height:1;color:var(--gold);letter-spacing:-.02em;margin-bottom:.6rem}
+.pillar h3{font-family:"Be Vietnam Pro",sans-serif;font-weight:600;font-size:clamp(.9rem,1.6vw,1.1rem);margin-bottom:.45rem}
+.on-dark .pillar h3{color:var(--cream)}
+.on-light .pillar h3{color:var(--navy)}
+.pillar p{font-size:var(--small);line-height:1.6}
+.on-dark .pillar p{color:rgba(247,246,242,.65)}
+.on-light .pillar p{color:var(--ink-soft)}
+
+/* ===== RECOMMENDATION STEPS (slide 4) ===== */
+.steps{display:flex;flex-direction:column;gap:1.1rem;margin-top:1.6rem}
+.step{display:flex;gap:1.2rem;align-items:flex-start;padding:1.1rem 1.3rem;border:1px solid var(--rule);border-radius:8px;background:rgba(200,160,79,.06)}
+.step .snum{font-family:"Lora",Georgia,serif;font-weight:700;font-size:clamp(1.5rem,3vw,2.2rem);color:var(--gold);line-height:1;min-width:2rem;flex-shrink:0}
+.step h3{font-family:"Be Vietnam Pro",sans-serif;font-weight:600;font-size:clamp(.88rem,1.55vw,1.05rem);margin-bottom:.3rem}
+.on-dark .step h3{color:var(--cream)}
+.on-light .step h3{color:var(--navy)}
+
+/* ===== METRICS / STAT BLOCKS (slide 5) ===== */
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.8rem,1.6vw,1.2rem);margin-top:1.8rem}
+.metric{padding:1.4rem 1.2rem;background:rgba(247,246,242,.04);border:1px solid var(--rule);border-radius:6px;text-align:center}
+.bg-cream .metric{background:rgba(10,37,64,.04);border-color:rgba(10,37,64,.12)}
+.metric .mval{font-family:"Lora",Georgia,serif;font-weight:700;font-size:var(--stat);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--gold)}
+.bg-cream .metric .mval{color:var(--gold-dim)}
+.metric .mlab{font-size:var(--kicker);letter-spacing:.08em;text-transform:uppercase;margin-top:.55rem;font-weight:500}
+.on-dark .metric .mlab{color:rgba(247,246,242,.6)}
+.on-light .metric .mlab{color:var(--ink-soft)}
+
+/* ===== CHART AREA (slide 5 donut) ===== */
+.chart-wrap{display:flex;align-items:center;gap:clamp(1.5rem,3vw,2.8rem);margin-top:1.6rem;flex-wrap:wrap}
+.chart-title{font-family:"Be Vietnam Pro",sans-serif;font-weight:600;font-size:var(--small);letter-spacing:.06em;text-transform:uppercase;margin-bottom:1rem}
+.on-dark .chart-title{color:rgba(247,246,242,.55)}
+.on-light .chart-title{color:var(--ink-soft)}
+.legend-list{display:flex;flex-direction:column;gap:.6rem;font-size:var(--small)}
+.legend-list .dot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:.55rem;vertical-align:middle;flex-shrink:0}
+.on-dark .legend-list{color:rgba(247,246,242,.75)}
+.on-light .legend-list{color:var(--ink-soft)}
+.legend-list b{font-weight:700}
+.on-dark .legend-list b{color:var(--cream)}
+.on-light .legend-list b{color:var(--navy)}
+
+/* ===== IMAGE-LED GRID (slide 6) ===== */
+.imgrid{display:grid;grid-template-columns:1.6fr 1fr;grid-template-rows:1fr 1fr;height:100%}
+.imgrid .duo.main{grid-row:1/-1}
+.caption{padding:1.4rem 1.6rem;background:var(--navy-mid);display:flex;flex-direction:column;justify-content:center;border-left:3px solid var(--gold)}
+.on-dark .caption h3{font-family:"Lora",Georgia,serif;font-weight:600;font-size:clamp(1rem,1.8vw,1.4rem);color:var(--cream);margin-bottom:.5rem}
+.on-dark .caption p{font-size:var(--small);color:rgba(247,246,242,.65);line-height:1.65}
+
+/* ===== CLOSING CONTACT (slide 7) ===== */
+.contact-block{margin-top:2rem;padding-top:1.4rem;border-top:1px solid var(--rule);font-size:var(--small);line-height:2.1}
+.on-dark .contact-block{color:rgba(247,246,242,.65)}
+.contact-block strong{font-family:"Be Vietnam Pro",sans-serif;font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:var(--kicker);color:var(--gold);display:block;margin-bottom:.4rem}
+
+/* ===== DECORATIVE GOLD BAR ===== */
+.goldbar{position:absolute;background:var(--gold);z-index:0}
+
+/* ===== REVEAL ANIMATION ===== */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+.slide.in .reveal{opacity:1;transform:none}
+.slide.in .r1{transition-delay:.06s}
+.slide.in .r2{transition-delay:.14s}
+.slide.in .r3{transition-delay:.22s}
+.slide.in .r4{transition-delay:.3s}
+.slide.in .r5{transition-delay:.38s}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:780px){
+  .split{grid-template-columns:1fr!important;grid-template-rows:auto 1fr}
+  .pillars,.metrics{grid-template-columns:1fr}
+  .imgrid{grid-template-columns:1fr;grid-template-rows:50% auto auto}
+  .imgrid .duo.main{grid-row:1}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *{transition-duration:.001ms!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 01 · COVER ===== -->
+<section class="slide bg-navy on-dark">
+  <!-- gold vertical accent bar -->
+  <div class="goldbar" style="top:0;left:0;width:5px;height:100%;opacity:.9;z-index:3"></div>
+  <!-- navy→gold gradient wash top-right -->
+  <div style="position:absolute;top:0;right:0;width:42%;height:100%;background:linear-gradient(135deg,transparent 30%,rgba(200,160,79,.06));z-index:0;pointer-events:none"></div>
+  <!-- image frame, right panel -->
+  <div class="duo" style="position:absolute;top:0;right:0;width:40%;height:100%;--tint-color:#0a2540">
+    <div class="ph">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+      Hình ảnh
+    </div>
+  </div>
+  <span class="web">www.acme.com</span>
+  <div style="position:absolute;left:calc(var(--pad) + 12px);right:44%;bottom:18vh;z-index:2">
+    <span class="kicker reveal r1">Acme Advisory</span>
+    <h1 class="display gold reveal r2">Đánh Giá<br>Hiệu Quả<br><em>Hoạt Động</em></h1>
+    <hr class="rule reveal r3" style="max-width:6rem;border-top-color:var(--gold);opacity:.7;margin-left:0">
+    <p class="lead reveal r3" style="margin-top:0">Chẩn đoán chiến lược và lộ trình cải thiện hoạt động cho Acme Corp.</p>
+    <p class="body reveal r4" style="margin-top:1.2rem;color:rgba(247,246,242,.5)">Trình bày bởi James Lee, Chuyên gia tư vấn &nbsp;·&nbsp; 22 tháng 5 năm 2026 &nbsp;·&nbsp; Bảo mật</p>
+  </div>
+  <div class="footer"><span>Acme Advisory</span><span class="num">01</span></div>
+</section>
+
+<!-- ===== 02 · AGENDA ===== -->
+<section class="slide bg-cream on-light">
+  <div class="split s4060" style="height:100%">
+    <!-- left: dark panel with image -->
+    <div class="cell bg-navy" style="display:flex;flex-direction:column;justify-content:flex-end;padding:var(--pad)">
+      <div class="duo r reveal r1" style="position:absolute;top:0;left:0;right:0;bottom:0;border-radius:0;--tint:.88;--tint-color:#0a2540">
+        <div class="ph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          Hình ảnh
+        </div>
+      </div>
+      <div style="position:relative;z-index:5">
+        <p class="body" style="color:rgba(247,246,242,.7);max-width:28ch;line-height:1.7">Bản trình bày này tổng hợp kết quả chẩn đoán, phương pháp tiếp cận và hướng đi được đề xuất.</p>
+      </div>
+    </div>
+    <!-- right: agenda list -->
+    <div class="cell center pad">
+      <span class="web">www.acme.com</span>
+      <span class="kicker reveal r1">Chương trình</span>
+      <h2 class="h1 reveal r2">Nội dung</h2>
+      <ol class="agenda">
+        <li class="reveal r2">
+          <span class="n">01</span>
+          <div><div class="label">Bối cảnh &amp; Hiện trạng</div><div class="sub">Diễn biến thị trường và đánh giá trạng thái hiện tại</div></div>
+        </li>
+        <li class="reveal r3">
+          <span class="n">02</span>
+          <div><div class="label">Phương pháp tiếp cận</div><div class="sub">Phương pháp luận triển khai theo ba giai đoạn</div></div>
+        </li>
+        <li class="reveal r3">
+          <span class="n">03</span>
+          <div><div class="label">Phát hiện chính</div><div class="sub">Dữ liệu hiệu suất và nhận định chẩn đoán</div></div>
+        </li>
+        <li class="reveal r4">
+          <span class="n">04</span>
+          <div><div class="label">Khuyến nghị</div><div class="sub">Hành động ưu tiên và tác động kỳ vọng</div></div>
+        </li>
+        <li class="reveal r5">
+          <span class="n">05</span>
+          <div><div class="label">Lộ trình &amp; Bước tiếp theo</div><div class="sub">Thứ tự triển khai, người phụ trách và mốc thời gian</div></div>
+        </li>
+      </ol>
+    </div>
+  </div>
+  <div class="footer on-light"><span>Acme Advisory</span><span class="num">02</span></div>
+</section>
+
+<!-- ===== 03 · SITUATION / CONTEXT ===== -->
+<section class="slide bg-cream on-light pad center">
+  <span class="web">www.acme.com</span>
+  <div style="max-width:1100px;margin:0 auto;width:100%">
+    <span class="kicker reveal r1">Bối cảnh &amp; Hiện trạng</span>
+    <div class="split s5050" style="height:auto;align-items:end;gap:2rem;margin-bottom:.4rem">
+      <h2 class="h1 reveal r2">Ba lực lượng đang<br>định hình lại thị trường.</h2>
+      <p class="lead reveal r2" style="padding-bottom:.35rem">Acme Corp đang hoạt động trong một thị trường chịu áp lực đồng thời từ chi phí leo thang, làn sóng số hóa tăng tốc và một phân khúc khách hàng lớn chưa được phục vụ đúng mức. Nếu không có can thiệp kịp thời, biên lợi nhuận sẽ tiếp tục suy giảm.</p>
+    </div>
+    <hr class="rule reveal r3" style="border-top-color:var(--rule)">
+    <div class="pillars">
+      <div class="pillar reveal r3">
+        <div class="big">42%</div>
+        <h3>Lạm phát chi phí</h3>
+        <p>Chi phí đầu vào đã tăng 42% trong 24 tháng, trong khi năng lực định giá bị giới hạn bởi cạnh tranh ngày càng gay gắt ở phân khúc trung cấp.</p>
+      </div>
+      <div class="pillar reveal r4">
+        <div class="big">3×</div>
+        <h3>Chuyển đổi số</h3>
+        <p>Các đối thủ thuần số đang thu hút khách hàng nhanh gấp 3 lần so với doanh nghiệp truyền thống, nhờ vào hiệu quả kinh tế vượt trội và trải nghiệm người dùng được tối ưu hóa.</p>
+      </div>
+      <div class="pillar reveal r5">
+        <div class="big">18M</div>
+        <h3>Khoảng trống thị trường</h3>
+        <p>Một phân khúc 18 triệu khách hàng vẫn chưa được các sản phẩm hiện hành phục vụ đầy đủ, là vùng trắng mà không đối thủ nào đang ở vị thế khai thác được.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer on-light"><span>Acme Advisory</span><span class="num">03</span></div>
+</section>
+
+<!-- ===== 04 · OUR APPROACH ===== -->
+<section class="slide bg-navy on-dark">
+  <div class="split s6040" style="height:100%">
+    <!-- left: workstream steps -->
+    <div class="cell center pad">
+      <span class="web">www.acme.com</span>
+      <span class="kicker reveal r1">Phương pháp tiếp cận</span>
+      <h2 class="h1 reveal r2" style="margin-bottom:0">Ba luồng công việc.<br>Tác động trong 90 ngày.</h2>
+      <hr class="rule reveal r3" style="border-top-color:var(--rule)">
+      <div class="steps">
+        <div class="step reveal r3">
+          <div class="snum">01</div>
+          <div>
+            <h3>Chẩn đoán &amp; Thiết lập nền tảng — Tuần 1–4</h3>
+            <p class="body">Xây dựng nền tảng hiệu suất toàn diện về chi phí, doanh thu và hiệu quả vận hành. Xác định các điểm can thiệp có tác động đòn bẩy cao nhất.</p>
+          </div>
+        </div>
+        <div class="step reveal r4">
+          <div class="snum">02</div>
+          <div>
+            <h3>Thiết kế &amp; Thí điểm — Tuần 5–10</h3>
+            <p class="body">Cùng lãnh đạo khách hàng thiết kế mô hình vận hành mục tiêu. Triển khai thí điểm có kiểm soát tại hai khu vực để kiểm chứng giả định trước khi nhân rộng.</p>
+          </div>
+        </div>
+        <div class="step reveal r5">
+          <div class="snum">03</div>
+          <div>
+            <h3>Nhân rộng &amp; Thể chế hóa — Tuần 11–16</h3>
+            <p class="body">Triển khai hệ thống toàn diện kết hợp xây dựng năng lực nội bộ, đảm bảo kết quả cải thiện thuộc về tổ chức khách hàng, không phụ thuộc vào hỗ trợ bên ngoài.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- right: image frame with supporting note -->
+    <div class="cell" style="display:flex;flex-direction:column">
+      <div class="duo" style="flex:1;--tint:.78;--tint-color:#0e3060">
+        <div class="ph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          Hình ảnh
+        </div>
+      </div>
+      <div style="background:var(--navy-mid);padding:1.6rem var(--pad);border-top:3px solid var(--gold)">
+        <p class="body reveal r4" style="color:rgba(247,246,242,.75);font-style:italic;max-width:32ch">"Mỗi luồng công việc có đầu ra xác định, cửa quyết định rõ ràng và người bảo trợ điều hành chịu trách nhiệm cụ thể."</p>
+        <p class="body reveal r5" style="color:var(--gold);margin-top:.6rem;font-weight:600">Nguyên tắc quản trị dự án</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme Advisory</span><span class="num">04</span></div>
+</section>
+
+<!-- ===== 05 · KEY FINDINGS ===== -->
+<section class="slide bg-cream on-light pad center">
+  <span class="web">www.acme.com</span>
+  <div style="max-width:1100px;margin:0 auto;width:100%">
+    <span class="kicker reveal r1">Phát hiện chính</span>
+    <div class="split s5050" style="height:auto;align-items:end;gap:2rem">
+      <h2 class="h1 reveal r2">Hiệu quả chi phí là<br>đòn bẩy lớn nhất.</h2>
+      <p class="lead reveal r2" style="padding-bottom:.3rem">Dữ liệu chẩn đoán từ bốn bộ phận xác nhận rằng 70% tiết kiệm chi phí tiềm năng tập trung ở mảng mua sắm và lập lịch nhân lực, hai lĩnh vực có giải pháp rõ ràng và khả thi ngay.</p>
+    </div>
+    <hr class="rule reveal r3" style="border-top-color:rgba(10,37,64,.15)">
+    <div class="metrics">
+      <div class="metric reveal r3"><div class="mval">$4.2M</div><div class="mlab">Tiết kiệm chi phí xác định</div></div>
+      <div class="metric reveal r4"><div class="mval">+18%</div><div class="mlab">Tiềm năng tăng doanh thu</div></div>
+      <div class="metric reveal r5"><div class="mval">11 tháng</div><div class="mlab">Thời gian hoàn vốn</div></div>
+    </div>
+    <!-- Takeaway caption above charts -->
+    <p class="reveal r4" style="margin-top:1.4rem;font-size:var(--small);font-weight:600;color:var(--gold-dim);letter-spacing:.03em">Kết luận: Kinh doanh cốt lõi vẫn có lãi; cơ cấu tăng trưởng và liên doanh mới cần tái cân bằng về phân khúc biên lợi nhuận cao hơn vào năm 2026.</p>
+    <!-- Chart: donut + bar comparison -->
+    <div class="chart-wrap reveal r4" style="margin-top:.8rem">
+      <!-- Donut: portfolio mix -->
+      <div>
+        <div class="chart-title">Cơ cấu danh mục — Hiện trạng</div>
+        <svg viewBox="0 0 140 140" width="130" height="130" role="img" aria-label="Portfolio mix donut chart" style="display:block">
+          <!-- background track -->
+          <circle cx="70" cy="70" r="52" fill="none" stroke="rgba(10,37,64,.08)" stroke-width="22"/>
+          <!-- segment 1: Core (55%) — gold — 55% of 327 circumference ~= 179.9 -->
+          <circle cx="70" cy="70" r="52" fill="none" stroke="#c8a04f" stroke-width="22"
+            stroke-dasharray="180 327" transform="rotate(-90 70 70)" stroke-linecap="butt"/>
+          <!-- segment 2: Growth (30%) ~= 98.1 -->
+          <circle cx="70" cy="70" r="52" fill="none" stroke="#0a2540" stroke-width="22"
+            stroke-dasharray="98 327" stroke-dashoffset="-180" transform="rotate(-90 70 70)" stroke-linecap="butt"/>
+          <!-- segment 3: Other (15%) ~= 49 -->
+          <circle cx="70" cy="70" r="52" fill="none" stroke="#163a72" stroke-width="22"
+            stroke-dasharray="49 327" stroke-dashoffset="-278" transform="rotate(-90 70 70)" stroke-linecap="butt"/>
+          <!-- center label -->
+          <text x="70" y="65" text-anchor="middle" font-family="Lora,serif" font-size="17" font-weight="700" fill="#0a2540">55%</text>
+          <text x="70" y="82" text-anchor="middle" font-family="Be Vietnam Pro,sans-serif" font-size="8.5" fill="#3a4e65" letter-spacing="1">CỐT LÕI</text>
+        </svg>
+      </div>
+      <!-- Legend -->
+      <div class="legend-list">
+        <div><span class="dot" style="background:#c8a04f"></span><b>55%</b>&nbsp; Kinh doanh cốt lõi</div>
+        <div><span class="dot" style="background:#0a2540"></span><b>30%</b>&nbsp; Sáng kiến tăng trưởng</div>
+        <div><span class="dot" style="background:#163a72"></span><b>15%</b>&nbsp; Liên doanh mới</div>
+      </div>
+      <!-- Inline bar chart: YoY revenue -->
+      <div style="flex:1;min-width:180px">
+        <div class="chart-title">Quỹ đạo doanh thu (triệu USD)</div>
+        <svg viewBox="0 0 260 100" width="100%" style="display:block;max-width:320px" role="img" aria-label="Revenue bar chart">
+          <!-- grid lines -->
+          <line x1="0" y1="0" x2="260" y2="0" stroke="rgba(10,37,64,.1)" stroke-width="1"/>
+          <line x1="0" y1="33" x2="260" y2="33" stroke="rgba(10,37,64,.08)" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="0" y1="66" x2="260" y2="66" stroke="rgba(10,37,64,.08)" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="0" y1="99" x2="260" y2="99" stroke="rgba(10,37,64,.1)" stroke-width="1"/>
+          <!-- bars: Y0=58, Y1=68, Y2=81, Y3=96 (max 100) -->
+          <rect x="14"  y="42" width="40" height="57" fill="#163a72" rx="3"/>
+          <rect x="74"  y="32" width="40" height="67" fill="#0a2540" rx="3"/>
+          <rect x="134" y="19" width="40" height="80" fill="#0a2540" rx="3"/>
+          <rect x="194" y="4"  width="40" height="95" fill="#c8a04f" rx="3"/>
+          <!-- bar labels -->
+          <text x="34"  y="38" text-anchor="middle" font-family="Be Vietnam Pro,sans-serif" font-size="9" fill="#3a4e65">$58M</text>
+          <text x="94"  y="28" text-anchor="middle" font-family="Be Vietnam Pro,sans-serif" font-size="9" fill="#3a4e65">$68M</text>
+          <text x="154" y="15" text-anchor="middle" font-family="Be Vietnam Pro,sans-serif" font-size="9" fill="#3a4e65">$81M</text>
+          <text x="214" y="0"  text-anchor="middle" font-family="Lora,serif" font-size="9.5" font-weight="700" fill="#c8a04f">$96M</text>
+          <!-- x-axis labels -->
+          <text x="34"  y="111" text-anchor="middle" font-family="Be Vietnam Pro,sans-serif" font-size="8.5" fill="#3a4e65">2023</text>
+          <text x="94"  y="111" text-anchor="middle" font-family="Be Vietnam Pro,sans-serif" font-size="8.5" fill="#3a4e65">2024</text>
+          <text x="154" y="111" text-anchor="middle" font-family="Be Vietnam Pro,sans-serif" font-size="8.5" fill="#3a4e65">2025</text>
+          <text x="214" y="111" text-anchor="middle" font-family="Be Vietnam Pro,sans-serif" font-size="8.5" font-weight="600" fill="#c8a04f">2026E</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="footer on-light"><span>Acme Advisory</span><span class="num">05</span></div>
+</section>
+
+<!-- ===== 06 · RECOMMENDATIONS ===== -->
+<section class="slide bg-navy on-dark">
+  <div class="split s6040" style="height:100%">
+    <!-- left: numbered recommendations -->
+    <div class="cell center pad">
+      <span class="web">www.acme.com</span>
+      <span class="kicker reveal r1">Khuyến nghị</span>
+      <h2 class="h1 reveal r2" style="margin-bottom:0">Ba hành động.<br>Trách nhiệm rõ ràng.<br>Kết quả đo lường được.</h2>
+      <hr class="rule reveal r3" style="border-top-color:var(--rule)">
+      <div class="steps">
+        <div class="step reveal r3">
+          <div class="snum">01</div>
+          <div>
+            <h3>Hợp nhất mua sắm — Tiết kiệm $2.1M trong năm đầu</h3>
+            <p class="body">Tập trung hóa hợp đồng nhà cung cấp trên cả bốn bộ phận. Bộ phận mua sắm thống nhất sẽ loại bỏ chi tiêu trùng lặp và nâng cao ngay sức mạnh đàm phán.</p>
+          </div>
+        </div>
+        <div class="step reveal r4">
+          <div class="snum">02</div>
+          <div>
+            <h3>Ra mắt kênh tự phục vụ kỹ thuật số — Nhắm đến phân khúc 18M</h3>
+            <p class="body">Triển khai kênh kỹ thuật số gọn nhẹ để tiếp cận tệp khách hàng trung cấp chưa được phục vụ, trước khi các đối thủ thuần số đạt quy mô tới hạn.</p>
+          </div>
+        </div>
+        <div class="step reveal r5">
+          <div class="snum">03</div>
+          <div>
+            <h3>Tái cơ cấu danh mục tăng trưởng — Cải thiện EBITDA 4 điểm</h3>
+            <p class="body">Thoái vốn khỏi hai mảng liên doanh kém hiệu quả. Tái phân bổ vốn vào phân khúc cốt lõi và tăng trưởng, nơi lợi nhuận vượt rõ ràng chi phí vốn.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- right: image-led duo frame -->
+    <div class="cell" style="display:flex;flex-direction:column">
+      <div class="duo" style="flex:1;--tint:.75;--tint-color:#0a2540">
+        <div class="ph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          Hình ảnh
+        </div>
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:1.8rem 2rem;background:linear-gradient(transparent,rgba(10,37,64,.92));z-index:5">
+          <span class="kicker reveal r3" style="color:var(--gold);border-bottom-color:var(--gold)">Nghiên cứu thực địa</span>
+          <h2 class="h2 reveal r4" style="margin-top:.6rem;color:var(--cream)">Nhận định thực tế<br>làm nền tảng cho mọi khuyến nghị.</h2>
+        </div>
+      </div>
+      <div style="background:var(--navy-mid);padding:1.2rem var(--pad);border-top:3px solid var(--gold)">
+        <p class="body reveal r5" style="color:rgba(247,246,242,.65)">Phỏng vấn các bên liên quan tại 6 địa điểm, 4 quốc gia, 38 người tham gia.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme Advisory</span><span class="num">06</span></div>
+</section>
+
+<!-- ===== 07 · CLOSING / THANK YOU ===== -->
+<section class="slide bg-navy on-dark">
+  <!-- decorative gold bar bottom -->
+  <div class="goldbar" style="bottom:0;left:0;right:0;height:4px;opacity:.8;z-index:3"></div>
+  <!-- subtle right wash -->
+  <div style="position:absolute;top:0;right:0;width:38%;height:100%;background:linear-gradient(135deg,transparent,rgba(200,160,79,.05));pointer-events:none;z-index:0"></div>
+  <!-- image frame right -->
+  <div class="duo" style="position:absolute;top:0;right:0;width:36%;height:100%;--tint:.84;--tint-color:#0a2540">
+    <div class="ph">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+      Hình ảnh
+    </div>
+  </div>
+  <span class="web">www.acme.com</span>
+  <div class="center pad" style="position:relative;z-index:2;max-width:58%">
+    <span class="kicker reveal r1">Cảm ơn</span>
+    <h1 class="display reveal r2">Câu hỏi &amp;<br><em>Thảo luận</em></h1>
+    <p class="lead reveal r3" style="margin-top:1.2rem;max-width:40ch">Chúng tôi trân trọng mọi câu hỏi và mong được thống nhất các bước tiếp theo. Tài liệu phụ lục bổ sung có thể cung cấp theo yêu cầu.</p>
+    <div class="contact-block reveal r4">
+      <strong>Liên hệ</strong>
+      <div>James Lee, Chuyên gia tư vấn &nbsp;&middot;&nbsp; james.lee@acme.com</div>
+      <div>+1 (212) 555 0192 &nbsp;&middot;&nbsp; www.acme.com</div>
+      <div style="margin-top:.4rem;font-size:var(--kicker);color:rgba(247,246,242,.4);letter-spacing:.05em">Tài liệu này được bảo mật và chỉ dành riêng cho người nhận được chỉ định.</div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme Advisory</span><span class="num">07</span></div>
+</section>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.3});
+document.querySelectorAll('.slide').forEach(function(s){io.observe(s)});
+var sl=[].slice.call(document.querySelectorAll('.slide'));
+addEventListener('keydown',function(e){var i=sl.findIndex(function(s){return Math.abs(s.getBoundingClientRect().top)<innerHeight/2});
+if(['ArrowDown','ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();if(sl[i+1])sl[i+1].scrollIntoView()}
+if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();if(sl[i-1])sl[i-1].scrollIntoView()}});
+</script>
+<script>/*pv-preview-mode*/(function(){if(location.hash!=='#preview')return;
+var de=document.documentElement;
+var st=document.createElement('style');st.textContent='::-webkit-scrollbar{display:none}html{scrollbar-width:none!important}';document.head.appendChild(st);
+de.style.scrollSnapType='none';
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+var DWELL=1400;
+function ih(){return innerHeight;}
+function n(){return Math.max(1,Math.round(de.scrollHeight/ih()));}
+var i=0;
+function show(idx,smooth){de.style.scrollBehavior=(smooth&&!reduce)?'smooth':'auto';scrollTo(0,idx*ih());}
+function tick(){var c=n();var ni=(i+1)%c;show(ni,ni!==0);i=ni;}
+setTimeout(function(){setInterval(tick,DWELL);},DWELL);})();</script>
+</body>
+</html>

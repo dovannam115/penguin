@@ -1,0 +1,890 @@
+@import "tailwindcss";
+
+/* Make Tailwind's `dark:` variant fire when <html class="dark"> is present,
+   instead of the default `@media (prefers-color-scheme: dark)`. This lets the
+   in-app toggle drive every `dark:` class in components. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Same Changa One bundled in /public/fonts as the splash launcher uses, so
+   the brand wordmark in the app matches the splash exactly. */
+@font-face {
+  font-family: "Changa One";
+  src: url("/fonts/ChangaOne-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme inline {
+  /* Warm, near-neutral dark palette inspired by claude.ai — slightly olive
+     so the screen feels less clinical than cool blue-slate. */
+  --color-bg:        #262624;
+  --color-bg-elev:   #2F2D29;
+  --color-bg-card:   #34322D;
+  --color-bg-hover:  #3D3B36;
+  --color-border:    #46443F;
+  --color-border-strong: #4D4A45;
+
+  --color-fg:        #F5F4ED;
+  --color-fg-muted:  #A19D93;
+  --color-fg-dim:    #777267;
+
+  --color-amber:     #fbbf24;
+  --color-amber-soft:#fcd34d;
+  --color-teal:      #14b8a6;
+  --color-teal-soft: #5eead4;
+
+  --color-ember:      #c96442;
+  --color-ember-soft: #d97757;
+
+  --color-good:      #34d399;
+  --color-warn:      #f59e0b;
+  --color-bad:       #f87171;
+
+  --font-sans:  var(--font-sans);
+  --font-mono:  ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+}
+
+/* Warm dark (~claude.ai) and warm cream light (softer than pure white). */
+html.dark, html.dark body { background: #262624; color: #F5F4ED; }
+html.light, html.light body { background: #FAFAF7; color: #2E2D2A; }
+
+/* DARK theme: Tailwind's slate-* defaults are cool blue-grays — on our warm
+   #262624 bg they read as washed out. Bump them to warm bright tones so body
+   copy + headings sit clearly on top, matching the contrast you get on
+   claude.ai's chat surface. The :where wrapper keeps specificity low so a
+   one-off `text-amber-300` etc still wins. */
+html.dark :where(.text-slate-100) { color: #F5F4ED; }
+html.dark :where(.text-slate-200) { color: #E5E2D8; }
+html.dark :where(.text-slate-300) { color: #D2CEC3; }
+html.dark :where(.text-slate-400) { color: #A19D93; }
+html.dark :where(.text-slate-500) { color: #8B877C; }
+html.dark :where(.text-slate-600) { color: #777267; }
+/* Render native controls (select dropdowns, scrollbars, inputs) so <option>
+   popups aren't white-on-white in dark mode (and vice versa). */
+html.dark  { color-scheme: dark; }
+html.light { color-scheme: light; }
+body {
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI",
+    system-ui, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.006em;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+input, textarea, [contenteditable="true"], .selectable {
+  -webkit-user-select: text;
+  user-select: text;
+}
+img { -webkit-user-drag: none; user-drag: none; }
+
+/* ============================================================
+   VARIABLE FONT: "Agent P" brand text
+   Multiplexing weight + letter-spacing + color in one fluid motion.
+   ============================================================ */
+.brand-text {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition:
+    font-weight 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    letter-spacing 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 350ms ease-out,
+    text-shadow 500ms ease-out;
+  text-shadow: 0 0 0 transparent;
+}
+.group\/brand:hover .brand-text {
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #e0f2fe;
+  text-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+}
+
+::selection {
+  background: rgba(217, 119, 87, 0.30);
+}
+
+:focus-visible {
+  outline: 2px solid rgba(217, 119, 87, 0.45);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+/* Text inputs already signal focus via their own border/bg changes — the
+   global ember outline reads as harsh around chat composers. !important
+   beats both the global :focus-visible above and any Tailwind utility. */
+input, textarea, select,
+input:focus, textarea:focus, select:focus,
+input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
+}
+
+button { transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out, opacity 180ms ease-out; }
+button:not(:disabled):active { transform: scale(0.97); }
+
+input, textarea, select {
+  transition: border-color 200ms ease-out, background-color 200ms ease-out, box-shadow 200ms ease-out;
+}
+
+/* ============================================================
+   MOTION PRIMITIVES
+   ============================================================ */
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in     { animation: fade-in 200ms ease-out both; }
+.animate-scale-in    { animation: scale-in 250ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-slide-right { animation: slide-in-right 250ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-slide-left  { animation: slide-in-left 200ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-slide-up    { animation: slide-up 200ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-pop-in      { animation: pop-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@keyframes ping-glow {
+  0%, 100% { box-shadow: 0 0 28px -6px rgba(217, 119, 87, 0.45); }
+  50%      { box-shadow: 0 0 36px -2px rgba(217, 119, 87, 0.70); }
+}
+.animate-ping-glow { animation: ping-glow 2.4s ease-in-out infinite; }
+
+@keyframes row-pulse {
+  0%   { background-color: rgba(52, 211, 153, 0.18); }
+  100% { background-color: transparent; }
+}
+.animate-row-pulse > td { animation: row-pulse 900ms ease-out 1; }
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.14); }
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes typing-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-2px); opacity: 1; }
+}
+.typing-dot { animation: typing-dot 1.2s infinite; display: inline-block; }
+.typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes drawer-in {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.animate-in-drawer { animation: drawer-in 280ms cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* ============================================================
+   TASK HISTORY (sidebar)
+   ============================================================ */
+.task-history {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 8px 12px;
+}
+.task-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 200ms ease-out, border-color 200ms ease-out, transform 200ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 200ms ease-out;
+}
+.task-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateX(2px);
+}
+.task-row:active {
+  transform: scale(0.98);
+}
+.task-row-active {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+.task-row-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
+}
+.task-row-active .task-row-icon {
+  background: rgba(255, 255, 255, 0.08);
+  color: #E2DFD6;
+}
+.task-row-body {
+  min-width: 0;
+  flex: 1;
+}
+.task-row-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #E2DFD6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.task-row-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  font-size: 10px;
+  color: #8B877C;
+}
+.task-row-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  font-size: 9px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.20);
+}
+
+/* ============================================================
+   TASK FILES
+   ============================================================ */
+.task-files {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 12px;
+  gap: 12px;
+}
+.task-files-dragover {
+  outline: 2px dashed rgba(201, 100, 66, 0.6);
+  outline-offset: -8px;
+  background: rgba(201, 100, 66, 0.04);
+}
+.task-files-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.task-files-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  border-radius: 10px;
+  border: 1px dashed rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.02);
+  text-align: center;
+}
+.task-files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  overflow-y: auto;
+}
+.task-file-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color 200ms ease-out, border-color 200ms ease-out, transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.task-file-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+.task-file-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border: 1px solid transparent;
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+  margin-bottom: 2px;
+  user-select: none;
+}
+.task-file-head-icon { width: 14px; flex-shrink: 0; }
+.task-file-head-btn {
+  background: transparent;
+  border: 0;
+  padding: 2px 0;
+  cursor: pointer;
+  font: inherit;
+}
+.task-file-col-date { width: 80px; flex-shrink: 0; }
+.task-file-col-size { width: 50px; flex-shrink: 0; }
+.task-file-col-actions { width: 92px; flex-shrink: 0; }
+.task-files-tools {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(20, 184, 166, 0.04);
+  border: 1px solid rgba(20, 184, 166, 0.12);
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+/* Excel preview (SheetJS-generated HTML table). Force a readable look on top
+   of the white container — SheetJS emits a bare <table>. */
+.excel-preview-pane table {
+  border-collapse: collapse;
+  font-size: 12px;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  min-width: 100%;
+}
+.excel-preview-pane th,
+.excel-preview-pane td {
+  border: 1px solid #d1d5db;
+  padding: 4px 8px;
+  white-space: nowrap;
+  vertical-align: top;
+}
+.excel-preview-pane tr:first-child td,
+.excel-preview-pane th {
+  background: #f3f4f6;
+  font-weight: 600;
+}
+
+/* ============================================================
+   TASK DASHBOARD
+   ============================================================ */
+.task-dashboard {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #262624;
+}
+.task-dashboard-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+}
+.task-dashboard-frame {
+  flex: 1;
+  border: 0;
+  background: #262624;
+  width: 100%;
+}
+
+/* ============================================================
+   CHAT ROW VIRTUALIZATION (cheap, CSS-only)
+   ------------------------------------------------------------
+   content-visibility:auto lets the browser skip layout + paint
+   for message rows scrolled out of view, so a long conversation
+   stays smooth to scroll back through. contain-intrinsic-size
+   reserves an estimated height for off-screen rows (the `auto`
+   keyword remembers the last rendered size) so the scrollbar
+   doesn't jump much.
+   ============================================================ */
+.cv-row {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 72px;
+}
+
+/* ============================================================
+   MARKDOWN BODY (chat messages rendered via marked)
+   ============================================================ */
+.md-body {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: inherit;
+  word-break: break-word;
+}
+.md-body > *:first-child { margin-top: 0; }
+.md-body > *:last-child { margin-bottom: 0; }
+.md-body p { margin: 0 0 8px; }
+.md-body p:last-child { margin-bottom: 0; }
+.md-body strong { font-weight: 600; color: #EFEEE8; }
+.md-body em { font-style: italic; }
+.md-body code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: #fcd34d;
+}
+.md-body pre {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  margin: 8px 0;
+}
+.md-body pre code {
+  background: transparent;
+  padding: 0;
+  color: #E2DFD6;
+  font-size: 12.5px;
+}
+.md-body ul, .md-body ol {
+  margin: 6px 0 8px 0;
+  padding-left: 22px;
+}
+.md-body ul { list-style: disc; }
+.md-body ol { list-style: decimal; }
+.md-body li { margin: 2px 0; }
+.md-body h1, .md-body h2, .md-body h3, .md-body h4 {
+  font-weight: 600;
+  margin: 12px 0 6px;
+  color: #EFEEE8;
+  line-height: 1.3;
+}
+.md-body h1 { font-size: 1.25em; }
+.md-body h2 { font-size: 1.15em; }
+.md-body h3 { font-size: 1.05em; }
+.md-body a {
+  color: #60a5fa;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.md-body a:hover { color: #93c5fd; }
+.md-body blockquote {
+  border-left: 3px solid rgba(255, 255, 255, 0.15);
+  padding-left: 12px;
+  margin: 8px 0;
+  color: #94a3b8;
+}
+.md-body table {
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 0.95em;
+}
+.md-body th, .md-body td {
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  padding: 4px 8px;
+  text-align: left;
+}
+.md-body th { background: rgba(255, 255, 255, 0.04); font-weight: 600; }
+.md-body hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 12px 0;
+}
+
+/* File editor (CodeMirror) — fill modal pane */
+.file-editor-cm {
+  height: 100%;
+}
+.file-editor-cm .cm-editor {
+  height: 100%;
+  font-size: 13px;
+}
+.file-editor-cm .cm-scroller {
+  font-family: "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+/* ============================================================
+   STREAMING CODE TAIL (chat) — editor look + syntax colours.
+   GitHub-ish palette so it reads like real code in BOTH themes:
+   dark bg + bright tokens (dark mode), light bg + dark tokens (light).
+   Previously bg-black/40 + text-slate-400 → in light mode the text
+   flipped dark while the bg stayed dark = invisible.
+   ============================================================ */
+.code-tail { background: #1A1916; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06); }
+.code-tail pre { color: #c9d1d9; }
+.code-tail .tok-tag     { color: #7ee787; }
+.code-tail .tok-attr    { color: #79c0ff; }
+.code-tail .tok-str     { color: #a5d6ff; }
+.code-tail .tok-comment { color: #8b949e; font-style: italic; }
+.code-tail .tok-punct   { color: #8b949e; }
+.code-tail .tok-kw      { color: #ff7b72; }
+.code-tail .tok-num     { color: #f2cc60; }
+
+html.light .code-tail { background: #f6f8fa !important; box-shadow: inset 0 0 0 1px rgba(61,61,58,0.10) !important; }
+html.light .code-tail pre { color: #1f2328 !important; }
+html.light .code-tail .tok-tag     { color: #116329 !important; }
+html.light .code-tail .tok-attr    { color: #0550ae !important; }
+html.light .code-tail .tok-str     { color: #0a3069 !important; }
+html.light .code-tail .tok-comment { color: #6e7781 !important; }
+html.light .code-tail .tok-punct   { color: #57606a !important; }
+html.light .code-tail .tok-kw      { color: #cf222e !important; }
+html.light .code-tail .tok-num     { color: #953800 !important; }
+
+/* ============================================================
+   LIGHT THEME OVERRIDES — applied when <html class="light">
+   The whole app is built on a dark palette via arbitrary Tailwind
+   color values; we invert those at the CSS layer with !important
+   instead of refactoring 300+ class usages.
+   ============================================================ */
+html.light .bg-\[\#262624\] { background-color: #FAFAF7 !important; }
+html.light .bg-\[\#262624\]\/80 { background-color: rgba(250,250,247,0.85) !important; }
+html.light .bg-\[\#1A1916\] { background-color: #F5F4ED !important; }
+html.light .bg-\[\#2F2D29\] { background-color: #FAFAF7 !important; }
+html.light .bg-\[\#34322D\] { background-color: #F5F4ED !important; }
+html.light .bg-\[\#3D3B36\] { background-color: #EFEEE8 !important; }
+
+/* Translucent white overlays → translucent black overlays */
+html.light .bg-white\/\[0\.015\] { background-color: rgba(61,61,58,0.025) !important; }
+html.light .bg-white\/\[0\.02\]  { background-color: rgba(61,61,58,0.03)  !important; }
+html.light .bg-white\/\[0\.03\]  { background-color: rgba(61,61,58,0.04)  !important; }
+html.light .bg-white\/\[0\.04\]  { background-color: rgba(61,61,58,0.05)  !important; }
+html.light .bg-white\/\[0\.045\] { background-color: rgba(61,61,58,0.055) !important; }
+html.light .bg-white\/\[0\.05\]  { background-color: rgba(61,61,58,0.06)  !important; }
+html.light .bg-white\/\[0\.06\]  { background-color: rgba(61,61,58,0.07)  !important; }
+html.light .bg-white\/\[0\.07\]  { background-color: rgba(61,61,58,0.08)  !important; }
+html.light .bg-white\/\[0\.08\]  { background-color: rgba(61,61,58,0.09)  !important; }
+html.light .bg-white\/5  { background-color: rgba(61,61,58,0.05) !important; }
+html.light .bg-white\/10 { background-color: rgba(61,61,58,0.08) !important; }
+
+/* Hover overlays */
+html.light .hover\:bg-white\/\[0\.03\]:hover { background-color: rgba(61,61,58,0.04) !important; }
+html.light .hover\:bg-white\/\[0\.04\]:hover { background-color: rgba(61,61,58,0.05) !important; }
+html.light .hover\:bg-white\/\[0\.05\]:hover { background-color: rgba(61,61,58,0.06) !important; }
+html.light .hover\:bg-white\/\[0\.06\]:hover { background-color: rgba(61,61,58,0.07) !important; }
+html.light .hover\:bg-white\/\[0\.10\]:hover { background-color: rgba(61,61,58,0.10) !important; }
+html.light .hover\:bg-white\/5:hover  { background-color: rgba(61,61,58,0.06) !important; }
+html.light .hover\:bg-white\/10:hover { background-color: rgba(61,61,58,0.10) !important; }
+
+/* Text — slate-500 sits in the middle gray sweet spot so it reads on both
+   palettes; we only flip the extremes. */
+html.light .text-slate-100 { color: #2E2D2A !important; }
+html.light .text-slate-200 { color: #3D3D3A !important; }
+html.light .text-slate-300 { color: #46453E !important; }
+html.light .text-slate-400 { color: #5C5A53 !important; }
+html.light .text-slate-500 { color: #777267 !important; }
+html.light .text-slate-600 { color: #8B877C !important; }
+
+html.light .hover\:text-slate-100:hover { color: #3D3D3A !important; }
+html.light .hover\:text-slate-200:hover { color: #46453E !important; }
+html.light .hover\:text-slate-300:hover { color: #5C5A53 !important; }
+
+/* Borders */
+html.light .border-white\/\[0\.04\] { border-color: rgba(61,61,58,0.05) !important; }
+html.light .border-white\/\[0\.05\] { border-color: rgba(61,61,58,0.06) !important; }
+html.light .border-white\/\[0\.06\] { border-color: rgba(61,61,58,0.07) !important; }
+html.light .border-white\/\[0\.07\] { border-color: rgba(61,61,58,0.08) !important; }
+html.light .border-white\/\[0\.08\] { border-color: rgba(61,61,58,0.10) !important; }
+html.light .border-white\/\[0\.10\] { border-color: rgba(61,61,58,0.12) !important; }
+html.light .border-white\/\[0\.12\] { border-color: rgba(61,61,58,0.14) !important; }
+html.light .border-white\/\[0\.15\] { border-color: rgba(61,61,58,0.17) !important; }
+html.light .border-white\/\[0\.20\] { border-color: rgba(61,61,58,0.22) !important; }
+html.light .border-white\/10 { border-color: rgba(61,61,58,0.12) !important; }
+html.light .border-white\/20 { border-color: rgba(61,61,58,0.20) !important; }
+
+html.light .hover\:border-white\/20:hover { border-color: rgba(61,61,58,0.22) !important; }
+
+/* Rings */
+html.light .ring-white\/\[0\.05\] { --tw-ring-color: rgba(61,61,58,0.05) !important; }
+html.light .ring-white\/\[0\.07\] { --tw-ring-color: rgba(61,61,58,0.07) !important; }
+html.light .ring-white\/10 { --tw-ring-color: rgba(61,61,58,0.10) !important; }
+/* The deep ring-black/40 around modals reads as a heavy shadow on dark bg
+   but as a harsh outline on white — soften it. */
+html.light .ring-black\/40 { --tw-ring-color: rgba(61,61,58,0.08) !important; }
+
+/* Markdown body inside chat bubbles */
+html.light .md-body strong,
+html.light .md-body h1, html.light .md-body h2, html.light .md-body h3, html.light .md-body h4 {
+  color: #3D3D3A !important;
+}
+html.light .md-body code { background: rgba(61,61,58,0.06) !important; color: #a16207 !important; }
+html.light .md-body pre { background: rgba(61,61,58,0.04) !important; border-color: rgba(61,61,58,0.08) !important; }
+html.light .md-body pre code { color: #46453E !important; }
+html.light .md-body th { background: rgba(61,61,58,0.04) !important; }
+html.light .md-body th, html.light .md-body td { border-color: rgba(61,61,58,0.10) !important; }
+html.light .md-body blockquote { color: #777267 !important; border-left-color: rgba(61,61,58,0.15) !important; }
+html.light .md-body hr { border-top-color: rgba(61,61,58,0.08) !important; }
+
+/* Task history rows (defined in this file) */
+html.light .task-row:hover { background: rgba(61,61,58,0.04) !important; }
+html.light .task-row-active { background: rgba(61,61,58,0.06) !important; border-color: rgba(61,61,58,0.08) !important; box-shadow: 0 0 0 1px rgba(61,61,58,0.03) !important; }
+html.light .task-row-icon { background: rgba(61,61,58,0.05) !important; color: #777267 !important; }
+html.light .task-row-active .task-row-icon { background: rgba(61,61,58,0.08) !important; color: #46453E !important; }
+html.light .task-row-title { color: #46453E !important; }
+html.light .task-row-meta { color: #8B877C !important; }
+
+/* Task files */
+html.light .task-files-header { background: rgba(61,61,58,0.03) !important; border-color: rgba(61,61,58,0.06) !important; }
+html.light .task-files-empty { border-color: rgba(61,61,58,0.10) !important; background: rgba(61,61,58,0.02) !important; }
+html.light .task-file-row { background: rgba(61,61,58,0.02) !important; border-color: rgba(61,61,58,0.05) !important; }
+html.light .task-file-row:hover { background: rgba(61,61,58,0.05) !important; border-color: rgba(61,61,58,0.12) !important; }
+html.light .task-file-head { border-bottom-color: rgba(61,61,58,0.06) !important; }
+html.light .task-files-tools { background: rgba(20,184,166,0.06) !important; border-color: rgba(20,184,166,0.20) !important; }
+
+/* Scrollbar */
+html.light ::-webkit-scrollbar-thumb { background: rgba(61,61,58,0.14) !important; }
+html.light ::-webkit-scrollbar-thumb:hover { background: rgba(61,61,58,0.22) !important; }
+
+/* Task dashboard */
+html.light .task-dashboard { background: #FAFAF7 !important; }
+html.light .task-dashboard-header { background: rgba(61,61,58,0.03) !important; border-bottom-color: rgba(61,61,58,0.05) !important; }
+html.light .task-dashboard-frame { background: #FAFAF7 !important; }
+
+/* ============================================================
+   LIGHT MODE — ACCENT COLOR OVERRIDES
+   The dark palette uses pale tints (teal-200, amber-300, ember-soft etc.)
+   that pop against #262624 but wash out to invisibility on white. Darken
+   the text + saturate the translucent backgrounds so accent chips/buttons
+   stay legible in light mode.
+   ============================================================ */
+
+/* Teal — used by file-export accents, model badges, "Upload" button */
+html.light .text-teal-100 { color: #134e4a !important; }
+html.light .text-teal-200 { color: #115e59 !important; }
+html.light .text-teal-300 { color: #0f766e !important; }
+html.light .text-teal-400 { color: #0d9488 !important; }
+html.light .text-teal-soft { color: #0f766e !important; }
+html.light .text-teal       { color: #0d9488 !important; }
+html.light .bg-teal-400\/10  { background-color: rgba(13,148,136,0.14) !important; }
+html.light .bg-teal-400\/15  { background-color: rgba(13,148,136,0.18) !important; }
+html.light .bg-teal-400\/20  { background-color: rgba(13,148,136,0.22) !important; }
+html.light .hover\:bg-teal-400\/15:hover { background-color: rgba(13,148,136,0.20) !important; }
+html.light .border-teal-400\/30 { border-color: rgba(13,148,136,0.40) !important; }
+html.light .border-teal-400\/40 { border-color: rgba(13,148,136,0.50) !important; }
+html.light .border-teal-400\/60 { border-color: rgba(13,148,136,0.60) !important; }
+html.light .bg-teal\/15  { background-color: rgba(13,148,136,0.18) !important; }
+html.light .bg-teal\/20  { background-color: rgba(13,148,136,0.22) !important; }
+html.light .ring-teal-400\/60 { --tw-ring-color: rgba(13,148,136,0.55) !important; }
+
+/* Amber — primary CTA, badges, highlights */
+html.light .text-amber-200 { color: #92400e !important; }
+html.light .text-amber-300 { color: #b45309 !important; }
+html.light .text-amber-400 { color: #b45309 !important; }
+html.light .text-amber-soft { color: #b45309 !important; }
+html.light .text-amber       { color: #c2410c !important; }
+html.light .bg-amber-400\/10 { background-color: rgba(217,119,6,0.14) !important; }
+html.light .bg-amber-400\/15 { background-color: rgba(217,119,6,0.18) !important; }
+html.light .bg-amber-400\/20 { background-color: rgba(217,119,6,0.22) !important; }
+html.light .bg-amber-400\/\[0\.04\] { background-color: rgba(217,119,6,0.08) !important; }
+html.light .bg-amber-400\/\[0\.07\] { background-color: rgba(217,119,6,0.12) !important; }
+html.light .bg-amber-400\/\[0\.10\] { background-color: rgba(217,119,6,0.14) !important; }
+html.light .border-amber-400\/20 { border-color: rgba(217,119,6,0.30) !important; }
+html.light .border-amber-400\/30 { border-color: rgba(217,119,6,0.40) !important; }
+html.light .border-amber-400\/40 { border-color: rgba(217,119,6,0.50) !important; }
+html.light .border-amber-400\/50 { border-color: rgba(217,119,6,0.55) !important; }
+html.light .border-amber-400\/60 { border-color: rgba(217,119,6,0.60) !important; }
+html.light .ring-amber-400\/10 { --tw-ring-color: rgba(217,119,6,0.14) !important; }
+html.light .ring-amber-400\/30 { --tw-ring-color: rgba(217,119,6,0.35) !important; }
+
+/* Ember — task badges, ping/reply markers, send button */
+html.light .text-ember       { color: #c2410c !important; }
+html.light .text-ember-soft  { color: #c2410c !important; }
+html.light .bg-ember\/5  { background-color: rgba(194,65,12,0.08) !important; }
+html.light .bg-ember\/10 { background-color: rgba(194,65,12,0.12) !important; }
+html.light .bg-ember\/15 { background-color: rgba(194,65,12,0.16) !important; }
+html.light .bg-ember\/20 { background-color: rgba(194,65,12,0.22) !important; }
+html.light .border-ember\/30 { border-color: rgba(194,65,12,0.45) !important; }
+html.light .border-ember\/40 { border-color: rgba(194,65,12,0.55) !important; }
+html.light .border-ember\/60 { border-color: rgba(194,65,12,0.65) !important; }
+html.light .ring-ember\/40 { --tw-ring-color: rgba(194,65,12,0.50) !important; }
+html.light .ring-ember\/60 { --tw-ring-color: rgba(194,65,12,0.60) !important; }
+html.light .ring-ember\/70 { --tw-ring-color: rgba(194,65,12,0.70) !important; }
+
+/* Sky — system messages, plan box */
+html.light .text-sky-300 { color: #0369a1 !important; }
+html.light .text-sky-300\/80 { color: rgba(3,105,161,0.85) !important; }
+html.light .text-sky-100 { color: #0c4a6e !important; }
+html.light .bg-sky-400\/\[0\.04\] { background-color: rgba(2,132,199,0.08) !important; }
+html.light .border-sky-400\/15 { border-color: rgba(2,132,199,0.25) !important; }
+html.light .ring-sky-400\/10 { --tw-ring-color: rgba(2,132,199,0.15) !important; }
+
+/* Rose — destructive */
+html.light .text-rose-200 { color: #9f1239 !important; }
+html.light .text-rose-300 { color: #be123c !important; }
+html.light .text-rose-400 { color: #be123c !important; }
+html.light .bg-rose-500\/10 { background-color: rgba(225,29,72,0.10) !important; }
+html.light .border-rose-500\/40 { border-color: rgba(225,29,72,0.50) !important; }
+html.light .hover\:bg-rose-500\/10:hover { background-color: rgba(225,29,72,0.10) !important; }
+
+/* Good (green) — success */
+html.light .text-good { color: #15803d !important; }
+
+/* Emerald — save buttons, success toast, copied indicator */
+html.light .text-emerald-200 { color: #065f46 !important; }
+html.light .text-emerald-300 { color: #047857 !important; }
+html.light .text-emerald-400 { color: #059669 !important; }
+html.light .bg-emerald-400\/10  { background-color: rgba(5,150,105,0.14) !important; }
+html.light .bg-emerald-400\/15  { background-color: rgba(5,150,105,0.18) !important; }
+html.light .bg-emerald-400\/25  { background-color: rgba(5,150,105,0.28) !important; }
+html.light .hover\:bg-emerald-400\/25:hover { background-color: rgba(5,150,105,0.26) !important; }
+html.light .border-emerald-400\/30 { border-color: rgba(5,150,105,0.45) !important; }
+html.light .border-emerald-400\/40 { border-color: rgba(5,150,105,0.55) !important; }
+
+/* Violet — thinking-bubble accent */
+html.light .text-violet-300 { color: #6d28d9 !important; }
+html.light .text-violet-300\/80 { color: rgba(109,40,217,0.85) !important; }
+
+/* ------------------------------------------------------------
+   LIGHT MODE — CONTRAST FIXES (audit 2026-05-21)
+   Utilities components actually use but the override block above
+   missed → they kept their dark/pale value on white and read as
+   "too faint" or "too dark to see". Grouped by symptom.
+   ------------------------------------------------------------ */
+
+/* Sky-200 text: pale #bae6fd → near-invisible on white. Used by the
+   file-editor Visual-edit panel/buttons + the toast "info" variant. Darken
+   the text and strengthen the sky tints/borders it sits on. */
+html.light .text-sky-200 { color: #075985 !important; }
+html.light .text-sky-200\/70 { color: rgba(7,89,133,0.85) !important; }
+html.light .bg-sky-400\/10 { background-color: rgba(2,132,199,0.12) !important; }
+html.light .bg-sky-400\/15 { background-color: rgba(2,132,199,0.16) !important; }
+html.light .bg-sky-400\/25 { background-color: rgba(2,132,199,0.22) !important; }
+html.light .hover\:bg-sky-400\/25:hover { background-color: rgba(2,132,199,0.22) !important; }
+html.light .border-sky-400\/30 { border-color: rgba(2,132,199,0.40) !important; }
+html.light .border-sky-400\/40 { border-color: rgba(2,132,199,0.50) !important; }
+
+/* Slate-500 (81 uses) + faint opacity variants: #8B877C is the palest
+   secondary text and washes out on white. Darken a notch so meta/secondary
+   copy is readable, while staying lighter than slate-400 (#777267). */
+html.light .text-slate-500 { color: #5b6678 !important; }
+html.light .text-slate-500\/80 { color: rgba(91,102,120,0.92) !important; }
+html.light .text-slate-500\/70 { color: rgba(91,102,120,0.88) !important; }
+html.light .text-slate-500\/60 { color: rgba(91,102,120,0.82) !important; }
+html.light .text-slate-400\/80 { color: rgba(71,85,105,0.90) !important; }
+html.light .text-slate-300\/90 { color: rgba(51,65,85,0.95) !important; }
+
+/* Faint accent-text opacity variants left un-mapped → too pale on white. */
+html.light .text-teal-400\/60 { color: rgba(13,148,136,0.80) !important; }
+html.light .text-amber-300\/80 { color: rgba(180,83,9,0.90) !important; }
+html.light .text-amber-300\/90 { color: rgba(180,83,9,0.95) !important; }
+
+/* Hardcoded dark hex backgrounds with no light override → a dark box on a
+   white UI ("too dark to see"). #2a3350 = <select><optgroup> (dark text was
+   invisible on dark bg), #1a2138 = file-editor collapse button, #0d1225 =
+   employee-dialog import panel. */
+html.light .bg-\[\#2a3350\] { background-color: #E2DFD6 !important; }
+html.light .bg-\[\#1a2138\] { background-color: #E2DFD6 !important; }
+html.light .bg-\[\#0d1225\] { background-color: #F5F4ED !important; }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ============================================================
+   THEME TOGGLE — the nice animated sun/moon pill
+   ============================================================ */
+.theme-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background:
+    radial-gradient(120% 200% at 0% 50%, rgba(251,191,36,0.10), transparent 60%),
+    radial-gradient(120% 200% at 100% 50%, rgba(96,165,250,0.10), transparent 60%),
+    rgba(255,255,255,0.03);
+  cursor: pointer;
+  isolation: isolate;
+  transition: border-color 250ms ease, background-color 250ms ease, box-shadow 350ms ease;
+}
+html.light .theme-toggle {
+  border-color: rgba(61,61,58,0.12);
+  background:
+    radial-gradient(120% 200% at 0% 50%, rgba(251,191,36,0.18), transparent 60%),
+    radial-gradient(120% 200% at 100% 50%, rgba(96,165,250,0.18), transparent 60%),
+    rgba(61,61,58,0.03);
+}
+.theme-toggle:hover { box-shadow: 0 0 0 4px rgba(251,191,36,0.06); }
+html.light .theme-toggle:hover { box-shadow: 0 0 0 4px rgba(96,165,250,0.10); }
+
+.theme-toggle-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 72px;
+  height: 100%;
+}
+.theme-toggle-thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fcd34d, #f59e0b);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.18),
+    0 4px 12px -2px rgba(251,191,36,0.45),
+    inset 0 -2px 4px rgba(0,0,0,0.10);
+  transition:
+    transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 350ms ease,
+    box-shadow 350ms ease;
+  transform: translateX(0);
+  z-index: 1;
+}
+html.light .theme-toggle-thumb {
+  /* In light mode the thumb represents "sun selected" — keep golden. */
+}
+html.dark .theme-toggle[data-mode="dark"] .theme-toggle-thumb,
+html:not(.light) .theme-toggle[data-mode="dark"] .theme-toggle-thumb {
+  transform: translateX(36px);
+  background: linear-gradient(180deg, #cbd5e1, #8B877C);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.28),
+    0 4px 12px -2px rgba(148,163,184,0.40),
+    inset 0 -2px 4px rgba(0,0,0,0.18);
+}
+.theme-toggle-icons {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  align-items: center;
+  pointer-events: none;
+}
+.theme-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 350ms ease, transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.theme-toggle[data-mode="light"] .theme-toggle-icon-sun  { color: #46453E; transform: rotate(0); }
+.theme-toggle[data-mode="light"] .theme-toggle-icon-moon { color: #94a3b8; transform: rotate(20deg); }
+.theme-toggle[data-mode="dark"]  .theme-toggle-icon-sun  { color: #8B877C; transform: rotate(-20deg); }
+.theme-toggle[data-mode="dark"]  .theme-toggle-icon-moon { color: #fef3c7; transform: rotate(0); }
+

@@ -1,0 +1,21 @@
+{
+  "name": "Penguin",
+  "short_name": "Penguin",
+  "description": "Multi-agent workspace for delegating complex workflows to a coordinated team of AI agents.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#3eaaf5",
+  "theme_color": "#3eaaf5",
+  "icons": [
+    {
+      "src": "/icon-192.png?v=penguin-2.2",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png?v=penguin-2.2",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

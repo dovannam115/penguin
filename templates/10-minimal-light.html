@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10 · Minimal Light</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --panel:#f6f6f4; --ink:#16181d; --muted:#6a6f78; --line:#e3e3df;
+  --accent:#2f54eb;
+  --pad: clamp(2.2rem, 7vw, 6rem);
+  --display: clamp(2.4rem, 6vw, 4.6rem);
+  --h1: clamp(1.6rem, 3.6vw, 2.7rem);
+  --body: clamp(1rem, 1.5vw, 1.18rem);
+  --kicker: clamp(.68rem,.95vw,.8rem);
+  --cap: clamp(.66rem,.9vw,.8rem);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:"Be Vietnam Pro",system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.slide{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:var(--pad)}
+.inner{width:100%;max-width:1140px;margin:0 auto}
+.kicker{font-family:"Montserrat";font-size:var(--kicker);font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+.display{font-family:"Montserrat";font-weight:700;font-size:var(--display);line-height:1.06;letter-spacing:-.015em;margin:.55em 0 .5em}
+.h1{font-family:"Montserrat";font-weight:700;font-size:var(--h1);line-height:1.12;letter-spacing:-.01em}
+.lead{font-size:var(--body);line-height:1.65;color:var(--muted);max-width:48ch}
+.rule{height:2px;width:64px;background:var(--accent);margin:1.4rem 0}
+.footer{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(var(--pad)*.5);display:flex;justify-content:space-between;font-size:var(--cap);color:var(--muted);border-top:1px solid var(--line);padding-top:.85rem}
+.footer .num{font-family:"Montserrat";font-weight:700;color:var(--ink)}
+
+/* stats row with hairline dividers */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:2.2rem;border-top:1px solid var(--line)}
+.stats .cell{padding:1.5rem 1.4rem 1.5rem 0;border-bottom:1px solid var(--line)}
+.stats .cell + .cell{padding-left:1.4rem;border-left:1px solid var(--line)}
+.num-big{font-family:"Montserrat";font-weight:700;font-size:clamp(2rem,4vw,3rem);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.num-big .u{color:var(--accent);font-size:.5em;margin-left:.08em}
+.num-label{margin-top:.5rem;font-size:var(--cap);color:var(--muted);line-height:1.5}
+
+.chartwrap{margin-top:2.2rem}
+.chart-title{font-family:"Montserrat";font-weight:600;font-size:var(--cap);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:1rem}
+
+/* numbered list */
+.list{margin-top:1.6rem}
+.row{display:grid;grid-template-columns:auto 1fr;gap:1.6rem;padding:1.3rem 0;border-top:1px solid var(--line);align-items:baseline}
+.row:last-child{border-bottom:1px solid var(--line)}
+.row .n{font-family:"Montserrat";font-weight:700;font-size:1.1rem;color:var(--accent)}
+.row h3{font-family:"Montserrat";font-weight:700;font-size:clamp(1.05rem,1.7vw,1.3rem);margin-bottom:.3rem}
+.row p{font-size:var(--cap);color:var(--muted);line-height:1.6;max-width:60ch}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+.slide.in .reveal{opacity:1;transform:none}
+.slide.in .r1{transition-delay:.06s}.slide.in .r2{transition-delay:.13s}.slide.in .r3{transition-delay:.2s}
+/* key-numbers: colored stat blocks + donut (scoped) */
+.kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,2vw,1.5rem);margin-top:2.2rem}
+.kblock{border-radius:14px;padding:clamp(1.3rem,2.2vw,1.8rem);color:#fff}
+.kblock:nth-child(1){background:#2f54eb}
+.kblock:nth-child(2){background:#5a78f0}
+.kblock:nth-child(3){background:#1b3bb0}
+.kblock .kn{font-family:"Montserrat";font-weight:700;font-size:clamp(2rem,4vw,3rem);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kblock .kn .u{font-size:.5em;margin-left:.08em;opacity:.85}
+.kblock .kl{margin-top:.55rem;font-size:var(--cap);line-height:1.5;opacity:.92;font-weight:500}
+.donutrow{display:flex;align-items:center;gap:clamp(1.6rem,4vw,3rem);margin-top:2.2rem;flex-wrap:wrap}
+.donutrow svg{width:clamp(150px,16vw,190px);height:auto}
+.donutleg{font-size:var(--cap);color:var(--muted);line-height:2.3}
+.donutleg b{font-family:"Montserrat";font-weight:700;color:var(--ink);margin-right:.2em}
+.donutleg .dot{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:.6rem;vertical-align:middle}
+
+@media(max-width:760px){.stats{grid-template-columns:1fr}.stats .cell+.cell{border-left:0;padding-left:0}.kgrid{grid-template-columns:1fr}.donutrow{justify-content:center}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal">Báo cáo thường niên · 2026</div>
+    <h1 class="display reveal">Tăng trưởng bền vững<br>giữa biến động</h1>
+    <div class="rule reveal"></div>
+    <p class="lead reveal">Tổng quan kết quả kinh doanh năm tài chính và định hướng chiến lược cho giai đoạn tiếp theo của công ty.</p>
+  </div>
+  <div class="footer"><span>Công ty Cổ phần ABC</span><span class="num">01</span></div>
+</section>
+
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal">Kết quả nổi bật</div>
+    <h2 class="h1 reveal" style="margin-top:.4em">Những con số biết nói</h2>
+    <div class="stats">
+      <div class="cell reveal r1"><div class="num-big">38<span class="u">%</span></div><div class="num-label">Doanh thu thuần tăng so với cùng kỳ</div></div>
+      <div class="cell reveal r2"><div class="num-big">1,2<span class="u">M</span></div><div class="num-label">Khách hàng đang hoạt động</div></div>
+      <div class="cell reveal r3"><div class="num-big">92<span class="u">%</span></div><div class="num-label">Tỷ lệ giữ chân khách hàng</div></div>
+    </div>
+    <div class="chartwrap reveal">
+      <div class="chart-title">Doanh thu theo quý (tỷ đồng)</div>
+      <svg viewBox="0 0 560 140" width="100%" style="max-height:20vh" role="img" aria-label="Doanh thu theo quý">
+        <line x1="20" y1="110" x2="540" y2="110" stroke="#e3e3df"/>
+        <polyline points="60,86 200,72 340,50 480,26" fill="none" stroke="#2f54eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="60" cy="86" r="4" fill="#2f54eb"/><circle cx="200" cy="72" r="4" fill="#2f54eb"/><circle cx="340" cy="50" r="4" fill="#2f54eb"/><circle cx="480" cy="26" r="4" fill="#2f54eb"/>
+        <text x="60" y="128" text-anchor="middle" fill="#6a6f78" font-size="12">Q1</text>
+        <text x="200" y="128" text-anchor="middle" fill="#6a6f78" font-size="12">Q2</text>
+        <text x="340" y="128" text-anchor="middle" fill="#6a6f78" font-size="12">Q3</text>
+        <text x="480" y="128" text-anchor="middle" fill="#6a6f78" font-size="12">Q4</text>
+      </svg>
+    </div>
+  </div>
+  <div class="footer"><span>Công ty Cổ phần ABC</span><span class="num">02</span></div>
+</section>
+
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal">Định hướng</div>
+    <h2 class="h1 reveal" style="margin-top:.4em">Ba trụ cột chiến lược</h2>
+    <div class="list">
+      <div class="row reveal r1"><div class="n">01</div><div><h3>Mở rộng thị trường</h3><p>Thâm nhập các tỉnh thành mới và phân khúc khách hàng chưa được phục vụ đầy đủ.</p></div></div>
+      <div class="row reveal r2"><div class="n">02</div><div><h3>Số hóa vận hành</h3><p>Tự động hóa quy trình lõi để rút ngắn thời gian xử lý và giảm chi phí biên.</p></div></div>
+      <div class="row reveal r3"><div class="n">03</div><div><h3>Trải nghiệm khách hàng</h3><p>Cá nhân hóa hành trình và nâng chuẩn dịch vụ trên mọi điểm chạm.</p></div></div>
+    </div>
+  </div>
+  <div class="footer"><span>Công ty Cổ phần ABC</span><span class="num">03</span></div>
+</section>
+
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal">Cơ cấu kết quả</div>
+    <h2 class="h1 reveal" style="margin-top:.4em">Đóng góp theo từng mảng</h2>
+    <div class="kgrid">
+      <div class="kblock reveal r1"><div class="kn">+38<span class="u">%</span></div><div class="kl">Tăng trưởng doanh thu so với cùng kỳ</div></div>
+      <div class="kblock reveal r2"><div class="kn">1,2<span class="u">M</span></div><div class="kl">Người dùng đang hoạt động hàng tháng</div></div>
+      <div class="kblock reveal r3"><div class="kn">92<span class="u">%</span></div><div class="kl">Tỷ lệ khách hàng tiếp tục gắn bó</div></div>
+    </div>
+    <div class="donutrow reveal">
+      <svg viewBox="0 0 130 130" role="img" aria-label="Cơ cấu doanh thu">
+        <circle cx="65" cy="65" r="50" fill="none" stroke="#e3e3df" stroke-width="19"/>
+        <circle cx="65" cy="65" r="50" fill="none" stroke="#2f54eb" stroke-width="19" stroke-dasharray="173 314" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+        <circle cx="65" cy="65" r="50" fill="none" stroke="#5a78f0" stroke-width="19" stroke-dasharray="94 314" stroke-dashoffset="-173" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+        <circle cx="65" cy="65" r="50" fill="none" stroke="#1b3bb0" stroke-width="19" stroke-dasharray="47 314" stroke-dashoffset="-267" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+        <text x="65" y="62" text-anchor="middle" fill="#16181d" font-family="Montserrat,sans-serif" font-size="20" font-weight="700">100%</text>
+        <text x="65" y="80" text-anchor="middle" fill="#6a6f78" font-size="8.5" letter-spacing=".5">Tổng cơ cấu</text>
+      </svg>
+      <div class="donutleg">
+        <div><span class="dot" style="background:#2f54eb"></span><b>55%</b>&nbsp;Sản phẩm cốt lõi</div>
+        <div><span class="dot" style="background:#5a78f0"></span><b>30%</b>&nbsp;Dịch vụ mới</div>
+        <div><span class="dot" style="background:#1b3bb0"></span><b>15%</b>&nbsp;Mảng khác</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Công ty Cổ phần ABC</span><span class="num">04</span></div>
+</section>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.35});
+document.querySelectorAll('.slide').forEach(function(s){io.observe(s)});
+var sl=[].slice.call(document.querySelectorAll('.slide'));
+addEventListener('keydown',function(e){var i=sl.findIndex(function(s){return Math.abs(s.getBoundingClientRect().top)<innerHeight/2});
+if(['ArrowDown','ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();if(sl[i+1])sl[i+1].scrollIntoView()}
+if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();if(sl[i-1])sl[i-1].scrollIntoView()}});
+</script>
+<script>/*pv-preview-mode*/(function(){if(location.hash!=='#preview')return;
+var de=document.documentElement;
+var st=document.createElement('style');st.textContent='::-webkit-scrollbar{display:none}html{scrollbar-width:none!important}';document.head.appendChild(st);
+de.style.scrollSnapType='none';
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+var DWELL=1400;
+function ih(){return innerHeight;}
+function n(){return Math.max(1,Math.round(de.scrollHeight/ih()));}
+var i=0;
+function show(idx,smooth){de.style.scrollBehavior=(smooth&&!reduce)?'smooth':'auto';scrollTo(0,idx*ih());}
+function tick(){var c=n();var ni=(i+1)%c;show(ni,ni!==0);i=ni;}
+setTimeout(function(){setInterval(tick,DWELL);},DWELL);})();</script>
+</body>
+</html>

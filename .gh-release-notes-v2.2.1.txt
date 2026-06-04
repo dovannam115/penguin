@@ -1,0 +1,22 @@
+If you are still on v2.2.0, do NOT use Settings then Update to install this release
+- v2.2.0's apply-staged.ps1 has a stray em-dash character in a comment that crashes Windows PowerShell 5.1's parser. The in-app updater appears to restart, but the actual swap script aborts before copying any files, so you end up back on v2.2.0 with "Update available" still showing.
+- One-time workaround for v2.2.0 users:
+  1. Download Penguin_v2.2.1.zip from this release.
+  2. Copy the zip into your install folder (the folder that contains start.bat).
+  3. Double-click apply-update.bat, press Y, and wait ~30-60s. This path uses Expand-Archive directly and never invokes the buggy apply-staged.ps1.
+- Once you are on v2.2.1, all future in-app updates work normally because v2.2.1's apply-staged.ps1 is em-dash-clean.
+
+Fix: PowerShell em-dash crash in the swap script
+- apply-staged.ps1 (and the other .ps1 helpers) had em-dash characters in their comments. When PowerShell 5.1 loads a UTF-8-no-BOM .ps1 file it sometimes mis-decodes the em-dash byte sequence and reports "Missing closing }" at the line, aborting before the script does anything.
+- All em-dashes are replaced with regular hyphens across launcher.ps1, apply-staged.ps1, aumid.ps1, open.ps1, render-icons.ps1, and pack.ps1.
+
+Fix: changing an agent's model in Edit Agent did not take effect
+- Symptom: editing an agent in the Edit Agent dialog, switching the model (e.g. Sonnet 4.6 to Opus 4.8), and saving updated the value on disk but chat replies still used the old model.
+- Cause: the Claude CLI session that backs each agent is pinned to whichever model started it, and Penguin keeps two caches that resume into it: employees.sessionId (live warm pool) and the task_sessions table (per task resume id). The PATCH employees endpoint only invalidated those caches when name, role, system prompt, or skills changed.
+- Fix: model changes are now treated as a session-busting edit too. employees.sessionId is nulled and every task_sessions row for that employee is wiped, so the next turn spawns a fresh CLI subprocess on the chosen model.
+
+Brighter dark theme to match claude.ai
+- The main chat surface lightens from #1F1E1B to #262624. Elevated panels, cards, hover states, and borders cascade up too so depth still reads.
+- The sidebar stays at #1A1916 to mirror claude.ai's deeper sidebar / lighter chat contrast.
+- Dark theme body text bumps to #F5F4ED. Tailwind's slate-100..600 utilities get warm-tone overrides in dark mode so they sit cleanly on top of the warmer bg instead of fading into it.
+- Light theme body text also deepens to #2E2D2A with a matched warm slate ladder for crisper contrast on the cream bg.

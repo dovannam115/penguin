@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>02 · Spectrum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;800&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef0f3; --ink:#11243d; --body:#5c6b7a; --card:#ffffff; --line:#dbe0e7;
+  --s1:#2fb8d4; --s2:#2a9cd0; --s3:#2c80c8; --s4:#2a63bc; --s5:#21509e; --s6:#16356b;
+  --pad:clamp(1.5rem,4vw,3rem);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:"Be Vietnam Pro",system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.slide{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:var(--pad);background:var(--bg)}
+.head{text-align:center;max-width:64ch;margin:0 auto clamp(1.8rem,5vh,3.2rem);flex:0 0 auto}
+.title{font-weight:800;font-size:clamp(1.7rem,3.7vw,2.75rem);letter-spacing:-.02em;line-height:1.1}
+.sub{font-weight:500;color:var(--body);font-size:clamp(.92rem,1.5vw,1.18rem);margin-top:.6rem;line-height:1.5}
+.stage{flex:0 1 auto;display:flex;align-items:center;justify-content:center;width:100%;max-width:1200px;margin:0 auto}
+.foot{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(var(--pad)*.45);display:flex;justify-content:space-between;font-size:.7rem;color:var(--body);opacity:.65}
+.foot .num{font-weight:800;color:var(--s4)}
+svg.ic{width:100%;height:100%;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.kick{display:inline-block;font-weight:800;font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:#fff;background:var(--s2);padding:.45em 1em;border-radius:999px}
+
+/* ===== COVER / CLOSING ===== */
+.cover{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;max-width:1100px;margin:0 auto;width:100%}
+.cover h1{font-weight:800;font-size:clamp(2.4rem,6vw,4.6rem);line-height:1.02;letter-spacing:-.025em;margin:.5em 0 .35em}
+.cover h1 em{font-style:normal;color:var(--s1)}
+.cover p{font-size:clamp(1rem,1.6vw,1.3rem);color:var(--body);max-width:46ch;line-height:1.55;font-weight:500}
+.sweep{display:flex;gap:8px;margin-top:2.2rem}
+.sweep span{height:12px;width:64px;border-radius:999px}
+.sweep span:nth-child(1){background:var(--s1)}.sweep span:nth-child(2){background:var(--s2)}.sweep span:nth-child(3){background:var(--s3)}.sweep span:nth-child(4){background:var(--s4)}.sweep span:nth-child(5){background:var(--s5)}.sweep span:nth-child(6){background:var(--s6)}
+.cend{margin-top:2rem;display:flex;flex-direction:column;gap:.5rem}
+.cend a,.cend span{font-weight:600;color:var(--body);font-size:clamp(.9rem,1.2vw,1.05rem)}
+.cend b{color:var(--ink);font-weight:800}
+
+/* ===== AGENDA / MỤC LỤC ===== */
+.agenda{display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(2rem,5vw,4.5rem);align-items:center;width:100%;max-width:1120px;margin:0 auto}
+.ag-l h2{font-weight:800;font-size:clamp(2rem,4.2vw,3.3rem);line-height:1.04;letter-spacing:-.025em;margin:.7rem 0 0}
+.ag-l p{color:var(--body);margin-top:1rem;max-width:30ch;line-height:1.55;font-weight:500}
+.aglist{display:flex;flex-direction:column}
+.agitem{display:flex;align-items:center;gap:1.3rem;padding:1rem .3rem;border-bottom:1px solid var(--line)}
+.agitem:last-child{border-bottom:0}
+.agnum{flex:none;width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:1.05rem;box-shadow:0 10px 18px -7px rgba(20,50,90,.4)}
+.agitem:nth-child(1) .agnum{background:var(--s1)}.agitem:nth-child(2) .agnum{background:var(--s2)}.agitem:nth-child(3) .agnum{background:var(--s3)}.agitem:nth-child(4) .agnum{background:var(--s4)}.agitem:nth-child(5) .agnum{background:var(--s6)}
+.agitem h4{font-weight:800;font-size:clamp(1rem,1.35vw,1.2rem);line-height:1.2}
+.agitem p{font-size:.84rem;color:var(--body);margin-top:.12rem;line-height:1.4}
+.agitem .agar{margin-left:auto;flex:none;width:22px;height:22px;color:#c2ccd8}
+
+/* ===== SECTION DIVIDER ===== */
+.slide--div{background:linear-gradient(135deg,var(--s4) 0%,var(--s6) 100%)}
+.slide--div .foot{color:rgba(255,255,255,.65)}.slide--div .foot .num{color:#fff}
+.divwrap{width:100%;max-width:1000px;margin:0 auto;color:#fff}
+.divtag{display:inline-block;font-weight:800;font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:#fff;border:1.5px solid rgba(255,255,255,.45);padding:.45em 1.1em;border-radius:999px}
+.divnum{font-weight:800;font-size:clamp(4.5rem,13vw,10rem);line-height:.85;letter-spacing:-.04em;opacity:.18;margin-top:.2em}
+.divwrap h2{font-weight:800;font-size:clamp(2.2rem,5.2vw,3.9rem);line-height:1.04;letter-spacing:-.025em;margin-top:-.35em}
+.divwrap p{margin-top:1.1rem;max-width:52ch;font-size:clamp(1rem,1.5vw,1.22rem);color:rgba(255,255,255,.82);line-height:1.55;font-weight:500}
+.divbar{display:flex;gap:8px;margin-top:2rem}
+.divbar span{height:6px;width:50px;border-radius:9px;background:rgba(255,255,255,.32)}
+.divbar span:first-child{background:#fff;width:96px}
+
+/* ===== PROSE / TEXT + BULLET ===== */
+.prose{width:100%;max-width:1000px;margin:0 auto}
+.prose .lead{font-size:clamp(1.05rem,1.7vw,1.32rem);color:var(--ink);line-height:1.6;font-weight:600;border-left:4px solid var(--s2);padding-left:1.3rem;margin-bottom:2rem}
+.blist{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem 2.8rem}
+.bli{display:flex;gap:1rem;align-items:flex-start}
+.bli .bic{flex:none;width:34px;height:34px;border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;margin-top:1px;box-shadow:0 8px 15px -6px rgba(20,50,90,.4)}
+.bli .bic .glyph{width:18px;height:18px}
+.bli:nth-child(1) .bic{background:var(--s1)}.bli:nth-child(2) .bic{background:var(--s2)}.bli:nth-child(3) .bic{background:var(--s3)}.bli:nth-child(4) .bic{background:var(--s4)}.bli:nth-child(5) .bic{background:var(--s5)}.bli:nth-child(6) .bic{background:var(--s6)}
+.bli h4{font-weight:800;font-size:clamp(1rem,1.3vw,1.14rem);line-height:1.2}
+.bli p{font-size:.86rem;color:var(--body);line-height:1.48;margin-top:.2rem}
+
+/* ===== SPLIT (TEXT + CHART) ===== */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4.5rem);align-items:center;width:100%;max-width:1120px;margin:0 auto}
+.split-text h2{font-weight:800;font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1.08;letter-spacing:-.02em}
+.split-text .lead{color:var(--body);line-height:1.6;margin:1rem 0 1.6rem;font-weight:500;font-size:clamp(.95rem,1.3vw,1.08rem)}
+.split-text ul{list-style:none;display:flex;flex-direction:column;gap:.85rem}
+.split-text li{display:flex;gap:.8rem;align-items:center;font-weight:600;font-size:clamp(.9rem,1.2vw,1.02rem)}
+.split-text li b{color:var(--s4);font-weight:800}
+.split-text li::before{content:"";width:11px;height:11px;border-radius:4px;background:var(--s2);flex:none}
+.chartcard{background:var(--card);border-radius:18px;padding:clamp(1.4rem,2.6vw,2.2rem);box-shadow:0 26px 50px -24px rgba(20,50,90,.26),0 8px 18px -10px rgba(20,50,90,.12)}
+.chartcard h5{font-weight:800;font-size:.92rem;color:var(--ink);margin-bottom:1rem}
+.chartcard svg{width:100%;height:auto;display:block}
+
+/* ===== S-CURVE VERTICAL ROADMAP ===== */
+.slide--road .stage{display:block;width:100%;max-width:none}
+.scwrap{position:relative;width:calc(100% + var(--pad));margin-left:calc(-1 * var(--pad));max-width:none;height:clamp(470px,78vh,575px)}
+.sccurve{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:0}
+.sctitle{position:absolute;left:1.5%;top:50%;transform:translateY(-50%);width:21%;z-index:1}
+.sctitle h2{text-align:left;font-weight:800;font-size:clamp(1.9rem,3.6vw,3rem);line-height:1.04;letter-spacing:-.025em;color:var(--ink)}
+.sctitle p{text-align:left;font-size:clamp(.9rem,1.3vw,1.05rem);color:var(--body);line-height:1.55;margin-top:1.1rem;max-width:28ch}
+.scrow{position:absolute;left:0;right:auto;transform:translateY(-50%);display:flex;align-items:center;z-index:2}
+.scrow.n1{top:13%;padding-left:15.5%}.scrow.n2{top:38%;padding-left:27.3%}.scrow.n3{top:63%;padding-left:27.3%}.scrow.n4{top:88%;padding-left:15.5%}
+.schex{position:relative;z-index:2;flex:none;width:66px;height:75px;display:flex;align-items:center;justify-content:center;background:#fff;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);filter:drop-shadow(9px 9px 13px rgba(20,45,75,.42)) drop-shadow(0 2px 3px rgba(20,45,75,.22))}
+.schex-in{width:56px;height:64px;display:flex;align-items:center;justify-content:center;color:#fff;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background-image:linear-gradient(155deg,rgba(255,255,255,.3),rgba(255,255,255,0) 50%,rgba(0,0,0,.18))}
+.schex .glyph{width:26px;height:26px}
+.scrow.n1 .schex-in{background-color:var(--s1)}.scrow.n2 .schex-in{background-color:var(--s2)}.scrow.n3 .schex-in{background-color:var(--s4)}.scrow.n4 .schex-in{background-color:var(--s6)}
+.sccard{position:relative;z-index:1;flex:none;width:clamp(440px,56vw,720px);margin-left:-15px;background:var(--card);border-radius:14px;padding:.82rem 1.5rem .88rem 40px;box-shadow:0 14px 30px -16px rgba(20,50,90,.34)}
+.sccard h4{margin:0;font-weight:800;font-size:clamp(.98rem,1.25vw,1.18rem);letter-spacing:-.01em;color:var(--ink)}
+.sccard p{margin:.3rem 0 0;font-size:clamp(.8rem,.98vw,.9rem);color:var(--body);line-height:1.46}
+
+/* ===== TABLE ===== */
+.tblwrap{width:100%;max-width:1040px;margin:0 auto;border-radius:16px;overflow:hidden;box-shadow:0 26px 50px -24px rgba(20,50,90,.24),0 8px 18px -10px rgba(20,50,90,.12)}
+table.tbl{width:100%;border-collapse:collapse;background:var(--card);font-size:clamp(.82rem,1.05vw,.98rem)}
+.tbl thead th{background:var(--s6);color:#fff;font-weight:700;text-align:left;padding:1rem 1.4rem;font-size:.92rem;letter-spacing:.01em}
+.tbl thead th:not(:first-child){text-align:center}
+.tbl tbody td{padding:.9rem 1.4rem;border-top:1px solid var(--line);color:var(--ink);vertical-align:middle}
+.tbl tbody td:not(:first-child){text-align:center}
+.tbl tbody td:first-child{font-weight:700}
+.tbl tbody tr:nth-child(even){background:#f5f8fb}
+.tbl .hl{font-weight:800;color:var(--s4);font-variant-numeric:tabular-nums}
+.tbl .tag{display:inline-block;padding:.22em .8em;border-radius:999px;font-size:.78rem;font-weight:700}
+.tag.good{background:#e2f3ea;color:#1c8a4e}.tag.warn{background:#fcefdc;color:#b9772a}.tag.bad{background:#fae6e6;color:#bd3a3a}
+
+/* ===== STATS + DONUT ===== */
+.results{display:flex;flex-direction:column;gap:clamp(1.4rem,3.4vh,2.8rem);width:100%;max-width:1060px;margin:0 auto}
+.kpi3{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(.8rem,1.6vw,1.3rem)}
+.kbox{border-radius:16px;padding:clamp(1.1rem,2vw,1.7rem);color:#fff;box-shadow:0 20px 40px -20px rgba(20,50,90,.42)}
+.kbox:nth-child(1){background:var(--s2)}.kbox:nth-child(2){background:var(--s3)}.kbox:nth-child(3){background:var(--s4)}.kbox:nth-child(4){background:var(--s6)}
+.kbox .kn{font-weight:800;font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kbox .kl{margin-top:.55rem;font-size:.85rem;font-weight:600;opacity:.92;line-height:1.45}
+.donutrow{display:flex;align-items:center;justify-content:center;gap:clamp(1.8rem,4.5vw,3.6rem);flex-wrap:wrap}
+.donutrow svg{width:clamp(150px,17vw,196px);height:auto;filter:drop-shadow(0 12px 18px rgba(20,45,75,.16))}
+.dleg{font-size:.9rem;color:var(--body);line-height:2.3}
+.dleg b{color:var(--ink);font-weight:800}
+.dleg .dt{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:.6rem;vertical-align:middle}
+
+/* ===== COMPARISON ===== */
+.cmp{display:grid;grid-template-columns:1fr 1px 1fr;gap:clamp(1.4rem,3.5vw,3rem);align-items:start;width:100%;max-width:1060px;margin:0 auto}
+.cmp-div{align-self:stretch;background:var(--line)}
+.cmp-head{display:inline-flex;align-items:center;border-radius:999px;padding:.55rem 1.7rem;font-weight:800;font-size:clamp(1rem,1.6vw,1.3rem);margin-bottom:clamp(.8rem,1.6vw,1.3rem)}
+.cmp-head.old{background:var(--card);color:var(--body);border:1.5px solid var(--line)}
+.cmp-head.new{background:var(--s3);color:#fff;box-shadow:0 10px 22px -10px var(--s3)}
+.cmp-li{display:flex;gap:.85rem;padding:clamp(.78rem,1.45vw,1.1rem) 0;border-bottom:1px solid var(--line)}
+.cmp-li:last-child{border-bottom:none}
+.cmp-li .cico{width:clamp(38px,3.8vw,46px);height:clamp(38px,3.8vw,46px);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cmp-li.old .cico{background:#e6ecec;color:var(--body)}
+.cmp-li.new .cico{background:var(--s1);color:#fff}
+.cmp-li .cico .glyph{width:52%;height:52%}
+.cmp-li h4{font-weight:800;font-size:clamp(.95rem,1.3vw,1.1rem);line-height:1.2}
+.cmp-li p{font-size:clamp(.74rem,.92vw,.84rem);color:var(--body);line-height:1.45;margin-top:.18rem}
+
+/* ===== PHASE FLOW (chevron arrows) ===== */
+.phases{display:flex;align-items:flex-start;justify-content:center;width:100%;max-width:1180px;margin:0 auto}
+.phase{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 clamp(.4rem,1vw,.9rem)}
+.phase .plab{font-weight:800;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;padding:.34em .95em;border-radius:999px;margin-bottom:clamp(1.2rem,3vh,2rem)}
+.phase:nth-child(1) .plab{background:var(--s1)}.phase:nth-child(3) .plab{background:var(--s2)}.phase:nth-child(5) .plab{background:var(--s3)}.phase:nth-child(7) .plab{background:var(--s4)}.phase:nth-child(9) .plab{background:var(--s6)}
+.phase .pic{width:clamp(56px,5.8vw,72px);height:clamp(56px,5.8vw,72px);border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;box-shadow:0 16px 30px -14px rgba(20,50,90,.34);margin-bottom:clamp(1rem,2.6vh,1.7rem)}
+.phase .pic .glyph{width:46%;height:46%}
+.phase:nth-child(1) .pic{color:var(--s1)}.phase:nth-child(3) .pic{color:var(--s2)}.phase:nth-child(5) .pic{color:var(--s3)}.phase:nth-child(7) .pic{color:var(--s4)}.phase:nth-child(9) .pic{color:var(--s6)}
+.phase h4{font-weight:800;font-size:clamp(.92rem,1.2vw,1.1rem);margin-bottom:.4rem;line-height:1.2}
+.phase p{font-size:clamp(.74rem,.92vw,.84rem);color:var(--body);line-height:1.45;max-width:20ch}
+.parrow{flex:none;align-self:flex-start;margin-top:clamp(62px,9vh,98px);width:clamp(30px,3vw,40px);height:clamp(30px,3vw,40px);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 10px 18px -7px rgba(20,50,90,.4)}
+.parrow .glyph{width:48%;height:48%}
+.parrow.a1{background:var(--s1)}.parrow.a2{background:var(--s2)}.parrow.a3{background:var(--s4)}.parrow.a4{background:var(--s6)}
+
+/* ===== SEMICIRCLE ARCH ===== */
+.archwrap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(.8rem,2.4vw,2.2rem);width:100%;max-width:1200px;margin:0 auto}
+.archcol{display:flex;flex-direction:column;gap:clamp(1.4rem,5vh,3rem)}
+.archcol.left{align-items:flex-end;text-align:right}
+.archcol.right{align-items:flex-start;text-align:left}
+.archlab{max-width:248px}
+.archcol.left .archlab{border-right:3px solid;padding-right:1rem}
+.archcol.right .archlab{border-left:3px solid;padding-left:1rem}
+.archcol.left .archlab:nth-child(1){border-color:var(--s1)}.archcol.left .archlab:nth-child(2){border-color:var(--s2)}.archcol.left .archlab:nth-child(3){border-color:var(--s3)}
+.archcol.right .archlab:nth-child(1){border-color:var(--s4)}.archcol.right .archlab:nth-child(2){border-color:var(--s5)}.archcol.right .archlab:nth-child(3){border-color:var(--s6)}
+.archlab h4{font-weight:800;font-size:clamp(.95rem,1.25vw,1.16rem);line-height:1.2;margin-bottom:.25rem}
+.archlab p{font-size:clamp(.74rem,.92vw,.84rem);color:var(--body);line-height:1.42}
+.archsvg{width:clamp(330px,37vw,500px)}
+.archsvg svg{width:100%;height:auto;display:block;overflow:visible;filter:drop-shadow(0 16px 24px rgba(20,45,75,.22))}
+
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.reveal{opacity:0;transition:opacity .55s ease}
+.slide.in .reveal,.slide.visible .reveal{opacity:1}
+.slide.in .r1{transition-delay:.06s}.slide.in .r2{transition-delay:.12s}.slide.in .r3{transition-delay:.18s}.slide.in .r4{transition-delay:.24s}.slide.in .r5{transition-delay:.3s}.slide.in .r6{transition-delay:.36s}
+.radarwrap{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.5rem,4vw,3.4rem);align-items:center;width:100%;max-width:1080px;margin:0 auto}
+.radchart svg{width:100%;height:auto;display:block;overflow:visible}
+.radside{display:flex;flex-direction:column;gap:clamp(.55rem,1.5vh,.95rem)}
+.radlegend{display:flex;gap:1.4rem;margin-bottom:.4rem}
+.rl{display:flex;align-items:center;gap:.5rem;font-weight:700;font-size:.9rem;color:var(--ink)}
+.rl::before{content:"";width:14px;height:14px;border-radius:4px}
+.rl-cur::before{background:var(--s6)}.rl-tgt::before{background:var(--s1)}
+.rdrow{display:grid;grid-template-columns:1fr;gap:.3rem;padding:.5rem 0;border-bottom:1px solid var(--line)}
+.rdname{font-weight:700;font-size:clamp(.88rem,1.1vw,1rem);color:var(--ink)}
+.rdbar{height:8px;border-radius:999px;background:#e7ecf3;overflow:hidden}
+.rdbar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--s1),var(--s4))}
+.rdval{font-size:.82rem;color:var(--body)}.rdval b{color:var(--s6)}.rdval em{font-style:normal;color:var(--s2);font-weight:800}
+</style>
+</head>
+<body>
+
+<!-- ===== SLIDE 1 — COVER ===== -->
+<section class="slide">
+  <div class="cover">
+    <span class="kick reveal">Chiến lược 2027</span>
+    <h1 class="reveal r1">Lộ trình <em>tăng trưởng</em><br>bền vững</h1>
+    <p class="reveal r2">Khung chiến lược trực quan: từ bối cảnh thị trường đến mục tiêu, giải pháp và kế hoạch hành động cho năm tới.</p>
+    <div class="sweep reveal r3"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+  <div class="foot"><span>Spectrum</span><span class="num">01</span></div>
+</section>
+
+<!-- ===== SLIDE 2 — AGENDA / MỤC LỤC ===== -->
+<section class="slide">
+  <div class="stage">
+    <div class="agenda">
+      <div class="ag-l">
+        <span class="kick reveal">Mục lục</span>
+        <h2 class="reveal r1">Nội dung<br>trình bày</h2>
+        <p class="reveal r2">Năm phần chính dẫn dắt từ bối cảnh đến kế hoạch hành động cụ thể.</p>
+      </div>
+      <div class="aglist">
+        <div class="agitem reveal r1"><div class="agnum">01</div><div><h4>Bối cảnh thị trường</h4><p>Bức tranh tổng quan và những thay đổi gần đây.</p></div><div class="agar"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+        <div class="agitem reveal r2"><div class="agnum">02</div><div><h4>Mục tiêu chiến lược</h4><p>Định hướng và các chỉ số trọng yếu cần đạt.</p></div><div class="agar"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+        <div class="agitem reveal r3"><div class="agnum">03</div><div><h4>Giải pháp đề xuất</h4><p>Cách tiếp cận và giá trị mang lại cho khách hàng.</p></div><div class="agar"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+        <div class="agitem reveal r4"><div class="agnum">04</div><div><h4>Số liệu chứng minh</h4><p>Dữ liệu và kết quả thực tế hỗ trợ luận điểm.</p></div><div class="agar"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+        <div class="agitem reveal r5"><div class="agnum">05</div><div><h4>Lộ trình triển khai</h4><p>Các mốc thời gian và bước hành động kế tiếp.</p></div><div class="agar"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Spectrum</span><span class="num">02</span></div>
+</section>
+
+<!-- ===== SLIDE 3 — PROSE / TEXT + BULLET ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Vì sao thị trường đang thay đổi</h2>
+    <p class="sub">Bốn động lực chính đang tái định hình cách doanh nghiệp tiếp cận khách hàng.</p>
+  </div>
+  <div class="stage">
+    <div class="prose">
+      <p class="lead reveal r1">Hành vi khách hàng dịch chuyển nhanh hơn bao giờ hết. Doanh nghiệp nào nắm bắt được các động lực bên dưới sẽ có lợi thế dẫn đầu trong giai đoạn tới.</p>
+      <div class="blist">
+        <div class="bli reveal r1"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Số hóa toàn diện</h4><p>Phần lớn hành trình mua hàng đã chuyển lên kênh trực tuyến và di động.</p></div></div>
+        <div class="bli reveal r2"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Kỳ vọng cá nhân hóa</h4><p>Khách hàng mong đợi trải nghiệm và thông điệp phù hợp riêng với mình.</p></div></div>
+        <div class="bli reveal r3"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Dữ liệu là trung tâm</h4><p>Quyết định dựa trên dữ liệu giúp tối ưu chi phí và tăng hiệu quả.</p></div></div>
+        <div class="bli reveal r4"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Tốc độ là lợi thế</h4><p>Khả năng phản ứng nhanh với thị trường trở thành yếu tố sống còn.</p></div></div>
+        <div class="bli reveal r5"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Đa kênh liền mạch</h4><p>Khách hàng chuyển đổi mượt mà giữa web, ứng dụng và cửa hàng.</p></div></div>
+        <div class="bli reveal r6"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Minh bạch &amp; trách nhiệm</h4><p>Người tiêu dùng ưu tiên thương hiệu rõ ràng và có trách nhiệm xã hội.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Spectrum</span><span class="num">03</span></div>
+</section>
+
+<!-- ===== SLIDE 5 — SPLIT (TEXT + CHART) ===== -->
+<section class="slide">
+  <div class="stage">
+    <div class="split">
+      <div class="split-text">
+        <h2 class="reveal r1">Tăng trưởng đều qua các quý</h2>
+        <p class="lead reveal r2">Doanh thu duy trì đà tăng ổn định nhờ mở rộng tệp khách hàng và cải thiện tỷ lệ giữ chân.</p>
+        <ul>
+          <li class="reveal r3"><b>+38%</b> tăng trưởng doanh thu năm</li>
+          <li class="reveal r4"><b>5 quý</b> tăng liên tiếp không gián đoạn</li>
+          <li class="reveal r5"><b>92%</b> tỷ lệ khách hàng gắn bó</li>
+        </ul>
+      </div>
+      <div class="chartcard reveal r2">
+        <h5>Doanh thu theo quý (tỷ đồng)</h5>
+        <svg viewBox="0 0 340 220" aria-label="Biểu đồ cột doanh thu">
+          <line x1="20" y1="190" x2="330" y2="190" stroke="var(--line)" stroke-width="2"/>
+          <g font-size="12" font-weight="800" fill="var(--ink)" text-anchor="middle">
+            <rect x="34" y="128" width="42" height="62" rx="6" fill="var(--s1)"/><text x="55" y="118">42</text>
+            <rect x="94" y="104" width="42" height="86" rx="6" fill="var(--s2)"/><text x="115" y="94">58</text>
+            <rect x="154" y="82" width="42" height="108" rx="6" fill="var(--s3)"/><text x="175" y="72">71</text>
+            <rect x="214" y="56" width="42" height="134" rx="6" fill="var(--s4)"/><text x="235" y="46">86</text>
+            <rect x="274" y="34" width="42" height="156" rx="6" fill="var(--s6)"/><text x="295" y="24">98</text>
+          </g>
+          <g font-size="11" font-weight="600" fill="var(--body)" text-anchor="middle">
+            <text x="55" y="207">Q1</text><text x="115" y="207">Q2</text><text x="175" y="207">Q3</text><text x="235" y="207">Q4</text><text x="295" y="207">Q5</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Spectrum</span><span class="num">04</span></div>
+</section>
+
+<!-- ===== SLIDE 6 — S-CURVE VERTICAL ROADMAP ===== -->
+<section class="slide slide--road">
+  <div class="stage">
+    <div class="scwrap">
+      <svg class="sccurve reveal r2" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <defs><linearGradient id="scg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--s1)"/><stop offset=".5" stop-color="var(--s3)"/><stop offset="1" stop-color="var(--s6)"/></linearGradient></defs>
+        <path d="M0,4.5 A31,46 0 0 1 0,96.5" fill="none" stroke="url(#scg)" stroke-width="7" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+      </svg>
+      <div class="sctitle reveal r1">
+        <h2>Nền tảng lộ trình</h2>
+        <p>Các yếu tố then chốt tạo nên một lộ trình dự án thành công.</p>
+      </div>
+      <div class="scrow n1 reveal r1"><div class="schex"><div class="schex-in"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3"/></svg></div></div></div><div class="sccard"><h4>Định hình tầm nhìn</h4><p>Xác định mục tiêu và kết quả mong muốn cho hành trình dự án.</p></div></div>
+      <div class="scrow n2 reveal r2"><div class="schex"><div class="schex-in"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="4.5" rx="1"/><rect x="3" y="15.5" width="6" height="4.5" rx="1"/><rect x="15" y="15.5" width="6" height="4.5" rx="1"/><path d="M12 7.5v4M6 15.5v-2h12v2"/></svg></div></div></div><div class="sccard"><h4>Hoạch định nguồn lực</h4><p>Phân bổ nhân sự, ngân sách và công cụ cần thiết cho quá trình triển khai.</p></div></div>
+      <div class="scrow n3 reveal r3"><div class="schex"><div class="schex-in"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></div></div></div><div class="sccard"><h4>Lập tiến độ</h4><p>Thiết lập mốc thời gian và các cột mốc thực tế cho từng sản phẩm bàn giao.</p></div></div>
+      <div class="scrow n4 reveal r4"><div class="schex"><div class="schex-in"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></div></div></div><div class="sccard"><h4>Đánh giá rủi ro</h4><p>Nhận diện các trở ngại tiềm ẩn và xây dựng phương án dự phòng phù hợp.</p></div></div>
+    </div>
+  </div>
+  <div class="foot"><span>Spectrum</span><span class="num">05</span></div>
+</section>
+
+<!-- ===== SLIDE 6 — PHASE FLOW (chevron arrows) ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Quy trình triển khai</h2>
+    <p class="sub">Năm giai đoạn từ ý tưởng đến vận hành và tối ưu liên tục.</p>
+  </div>
+  <div class="stage">
+    <div class="phases">
+      <div class="phase reveal r1"><div class="plab">Giai đoạn 01</div><div class="pic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 1 4 10.5c-.7.6-1 1.2-1 2H9c0-.8-.3-1.4-1-2A6 6 0 0 1 12 3Z"/></svg></div></div><h4>Ý tưởng</h4><p>Khảo sát nhu cầu và hình thành giải pháp ban đầu.</p></div>
+      <div class="parrow a1 reveal r1"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div></div>
+      <div class="phase reveal r2"><div class="plab">Giai đoạn 02</div><div class="pic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M4 20 20 4"/><path d="M14 4h6v6"/><path d="M4 14v6h6"/></svg></div></div><h4>Thiết kế</h4><p>Phác thảo trải nghiệm và lập kế hoạch chi tiết.</p></div>
+      <div class="parrow a2 reveal r2"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div></div>
+      <div class="phase reveal r3"><div class="plab">Giai đoạn 03</div><div class="pic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13 5l-2 14"/></svg></div></div><h4>Phát triển</h4><p>Xây dựng sản phẩm theo từng phần có kiểm soát.</p></div>
+      <div class="parrow a3 reveal r3"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div></div>
+      <div class="phase reveal r4"><div class="plab">Giai đoạn 04</div><div class="pic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="m8.5 11 2 2 4-4"/></svg></div></div><h4>Kiểm thử</h4><p>Đảm bảo chất lượng và tính ổn định trước khi ra mắt.</p></div>
+      <div class="parrow a4 reveal r4"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div></div>
+      <div class="phase reveal r5"><div class="plab">Giai đoạn 05</div><div class="pic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M4.5 16.5 3 21l4.5-1.5M12 15l-3-3a9 9 0 0 1 9-9 9 9 0 0 1-9 9ZM9 12H5a13 13 0 0 1 2-3M12 15v4a13 13 0 0 0 3-2"/></svg></div></div><h4>Vận hành</h4><p>Triển khai thực tế và tối ưu liên tục theo dữ liệu.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Spectrum</span><span class="num">06</span></div>
+</section>
+
+<!-- ===== SLIDE 7 — TABLE ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">So sánh các gói dịch vụ</h2>
+    <p class="sub">Bảng tổng hợp tính năng và chi phí theo từng gói để dễ lựa chọn.</p>
+  </div>
+  <div class="stage">
+    <div class="tblwrap reveal r1">
+      <table class="tbl">
+        <thead><tr><th>Tiêu chí</th><th>Cơ bản</th><th>Tiêu chuẩn</th><th>Cao cấp</th></tr></thead>
+        <tbody>
+          <tr><td>Chi phí / tháng</td><td class="hl">2,9 tr</td><td class="hl">5,9 tr</td><td class="hl">12 tr</td></tr>
+          <tr><td>Số người dùng</td><td>5</td><td>25</td><td>Không giới hạn</td></tr>
+          <tr><td>Hỗ trợ ưu tiên</td><td><span class="tag bad">Không</span></td><td><span class="tag warn">Giờ hành chính</span></td><td><span class="tag good">24/7</span></td></tr>
+          <tr><td>Báo cáo nâng cao</td><td><span class="tag bad">Không</span></td><td><span class="tag good">Có</span></td><td><span class="tag good">Có</span></td></tr>
+          <tr><td>Tích hợp API</td><td><span class="tag warn">Giới hạn</span></td><td><span class="tag good">Đầy đủ</span></td><td><span class="tag good">Đầy đủ</span></td></tr>
+          <tr><td>Dung lượng lưu trữ</td><td class="hl">10 GB</td><td class="hl">100 GB</td><td class="hl">1 TB</td></tr>
+          <tr><td>Đào tạo &amp; onboarding</td><td><span class="tag bad">Tự phục vụ</span></td><td><span class="tag warn">Trực tuyến</span></td><td><span class="tag good">Chuyên viên riêng</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="foot"><span>Spectrum</span><span class="num">07</span></div>
+</section>
+
+<!-- ===== SLIDE 8 — STATS + DONUT ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Những con số biết nói</h2>
+    <p class="sub">Tổng quan kết quả nổi bật và cơ cấu đóng góp theo từng mảng.</p>
+  </div>
+  <div class="stage">
+    <div class="results">
+      <div class="kpi3">
+        <div class="kbox reveal r1"><div class="kn">+38%</div><div class="kl">Tăng trưởng doanh thu so với cùng kỳ</div></div>
+        <div class="kbox reveal r2"><div class="kn">1,2M</div><div class="kl">Người dùng đang hoạt động hàng tháng</div></div>
+        <div class="kbox reveal r3"><div class="kn">92%</div><div class="kl">Tỷ lệ khách hàng tiếp tục gắn bó</div></div>
+        <div class="kbox reveal r4"><div class="kn">4,8/5</div><div class="kl">Điểm đánh giá hài lòng trung bình</div></div>
+      </div>
+      <div class="donutrow reveal r2">
+        <svg viewBox="0 0 130 130" aria-label="Cơ cấu doanh thu">
+          <circle cx="65" cy="65" r="50" fill="none" stroke="#dbe4ee" stroke-width="20"/>
+          <circle cx="65" cy="65" r="50" fill="none" stroke="var(--s1)" stroke-width="20" stroke-dasharray="173 314" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+          <circle cx="65" cy="65" r="50" fill="none" stroke="var(--s3)" stroke-width="20" stroke-dasharray="94 314" stroke-dashoffset="-173" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+          <text x="65" y="61" text-anchor="middle" fill="var(--ink)" font-size="21" font-weight="800">100%</text>
+          <text x="65" y="80" text-anchor="middle" fill="var(--body)" font-size="9">Tổng cơ cấu</text>
+        </svg>
+        <div class="dleg">
+          <div><span class="dt" style="background:var(--s1)"></span><b>55%</b> &nbsp;Sản phẩm cốt lõi</div>
+          <div><span class="dt" style="background:var(--s3)"></span><b>30%</b> &nbsp;Dịch vụ mới</div>
+          <div><span class="dt" style="background:#dbe4ee"></span><b>15%</b> &nbsp;Mảng khác</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Spectrum</span><span class="num">08</span></div>
+</section>
+
+<!-- ===== SLIDE 9 — COMPARISON ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Cách làm cũ và cách làm mới</h2>
+    <p class="sub">Vì sao mô hình mới mang lại hiệu quả vượt trội so với cách tiếp cận truyền thống.</p>
+  </div>
+  <div class="stage">
+    <div class="cmp">
+      <div>
+        <span class="cmp-head old reveal r1">Truyền thống</span>
+        <div class="cmp-li old reveal r1"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Quyết định theo cảm tính</h4><p>Dựa vào kinh nghiệm cá nhân, thiếu dữ liệu kiểm chứng.</p></div></div>
+        <div class="cmp-li old reveal r2"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Triển khai chậm</h4><p>Quy trình thủ công, nhiều bước phê duyệt kéo dài.</p></div></div>
+        <div class="cmp-li old reveal r3"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Khó đo lường</h4><p>Kết quả mơ hồ, không có chỉ số theo dõi rõ ràng.</p></div></div>
+        <div class="cmp-li old reveal r4"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Phân tán nguồn lực</h4><p>Đầu tư dàn trải nhiều hướng, thiếu trọng tâm ưu tiên.</p></div></div>
+      </div>
+      <div class="cmp-div reveal r1"></div>
+      <div>
+        <span class="cmp-head new reveal r1">Hiện đại</span>
+        <div class="cmp-li new reveal r1"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Dựa trên dữ liệu</h4><p>Mọi quyết định được kiểm chứng bằng số liệu thực tế.</p></div></div>
+        <div class="cmp-li new reveal r2"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Triển khai nhanh</h4><p>Tự động hóa quy trình, rút ngắn thời gian ra mắt.</p></div></div>
+        <div class="cmp-li new reveal r3"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Đo lường liên tục</h4><p>Theo dõi chỉ số thời gian thực để tối ưu kịp thời.</p></div></div>
+        <div class="cmp-li new reveal r4"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Tập trung ưu tiên</h4><p>Dồn nguồn lực vào những việc tạo giá trị lớn nhất.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Spectrum</span><span class="num">09</span></div>
+</section>
+
+<!-- ===== SLIDE 10 — RADAR ===== -->
+<section class="slide">
+  <div class="head"><h2 class="title">Năng lực vận hành: hiện tại &amp; mục tiêu</h2><p class="sub">Khoảng cách giữa năng lực hiện tại và mục tiêu trên năm phương diện cốt lõi.</p></div>
+  <div class="stage">
+    <div class="radarwrap">
+      <div class="radchart reveal r1"><svg viewBox="0 0 600 446" aria-hidden="true"><polygon points="300.0,175.0 342.8,206.1 326.5,256.4 273.5,256.4 257.2,206.1" fill="none" stroke="var(--line)" stroke-width="1.2"/><polygon points="300.0,130.0 385.6,192.2 352.9,292.8 247.1,292.8 214.4,192.2" fill="none" stroke="var(--line)" stroke-width="1.2"/><polygon points="300.0,85.0 428.4,178.3 379.4,329.2 220.6,329.2 171.6,178.3" fill="none" stroke="var(--line)" stroke-width="1.2"/><polygon points="300.0,40.0 471.2,164.4 405.8,365.6 194.2,365.6 128.8,164.4" fill="none" stroke="var(--line)" stroke-width="1.2"/><line x1="300" y1="220" x2="300.0" y2="40.0" stroke="var(--line)" stroke-width="1.2"/><line x1="300" y1="220" x2="471.2" y2="164.4" stroke="var(--line)" stroke-width="1.2"/><line x1="300" y1="220" x2="405.8" y2="365.6" stroke="var(--line)" stroke-width="1.2"/><line x1="300" y1="220" x2="194.2" y2="365.6" stroke="var(--line)" stroke-width="1.2"/><line x1="300" y1="220" x2="128.8" y2="164.4" stroke="var(--line)" stroke-width="1.2"/><polygon points="300.0,58.0 447.2,172.2 382.5,333.6 204.8,351.1 139.1,167.7" fill="var(--s1)" fill-opacity=".16" stroke="var(--s1)" stroke-width="3"/><polygon points="300.0,121.0 406.1,185.5 348.7,287.0 245.0,295.7 197.3,186.6" fill="var(--s6)" fill-opacity=".26" stroke="var(--s6)" stroke-width="3"/><circle cx="300.0" cy="58.0" r="5.5" fill="#fff" stroke="var(--s1)" stroke-width="3"/><circle cx="447.2" cy="172.2" r="5.5" fill="#fff" stroke="var(--s1)" stroke-width="3"/><circle cx="382.5" cy="333.6" r="5.5" fill="#fff" stroke="var(--s1)" stroke-width="3"/><circle cx="204.8" cy="351.1" r="5.5" fill="#fff" stroke="var(--s1)" stroke-width="3"/><circle cx="139.1" cy="167.7" r="5.5" fill="#fff" stroke="var(--s1)" stroke-width="3"/><circle cx="300.0" cy="121.0" r="5.5" fill="#fff" stroke="var(--s6)" stroke-width="3"/><circle cx="406.1" cy="185.5" r="5.5" fill="#fff" stroke="var(--s6)" stroke-width="3"/><circle cx="348.7" cy="287.0" r="5.5" fill="#fff" stroke="var(--s6)" stroke-width="3"/><circle cx="245.0" cy="295.7" r="5.5" fill="#fff" stroke="var(--s6)" stroke-width="3"/><circle cx="197.3" cy="186.6" r="5.5" fill="#fff" stroke="var(--s6)" stroke-width="3"/><text x="300.0" y="16.0" fill="var(--ink)" font-size="17" font-weight="700" text-anchor="middle" dominant-baseline="auto">Tốc độ</text><text x="494.0" y="157.0" fill="var(--ink)" font-size="17" font-weight="700" text-anchor="start" dominant-baseline="auto">Chất lượng</text><text x="419.9" y="385.0" fill="var(--ink)" font-size="17" font-weight="700" text-anchor="start" dominant-baseline="hanging">Chi phí</text><text x="180.1" y="385.0" fill="var(--ink)" font-size="17" font-weight="700" text-anchor="end" dominant-baseline="hanging">Mở rộng</text><text x="106.0" y="157.0" fill="var(--ink)" font-size="17" font-weight="700" text-anchor="end" dominant-baseline="auto">Hài lòng KH</text></svg></div>
+      <div class="radside">
+        <div class="radlegend"><span class="rl rl-cur">Hiện tại</span><span class="rl rl-tgt">Mục tiêu</span></div>
+        <div class="rdrow"><div class="rdname">Tốc độ xử lý</div><div class="rdbar"><span style="width:55%"></span></div><div class="rdval"><b>55%</b> → <em>90%</em></div></div><div class="rdrow"><div class="rdname">Chất lượng đầu ra</div><div class="rdbar"><span style="width:62%"></span></div><div class="rdval"><b>62%</b> → <em>86%</em></div></div><div class="rdrow"><div class="rdname">Tối ưu chi phí</div><div class="rdbar"><span style="width:46%"></span></div><div class="rdval"><b>46%</b> → <em>78%</em></div></div><div class="rdrow"><div class="rdname">Khả năng mở rộng</div><div class="rdbar"><span style="width:52%"></span></div><div class="rdval"><b>52%</b> → <em>90%</em></div></div><div class="rdrow"><div class="rdname">Hài lòng khách hàng</div><div class="rdbar"><span style="width:60%"></span></div><div class="rdval"><b>60%</b> → <em>94%</em></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Spectrum</span><span class="num">10</span></div>
+</section>
+
+<!-- ===== SLIDE 11 — CLOSING ===== -->
+<section class="slide">
+  <div class="cover">
+    <span class="kick reveal">Cảm ơn</span>
+    <h1 class="reveal r1">Cùng nhau<br><em>hiện thực hóa</em></h1>
+    <p class="reveal r2">Mọi hành trình lớn đều bắt đầu từ một bước đi cụ thể. Hãy bắt đầu ngay hôm nay.</p>
+    <div class="cend reveal r3">
+      <span><b>Email</b>&nbsp;&nbsp;hello@spectrum.vn</span>
+      <span><b>Website</b>&nbsp;&nbsp;www.spectrum.vn</span>
+    </div>
+    <div class="sweep reveal r4"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+  <div class="foot"><span>Spectrum</span><span class="num">11</span></div>
+</section>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.3});
+document.querySelectorAll('.slide').forEach(function(s){io.observe(s)});
+</script>
+<script>/*pv-preview-mode*/(function(){if(location.hash!=='#preview')return;
+var de=document.documentElement;
+var st=document.createElement('style');st.textContent='::-webkit-scrollbar{display:none}html{scrollbar-width:none!important}';document.head.appendChild(st);
+de.style.scrollSnapType='none';
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+var DWELL=1400;
+function ih(){return innerHeight;}
+function n(){return Math.max(1,Math.round(de.scrollHeight/ih()));}
+var i=0;
+function show(idx,smooth){de.style.scrollBehavior=(smooth&&!reduce)?'smooth':'auto';scrollTo(0,idx*ih());}
+function tick(){var c=n();var ni=(i+1)%c;show(ni,ni!==0);i=ni;}
+setTimeout(function(){setInterval(tick,DWELL);},DWELL);})();</script>
+</body>
+</html>

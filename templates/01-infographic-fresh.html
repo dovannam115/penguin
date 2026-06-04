@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 · Infographic Fresh</title>
+<!--
+  ============================================================
+  STYLE: infographic nền sáng (light-first), tông xanh lá → teal → navy,
+  điểm nhấn coral. Card trắng bo góc + shadow mềm, icon line trắng trong
+  khối màu, số trong badge — phong cách Canva infographic.
+
+  CÁCH THẢ ẢNH: mỗi vùng ảnh là 1 thẻ .duo.
+      <div class="duo r">
+        <img src="anh-cua-anh.jpg" alt="">
+      </div>
+  Thêm class .circle → crop tròn. Không có <img> → hiện placeholder.
+
+  ĐỔI MÀU 1 KHỐI: gắn class .c-lime / .c-emerald / .c-teal / .c-petrol /
+  .c-navy / .c-coral lên phần tử — toàn bộ icon/số/viền của khối đổi theo.
+  ============================================================
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+:root{
+  --ink:#16191f;
+  --base:#eef1f8;        /* nền lavender sáng */
+  --card:#ffffff;
+  --muted:#5b6478;
+  --line:#dfe3ee;
+
+  /* dải thương hiệu xanh lá → teal → navy (đã tinh chỉnh, dịu lime chói) */
+  --lime:#46c14f;
+  --emerald:#15a34a;
+  --teal:#0f8a8c;
+  --petrol:#0e4a5c;
+  --navy:#0d1f4a;
+  --coral:#ef5350;       /* điểm nhấn đỏ/coral */
+
+  --lime-t:#dcf3de;
+  --emerald-t:#d6f0e0;
+  --teal-t:#d4ecee;
+  --petrol-t:#dbe7eb;
+  --navy-t:#dde3f1;
+  --coral-t:#fde7e7;
+
+  --pad: clamp(2rem,5.2vw,4.2rem);
+  --display: clamp(2.6rem,6.5vw,5rem);
+  --h1: clamp(1.7rem,3.6vw,2.9rem);
+  --h2: clamp(1.15rem,1.9vw,1.55rem);
+  --body: clamp(.95rem,1.35vw,1.08rem);
+  --kicker: clamp(.68rem,.9vw,.8rem);
+  --cap: clamp(.74rem,.95vw,.86rem);
+  --radius:20px;
+  --radius-sm:14px;
+  --shadow:0 10px 30px -14px rgba(16,28,60,.28);
+  --shadow-sm:0 6px 20px -10px rgba(16,28,60,.22);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:"Be Vietnam Pro",system-ui,sans-serif;background:var(--base);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+/* color tokens (đặt lên 1 khối để đổi cả icon/số/viền) */
+.c-lime{--c:var(--lime);--ct:var(--lime-t)}
+.c-emerald{--c:var(--emerald);--ct:var(--emerald-t)}
+.c-teal{--c:var(--teal);--ct:var(--teal-t)}
+.c-petrol{--c:var(--petrol);--ct:var(--petrol-t)}
+.c-navy{--c:var(--navy);--ct:var(--navy-t)}
+.c-coral{--c:var(--coral);--ct:var(--coral-t)}
+
+/* ---- slide shell ---- */
+.slide{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start;background:var(--base)}
+.pad{padding:var(--pad)}
+.center{display:flex;flex-direction:column;justify-content:center;height:100%}
+.head-c{text-align:center;max-width:60ch;margin:0 auto}
+
+/* ---- typography ---- */
+.web{position:absolute;top:var(--pad);right:var(--pad);font-size:var(--cap);letter-spacing:.02em;z-index:5;color:var(--muted)}
+.kicker{display:inline-flex;align-items:center;gap:.45em;font-weight:700;font-size:var(--kicker);letter-spacing:.16em;text-transform:uppercase;color:var(--emerald);background:var(--emerald-t);padding:.45em 1.05em;border-radius:999px}
+.display{font-weight:800;font-size:var(--display);line-height:.98;letter-spacing:-.03em}
+.h1{font-weight:800;font-size:var(--h1);line-height:1.05;letter-spacing:-.025em}
+.h2{font-weight:700;font-size:var(--h2);line-height:1.15;letter-spacing:-.01em}
+.lead{font-size:var(--body);line-height:1.6;font-weight:400;color:var(--muted);max-width:52ch}
+.sub-c{font-size:var(--body);line-height:1.55;color:var(--muted);max-width:60ch;margin:.6rem auto 0}
+.label{font-size:var(--cap);letter-spacing:.04em;color:var(--muted);font-weight:500}
+.footer{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(var(--pad)*.5);display:flex;justify-content:space-between;align-items:center;font-size:var(--cap);z-index:5;color:var(--muted)}
+.footer .num{font-weight:800;color:var(--emerald)}
+
+/* ---- image frames ---- */
+.duo{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--teal),var(--navy));
+  --tint:.55;--tint-color:#0f8a8c;--obj-pos:50% 50%;--obj-scale:1}
+.duo>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--obj-pos);
+  transform:scale(var(--obj-scale));transform-origin:center;filter:grayscale(var(--tint));opacity:var(--img-opacity,1);pointer-events:none;z-index:1}
+.duo>[data-tint]{position:absolute;inset:0;background:var(--tint-color);opacity:var(--tint);mix-blend-mode:multiply;pointer-events:none;z-index:2}
+.duo .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.5rem;
+  z-index:4;color:rgba(255,255,255,.7);font-size:var(--cap);letter-spacing:.05em;pointer-events:none;text-align:center}
+.duo .ph svg{width:34px;height:34px;opacity:.8}
+.duo:has(img) .ph{display:none}
+.duo.circle{border-radius:50%}
+.duo.r{border-radius:var(--radius)}
+
+/* ---- cards ---- */
+.card{background:var(--card);border-radius:var(--radius);padding:clamp(1.2rem,2.2vw,1.8rem);box-shadow:var(--shadow-sm)}
+
+/* round icon chip */
+.chip{display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--c,var(--emerald));color:#fff;flex-shrink:0;box-shadow:0 8px 18px -8px var(--c,var(--emerald))}
+.chip svg{width:55%;height:55%}
+
+/* ===== slide 2 · PROCESS 5 BƯỚC ===== */
+.proc{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(.7rem,1.3vw,1.1rem);position:relative;margin-top:clamp(2.8rem,4.5vw,3.8rem)}
+.proc-line{position:absolute;top:0;left:10%;right:10%;height:2px;background:repeating-linear-gradient(90deg,#c4ccdc 0 7px,transparent 7px 15px);z-index:0}
+.proc-card{position:relative;z-index:1;background:var(--card);border-radius:var(--radius);padding:clamp(2.4rem,3vw,2.9rem) clamp(.85rem,1.2vw,1.15rem) clamp(1.1rem,1.6vw,1.4rem);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;align-items:center;text-align:center;gap:.45rem;border-top:4px solid var(--c)}
+.proc-ico{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);width:clamp(50px,5.2vw,62px);height:clamp(50px,5.2vw,62px);z-index:3}
+.proc-card h3{font-weight:700;font-size:clamp(.92rem,1.35vw,1.05rem);letter-spacing:-.01em}
+.proc-card p{font-size:var(--cap);color:var(--muted);line-height:1.5}
+.proc-num{font-weight:800;font-size:clamp(1.7rem,2.6vw,2.4rem);color:var(--c);line-height:1;margin-top:.4rem;letter-spacing:-.02em}
+
+/* ===== slide 3 · ĐIỂM CHẠM 2 CỘT ===== */
+.chan{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1rem,2vw,1.7rem) clamp(1.6rem,3vw,3rem);margin-top:clamp(1.6rem,2.8vw,2.4rem)}
+.chan-item{display:flex;flex-direction:column}
+.chan-top{display:flex;align-items:center;position:relative;z-index:2}
+.chan-ico{width:clamp(46px,4.8vw,56px);height:clamp(46px,4.8vw,56px)}
+.chan-pill{flex:1;display:flex;align-items:center;justify-content:space-between;background:var(--c);color:#fff;border-radius:13px;font-weight:700;font-size:clamp(.95rem,1.35vw,1.1rem);
+  margin-left:clamp(-18px,-1.6vw,-14px);padding:.7rem 1rem .7rem clamp(28px,3vw,38px);min-height:clamp(46px,4.8vw,56px)}
+.chan-pill .n{font-weight:800;font-size:clamp(1.05rem,1.7vw,1.35rem);color:rgba(255,255,255,.78);margin-left:.6rem}
+.chan-body{background:var(--card);border-radius:0 0 16px 16px;box-shadow:var(--shadow-sm);padding:clamp(.85rem,1.4vw,1.15rem) clamp(1.05rem,1.7vw,1.4rem) clamp(.95rem,1.5vw,1.25rem);margin-left:clamp(1.2rem,2.4vw,1.9rem);margin-top:-7px}
+.chan-body p{font-size:var(--cap);color:var(--muted);line-height:1.55}
+
+/* ===== slide 4 · PUZZLE 2x2 ===== */
+.puz-wrap{display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(1.6rem,4vw,4rem);align-items:center;margin-top:clamp(1rem,2vw,1.6rem)}
+.puz{position:relative;width:clamp(220px,26vw,320px);margin:0 auto;transform:rotate(7deg)}
+.puz-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,1vw,12px)}
+.puz-tile{aspect-ratio:1;border-radius:24px;background:var(--c);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 30px -14px var(--c)}
+.puz-chip{width:46%;aspect-ratio:1;background:#fff;border-radius:15px;display:flex;align-items:center;justify-content:center;transform:rotate(-7deg);color:var(--ink)}
+.puz-chip svg{width:52%;height:52%}
+.puz-list{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.2rem,2.4vw,2rem) clamp(1.4rem,3vw,2.4rem)}
+.puz-li .h{display:flex;align-items:center;gap:.55rem;font-weight:700;font-size:clamp(1rem,1.5vw,1.18rem);margin-bottom:.4rem;letter-spacing:-.01em}
+.puz-li .bullet{width:clamp(26px,2.6vw,30px);height:clamp(26px,2.6vw,30px);color:var(--c);flex-shrink:0}
+.puz-li p{font-size:var(--cap);color:var(--muted);line-height:1.55}
+
+/* ===== slide 5 · MATURITY PARALLELOGRAM ===== */
+.mat{display:flex;flex-direction:column;gap:clamp(.7rem,1.2vw,1rem);margin-top:clamp(1.4rem,2.5vw,2rem)}
+.mat-row{position:relative;display:flex;align-items:center;height:clamp(74px,8.5vw,100px)}
+.mat-shape{position:relative;width:clamp(150px,20vw,250px);height:100%;background:var(--c);transform:skewX(-11deg);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 10px 24px -12px var(--c)}
+.mat-shape>svg{transform:skewX(11deg);width:clamp(30px,3.4vw,42px);height:clamp(30px,3.4vw,42px);color:#fff}
+.mat-num{position:relative;margin-left:clamp(-26px,-2.4vw,-20px);z-index:2;width:clamp(54px,6vw,74px);height:clamp(54px,6vw,74px);background:var(--ct);transform:skewX(-11deg);border-radius:11px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm)}
+.mat-num span{transform:skewX(11deg);font-weight:800;font-size:clamp(1.1rem,1.8vw,1.5rem);color:var(--c)}
+.mat-text{flex:1;padding-left:clamp(1.6rem,2.6vw,2.4rem)}
+.mat-text h3{font-weight:700;font-size:clamp(1rem,1.5vw,1.2rem);letter-spacing:-.01em}
+.mat-text p{font-size:var(--cap);color:var(--muted);line-height:1.5;margin-top:.2rem;max-width:64ch}
+
+/* ===== slide 6 · JOURNEY ARC (nodes) ===== */
+.arc{position:relative;display:flex;justify-content:center;margin-top:clamp(1.6rem,3vw,2.6rem)}
+.arc-line{position:absolute;top:50%;left:9%;right:9%;height:2px;transform:translateY(-50%);
+  background:repeating-linear-gradient(90deg,#b9c2d4 0 8px,transparent 8px 17px);z-index:0}
+.arc-node{flex:1;display:grid;grid-template-rows:1fr auto 1fr;align-items:center;justify-items:center;gap:clamp(.6rem,1.2vw,1rem);position:relative;z-index:1}
+.arc-node .circle{grid-row:2;width:clamp(58px,6.4vw,82px);height:clamp(58px,6.4vw,82px)}
+.arc-node .arc-card{width:88%;background:var(--card);border-radius:16px;box-shadow:var(--shadow-sm);padding:clamp(.8rem,1.4vw,1.15rem)}
+.arc-node.up .arc-card{grid-row:1}
+.arc-node.down .arc-card{grid-row:3}
+.arc-card h3{font-weight:700;font-size:clamp(.9rem,1.3vw,1.05rem);margin-bottom:.25rem;letter-spacing:-.01em}
+.arc-card p{font-size:clamp(.7rem,.92vw,.82rem);color:var(--muted);line-height:1.45}
+
+/* ===== slide 7 · BULLSEYE OBJECTIVES ===== */
+.bull{display:grid;grid-template-columns:1fr clamp(210px,24vw,300px) 1fr;align-items:center;gap:clamp(1.2rem,3vw,2.6rem);margin-top:clamp(.6rem,1.4vw,1.2rem)}
+.bull-col{display:flex;flex-direction:column;gap:clamp(1.8rem,3.4vw,3rem)}
+.bull-item{display:flex;gap:.85rem;align-items:flex-start}
+.bull-item.r{flex-direction:row-reverse;text-align:right}
+.bull-item .ico{width:clamp(50px,5.2vw,62px);height:clamp(50px,5.2vw,62px);border:4px solid var(--base);box-shadow:var(--shadow-sm)}
+.bull-item h3{font-weight:700;font-size:clamp(.98rem,1.45vw,1.15rem);letter-spacing:-.01em}
+.bull-item p{font-size:var(--cap);color:var(--muted);line-height:1.5;margin-top:.2rem}
+.target{width:100%;max-width:300px;margin:0 auto;display:block}
+
+/* ===== slide 8 · COMPARISON ===== */
+.cmp{display:grid;grid-template-columns:1fr 1px 1fr;gap:clamp(1.2rem,3vw,2.8rem);align-items:start;margin-top:clamp(1.4rem,2.6vw,2.2rem)}
+.cmp-div{align-self:stretch;background:var(--line)}
+.cmp-head{display:inline-flex;align-items:center;gap:.5rem;border-radius:999px;padding:.6rem 1.7rem;font-weight:800;font-size:clamp(1.05rem,1.7vw,1.35rem);margin-bottom:clamp(.8rem,1.5vw,1.2rem)}
+.cmp-head.old{background:var(--card);color:var(--muted);border:1.5px solid var(--line)}
+.cmp-head.new{background:var(--emerald);color:#fff;box-shadow:0 10px 22px -10px var(--emerald)}
+.cmp-li{display:flex;gap:.75rem;padding:clamp(.7rem,1.2vw,.95rem) 0;border-bottom:1px solid var(--line)}
+.cmp-li:last-child{border-bottom:none}
+.cmp-li .ico{width:clamp(34px,3.6vw,42px);height:clamp(34px,3.6vw,42px);border-radius:11px;background:var(--ct);color:var(--c);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cmp-li .ico svg{width:54%;height:54%}
+.cmp-li h4{font-weight:700;font-size:clamp(.92rem,1.3vw,1.05rem);letter-spacing:-.01em}
+.cmp-li p{font-size:var(--cap);color:var(--muted);line-height:1.45;margin-top:.15rem}
+
+/* ===== slide 9 · KEY NUMBERS + DONUT ===== */
+.kn3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,2vw,1.6rem);margin-top:clamp(1.6rem,2.8vw,2.4rem)}
+.knbox{background:var(--card);border-radius:var(--radius);padding:clamp(1.3rem,2.2vw,1.9rem);box-shadow:var(--shadow-sm);border-top:5px solid var(--c)}
+.knbox .knn{font-weight:800;font-size:clamp(2rem,4vw,3rem);line-height:1;letter-spacing:-.02em;color:var(--c);font-variant-numeric:tabular-nums}
+.knbox .knl{margin-top:.5rem;font-size:var(--cap);color:var(--muted);font-weight:500;line-height:1.5}
+.knrow{display:flex;align-items:center;justify-content:center;gap:clamp(1.6rem,4vw,3.4rem);margin-top:clamp(1.6rem,2.8vw,2.4rem);flex-wrap:wrap}
+.knrow svg{width:clamp(150px,16vw,196px);height:auto;filter:var(--shadow-sm)}
+.knleg{font-size:var(--cap);color:var(--muted);line-height:2.3;font-weight:500}
+.knleg b{color:var(--ink);font-weight:800;font-variant-numeric:tabular-nums}
+.knleg .knd{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:.6rem;vertical-align:middle}
+
+/* ---- layout helpers ---- */
+.split{display:grid;height:100%}
+.s5050{grid-template-columns:1fr 1fr}
+.s6040{grid-template-columns:1.4fr 1fr}
+.blob{position:absolute;z-index:0;pointer-events:none;border-radius:50%}
+
+/* ---- reveal animation ---- */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+.slide.in .reveal{opacity:1;transform:none}
+.slide.in .r1{transition-delay:.05s}.slide.in .r2{transition-delay:.12s}
+.slide.in .r3{transition-delay:.19s}.slide.in .r4{transition-delay:.26s}
+.slide.in .r5{transition-delay:.33s}.slide.in .r6{transition-delay:.4s}
+
+/* ---- responsive ---- */
+@media(max-width:820px){
+  .split{grid-template-columns:1fr!important;grid-template-rows:auto 1fr}
+  .proc{grid-template-columns:1fr 1fr;gap:2.4rem .8rem}
+  .proc-line{display:none}
+  .chan{grid-template-columns:1fr}
+  .puz-wrap{grid-template-columns:1fr}
+  .puz-list{grid-template-columns:1fr}
+  .arc{flex-direction:column}
+  .arc-node{grid-template-rows:auto;width:100%}
+  .arc-line{display:none}
+  .bull{grid-template-columns:1fr}
+  .cmp{grid-template-columns:1fr}
+  .cmp-div{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<!-- ===== 01 · BÌA ===== -->
+<section class="slide">
+  <div class="blob" style="width:clamp(220px,30vw,420px);height:clamp(220px,30vw,420px);background:var(--lime-t);top:-12%;left:-8%"></div>
+  <div class="blob" style="width:clamp(120px,16vw,220px);height:clamp(120px,16vw,220px);background:var(--teal-t);bottom:-6%;left:18%"></div>
+  
+
+  <div class="pad split s6040" style="align-items:center;gap:clamp(1.6rem,4vw,3.6rem);position:relative;z-index:1">
+    <div>
+      <span class="kicker reveal r1">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><line x1="9" y1="4" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="20"/></svg>
+        Báo cáo trải nghiệm
+      </span>
+      <h1 class="display reveal r2" style="margin-top:1.1rem">Hành Trình<br>Khách Hàng<br><span style="color:var(--emerald)">Số 2025</span></h1>
+      <p class="lead reveal r3" style="margin-top:1.3rem">Bản đồ toàn cảnh các điểm chạm, cảm xúc và cơ hội tối ưu trải nghiệm khách hàng trên mọi kênh số.</p>
+      <div class="reveal r4" style="margin-top:1.8rem;display:flex;align-items:center;gap:1rem">
+        <div style="height:4px;width:clamp(40px,5vw,64px);background:var(--lime);border-radius:999px"></div>
+        <span class="label" style="text-transform:uppercase;letter-spacing:.08em;font-weight:600">Acme · 2025</span>
+      </div>
+    </div>
+
+    <div class="reveal r3" style="position:relative">
+      <div class="duo r" style="height:clamp(260px,40vh,440px);--tint:.5;--tint-color:#0f8a8c">
+        <div class="ph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          Hình ảnh
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <div class="footer"><span>Acme</span><span class="num">01 / 09</span></div>
+</section>
+
+<!-- ===== 02 · QUY TRÌNH 5 GIAI ĐOẠN ===== -->
+<section class="slide">
+  
+  <div class="pad center" style="gap:0">
+    <div class="head-c">
+      <h2 class="h1 reveal r1">Năm Giai Đoạn Trong Hành Trình</h2>
+      <p class="sub-c reveal r2">Từ lúc khách hàng biết đến thương hiệu cho tới khi trở thành người ủng hộ lan tỏa.</p>
+    </div>
+
+    <div class="proc reveal r3">
+      <div class="proc-line"></div>
+      <div class="proc-card c-lime">
+        <div class="chip proc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <h3>Nhận biết</h3>
+        <p>Khách hàng khám phá thương hiệu qua các kênh và điểm chạm đầu tiên.</p>
+        <div class="proc-num">01</div>
+      </div>
+      <div class="proc-card c-emerald">
+        <div class="chip proc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="16 8 14 14 8 16 10 10 16 8"/></svg></div>
+        <h3>Cân nhắc</h3>
+        <p>Tìm hiểu, so sánh sản phẩm với các lựa chọn khác trên thị trường.</p>
+        <div class="proc-num">02</div>
+      </div>
+      <div class="proc-card c-teal">
+        <div class="chip proc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <h3>Quyết định</h3>
+        <p>Ra quyết định mua dựa trên niềm tin và giá trị cảm nhận được.</p>
+        <div class="proc-num">03</div>
+      </div>
+      <div class="proc-card c-petrol">
+        <div class="chip proc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><polyline points="21 3 21 8 16 8"/></svg></div>
+        <h3>Gắn bó</h3>
+        <p>Trải nghiệm hậu mua tốt giúp khách quay lại và mua lặp lại.</p>
+        <div class="proc-num">04</div>
+      </div>
+      <div class="proc-card c-navy">
+        <div class="chip proc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.2 13.4 7 22l5-3 5 3-1.2-8.6"/></svg></div>
+        <h3>Ủng hộ</h3>
+        <p>Khách hài lòng trở thành đại sứ, giới thiệu thương hiệu cho người khác.</p>
+        <div class="proc-num">05</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme</span><span class="num">02 / 09</span></div>
+</section>
+
+<!-- ===== 03 · ĐIỂM CHẠM SỐ (2 CỘT) ===== -->
+<section class="slide">
+  
+  <div class="pad center" style="gap:0">
+    <div class="head-c">
+      <h2 class="h1 reveal r1">Các Điểm Chạm Số</h2>
+      <p class="sub-c reveal r2">Toàn cảnh những kênh khách hàng tương tác với thương hiệu trong môi trường số.</p>
+    </div>
+
+    <div class="chan reveal r3">
+      <div class="chan-item c-emerald">
+        <div class="chan-top">
+          <div class="chip chan-ico" style="transform: translate(-2vw, -0.3vh)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.3 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.4 8.4 0 0 1 21 11.5z"/></svg></div>
+          <div class="chan-pill"><span>Mạng xã hội</span><span class="n">01</span></div>
+        </div>
+        <div class="chan-body"><p>Tương tác qua các nền tảng nơi khách hàng khám phá, chia sẻ và bàn luận về thương hiệu.</p></div>
+      </div>
+      <div class="chan-item c-teal">
+        <div class="chan-top">
+          <div class="chip chan-ico" style="transform: translate(-1.8vw, -0.1vh)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg></div>
+          <div class="chan-pill"><span>Ứng dụng di động</span><span class="n">04</span></div>
+        </div>
+        <div class="chan-body"><p>Truy cập mọi lúc mọi nơi, mang lại trải nghiệm tiện lợi và liền mạch trên thiết bị.</p></div>
+      </div>
+      <div class="chan-item c-lime">
+        <div class="chan-top">
+          <div class="chip chan-ico" style="transform: translate(-2vw, 0.1vh)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg></div>
+          <div class="chan-pill"><span>Email</span><span class="n">02</span></div>
+        </div>
+        <div class="chan-body"><p>Nhắn tin trực tiếp, cá nhân hóa giúp nuôi dưỡng quan hệ và thúc đẩy chuyển đổi.</p></div>
+      </div>
+      <div class="chan-item c-petrol">
+        <div class="chan-top">
+          <div class="chip chan-ico" style="transform: translate(-1.9vw, 0.3vh)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+          <div class="chan-pill"><span>Kết quả tìm kiếm</span><span class="n">05</span></div>
+        </div>
+        <div class="chan-body"><p>Khoảnh khắc khách hàng tìm thấy thương hiệu khi đang tìm giải pháp cho vấn đề.</p></div>
+      </div>
+      <div class="chan-item c-teal">
+        <div class="chan-top">
+          <div class="chip chan-ico" style="transform: translate(-1.9vw, -0.1vh)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/></svg></div>
+          <div class="chan-pill"><span>Website</span><span class="n">03</span></div>
+        </div>
+        <div class="chan-body"><p>Điểm đến số chính, nơi khách khám phá sản phẩm và hoàn tất hành động chuyển đổi.</p></div>
+      </div>
+      <div class="chan-item c-navy">
+        <div class="chan-top">
+          <div class="chip chan-ico" style="transform: translate(-1.9vw, 0.1vh)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+          <div class="chan-pill"><span>Quảng cáo trả phí</span><span class="n">06</span></div>
+        </div>
+        <div class="chan-body"><p>Điểm chạm khuếch đại độ phủ thương hiệu và dẫn lưu lượng mục tiêu chất lượng.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme</span><span class="num">03 / 09</span></div>
+</section>
+
+<!-- ===== 04 · THÀNH PHẦN CỐT LÕI (PUZZLE) ===== -->
+<section class="slide">
+  
+  <div class="pad center" style="gap:0">
+    <div class="puz-wrap">
+      <div class="puz reveal r1">
+        <div class="puz-grid">
+          <div class="puz-tile c-emerald"><div class="puz-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div></div>
+          <div class="puz-tile c-teal"><div class="puz-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></div></div>
+          <div class="puz-tile c-petrol"><div class="puz-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></div></div>
+          <div class="puz-tile c-navy"><div class="puz-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg></div></div>
+        </div>
+      </div>
+
+      <div>
+        <span class="kicker reveal r1"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5z"/><path d="m3 12 9 5 9-5"/></svg>Cấu phần</span>
+        <h2 class="h1 reveal r2" style="margin:.9rem 0 .4rem">Thành Phần Cốt Lõi Của Bản Đồ Hành Trình</h2>
+        <p class="lead reveal r3" style="margin-bottom:clamp(1rem,2vw,1.6rem)">Bốn mảnh ghép kết hợp để tạo nên bức tranh trải nghiệm khách hàng toàn diện.</p>
+
+        <div class="puz-list reveal r4">
+          <div class="puz-li c-emerald">
+            <div class="h"><span class="bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>Chân dung khách hàng</div>
+            <p>Hồ sơ chi tiết các nhóm mục tiêu với hành vi, nhu cầu và điểm đau cụ thể.</p>
+          </div>
+          <div class="puz-li c-teal">
+            <div class="h"><span class="bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg></span>Bản đồ cảm xúc</div>
+            <p>Thấu hiểu cảm xúc, động lực và sự bức xúc của khách suốt hành trình.</p>
+          </div>
+          <div class="puz-li c-petrol">
+            <div class="h"><span class="bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></span>Phân tích điểm chạm</div>
+            <p>Xác định mọi điểm khách hàng tương tác với thương hiệu trên kênh số.</p>
+          </div>
+          <div class="puz-li c-navy">
+            <div class="h"><span class="bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>Tối ưu hành động</div>
+            <p>Cải tiến chiến lược dựa trên insight để nâng trải nghiệm và kết quả.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme</span><span class="num">04 / 09</span></div>
+</section>
+
+<!-- ===== 05 · CẤP ĐỘ TRƯỞNG THÀNH (PARALLELOGRAM) ===== -->
+<section class="slide">
+  
+  <div class="pad center" style="gap:0">
+    <div class="head-c">
+      <h2 class="h1 reveal r1">Các Cấp Độ Trưởng Thành</h2>
+      <p class="sub-c reveal r2">Bốn nấc tiến hóa trong cách doanh nghiệp quản trị và tối ưu hành trình khách hàng.</p>
+    </div>
+
+    <div class="mat">
+      <div class="mat-row c-lime reveal r3">
+        <div class="mat-shape"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V8M12 8a4 4 0 0 1 4-4M12 8a4 4 0 0 0-4-4"/></svg></div>
+        <div class="mat-num"><span>01</span></div>
+        <div class="mat-text"><h3>Nhận biết ban đầu</h3><p>Hiểu cơ bản về hành trình khách, theo dõi hạn chế và ít nỗ lực tối ưu.</p></div>
+      </div>
+      <div class="mat-row c-teal reveal r4">
+        <div class="mat-shape"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="m7 12 2.5-2.5L12 12l4-4"/></svg></div>
+        <div class="mat-num"><span>02</span></div>
+        <div class="mat-text"><h3>Theo dõi có hệ thống</h3><p>Giám sát điểm chạm trọng yếu với chỉ số rõ ràng và quy trình báo cáo định kỳ.</p></div>
+      </div>
+      <div class="mat-row c-petrol reveal r5">
+        <div class="mat-shape"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></div>
+        <div class="mat-num"><span>03</span></div>
+        <div class="mat-text"><h3>Tối ưu tích hợp</h3><p>Phối hợp đa kênh, quyết định dựa trên dữ liệu và cải tiến chủ động.</p></div>
+      </div>
+      <div class="mat-row c-navy reveal r6">
+        <div class="mat-shape"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.2 13.4 7 22l5-3 5 3-1.2-8.6"/></svg></div>
+        <div class="mat-num"><span>04</span></div>
+        <div class="mat-text"><h3>Xuất sắc dự báo</h3><p>Phân tích nâng cao dự đoán nhu cầu, cá nhân hóa sâu và đổi mới liên tục.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme</span><span class="num">05 / 09</span></div>
+</section>
+
+<!-- ===== 06 · CẢM XÚC KHÁCH HÀNG (ARC) ===== -->
+<section class="slide">
+  
+  <div class="pad center" style="gap:0">
+    <div class="head-c">
+      <h2 class="h1 reveal r1">Cảm Xúc Qua Hành Trình</h2>
+      <p class="sub-c reveal r2">Trạng thái cảm xúc khách hàng trải qua từ lúc khám phá đến khi trung thành.</p>
+    </div>
+
+    <div class="arc reveal r3">
+      <div class="arc-line"></div>
+      <div class="arc-node up c-lime">
+        <div class="arc-card"><h3>Tò mò khám phá</h3><p>Hứng thú ban đầu khi phát hiện giải pháp tiềm năng cho vấn đề của mình.</p></div>
+        <div class="chip circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V18h6v-1.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></svg></div>
+      </div>
+      <div class="arc-node down c-emerald">
+        <div class="chip circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></svg></div>
+        <div class="arc-card"><h3>Tự tin tăng dần</h3><p>Niềm tin tăng lên khi khách tìm được thông tin phù hợp và giá trị thực.</p></div>
+      </div>
+      <div class="arc-node up c-teal">
+        <div class="arc-card"><h3>Lo lắng quyết định</h3><p>Chút phân vân trước khi cam kết mua, cần được trấn an và minh bạch.</p></div>
+        <div class="chip circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      </div>
+      <div class="arc-node down c-petrol">
+        <div class="chip circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <div class="arc-card"><h3>Hài lòng nhẹ nhõm</h3><p>Cảm xúc tích cực sau khi mua khi kỳ vọng được đáp ứng và vượt qua.</p></div>
+      </div>
+      <div class="arc-node up c-navy">
+        <div class="arc-card"><h3>Trung thành nhiệt thành</h3><p>Gắn bó tích cực dẫn tới mua lặp lại, giới thiệu và yêu mến thương hiệu.</p></div>
+        <div class="chip circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.2 13.4 7 22l5-3 5 3-1.2-8.6"/></svg></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme</span><span class="num">06 / 09</span></div>
+</section>
+
+<!-- ===== 07 · MỤC TIÊU TRỌNG TÂM (BULLSEYE) ===== -->
+<section class="slide">
+  
+  <div class="pad center" style="gap:0">
+    <div class="head-c">
+      <h2 class="h1 reveal r1">Mục Tiêu Trọng Tâm</h2>
+      <p class="sub-c reveal r2">Những đích đến cốt lõi cần đạt qua việc lập bản đồ và tối ưu hành trình khách hàng.</p>
+    </div>
+
+    <div class="bull">
+      <div class="bull-col reveal r3">
+        <div class="bull-item c-lime">
+          <div class="chip ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9z"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+          <div><h3>Tăng tương tác</h3><p>Nâng tỉ lệ tương tác và thời gian khách dành cho nội dung trên mọi điểm chạm.</p></div>
+        </div>
+        <div class="bull-item c-navy">
+          <div class="chip ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 22 12 12 22 2 12 12 2z"/></svg></div>
+          <div><h3>Tối đa giá trị</h3><p>Đạt giá trị vòng đời khách hàng tối ưu qua trải nghiệm và quan hệ bền vững.</p></div>
+        </div>
+      </div>
+
+      <div class="reveal r4">
+        <svg class="target" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="92" fill="#ef5350"/>
+          <circle cx="100" cy="100" r="70" fill="#ffffff"/>
+          <circle cx="100" cy="100" r="50" fill="#ef5350"/>
+          <circle cx="100" cy="100" r="30" fill="#ffffff"/>
+          <circle cx="100" cy="100" r="20" fill="#0d1f4a"/>
+          <path d="M100 92 L107 100 L100 108 L93 100 Z" fill="#fff"/>
+        </svg>
+      </div>
+
+      <div class="bull-col reveal r5">
+        <div class="bull-item r c-emerald">
+          <div class="chip ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.5"/><circle cx="18" cy="21" r="1.5"/><path d="M2 3h3l2.4 12.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L22 7H6"/></svg></div>
+          <div><h3>Cải thiện chuyển đổi</h3><p>Tăng tỉ lệ khách hoàn tất hành động mong muốn và trở thành khách hàng.</p></div>
+        </div>
+        <div class="bull-item r c-petrol">
+          <div class="chip ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><polyline points="21 3 21 8 16 8"/></svg></div>
+          <div><h3>Nâng cao giữ chân</h3><p>Củng cố lòng trung thành, giảm rời bỏ và khuyến khích mua lặp lại theo thời gian.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme</span><span class="num">07 / 09</span></div>
+</section>
+
+<!-- ===== 08 · SO SÁNH TRUYỀN THỐNG vs HIỆN ĐẠI ===== -->
+<section class="slide">
+  
+  <div class="pad center" style="gap:0">
+    <div class="head-c">
+      <h2 class="h1 reveal r1">Truyền Thống &amp; Hiện Đại</h2>
+      <p class="sub-c reveal r2">So sánh cách tiếp cận marketing cũ với phương pháp lập bản đồ hành trình lấy khách hàng làm trung tâm.</p>
+    </div>
+
+    <div class="cmp">
+      <div class="reveal r3">
+        <div class="cmp-head old">Truyền thống</div>
+        <div class="cmp-li c-navy">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M9 13h.01M9 17h.01"/></svg></div>
+          <div><h4>Lấy thương hiệu làm trung tâm</h4><p>Ưu tiên mục tiêu kinh doanh hơn nhu cầu và mong muốn thực của khách.</p></div>
+        </div>
+        <div class="cmp-li c-navy">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V20l4 2v-9.5L22 3z"/></svg></div>
+          <div><h4>Phễu tuyến tính</h4><p>Mô hình phễu một chiều, giả định đường chuyển đổi đơn giản, dễ đoán.</p></div>
+        </div>
+        <div class="cmp-li c-navy">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+          <div><h4>Kênh rời rạc</h4><p>Các kênh hoạt động độc lập, thiếu phối hợp và dữ liệu xuyên suốt.</p></div>
+        </div>
+      </div>
+
+      <div class="cmp-div reveal r3"></div>
+
+      <div class="reveal r4">
+        <div class="cmp-head new">Hiện đại</div>
+        <div class="cmp-li c-emerald">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div><h4>Lấy khách hàng làm trung tâm</h4><p>Thiết kế quanh việc thấu hiểu và đáp ứng nhu cầu khách ở từng tương tác.</p></div>
+        </div>
+        <div class="cmp-li c-teal">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></div>
+          <div><h4>Hành trình phức hợp</h4><p>Thừa nhận nhiều đường đi phi tuyến với điểm chạm và vòng quyết định đan xen.</p></div>
+        </div>
+        <div class="cmp-li c-lime">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="13"/><line x1="12" y1="20" x2="12" y2="7"/><line x1="18" y1="20" x2="18" y2="10"/></svg></div>
+          <div><h4>Quyết định dựa trên dữ liệu</h4><p>Lựa chọn dẫn dắt bởi insight khách hàng và chỉ số hiệu suất đo lường được.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme</span><span class="num">08 / 09</span></div>
+</section>
+
+<!-- ===== 09 · NHỮNG CON SỐ BIẾT NÓI (KEY NUMBERS + DONUT) ===== -->
+<section class="slide">
+  
+  <div class="pad center" style="gap:0">
+    <div class="head-c">
+      <h2 class="h1 reveal r1">Những Con Số Biết Nói</h2>
+      <p class="sub-c reveal r2">Tổng quan kết quả nổi bật và cơ cấu đóng góp doanh thu theo từng mảng.</p>
+    </div>
+
+    <div class="kn3 reveal r3">
+      <div class="knbox c-emerald"><div class="knn">+38%</div><div class="knl">Tăng trưởng doanh thu so với cùng kỳ</div></div>
+      <div class="knbox c-teal"><div class="knn">1,2M</div><div class="knl">Người dùng đang hoạt động hàng tháng</div></div>
+      <div class="knbox c-navy"><div class="knn">92%</div><div class="knl">Tỷ lệ khách hàng tiếp tục gắn bó</div></div>
+    </div>
+
+    <div class="knrow reveal r4">
+      <svg viewBox="0 0 130 130" role="img" aria-label="Cơ cấu doanh thu">
+        <circle cx="65" cy="65" r="50" fill="none" stroke="var(--line)" stroke-width="20"/>
+        <circle cx="65" cy="65" r="50" fill="none" stroke="var(--emerald)" stroke-width="20" stroke-dasharray="173 314" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+        <circle cx="65" cy="65" r="50" fill="none" stroke="var(--teal)" stroke-width="20" stroke-dasharray="94 314" stroke-dashoffset="-173" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+        <circle cx="65" cy="65" r="50" fill="none" stroke="var(--navy)" stroke-width="20" stroke-dasharray="47 314" stroke-dashoffset="-267" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+        <text x="65" y="61" text-anchor="middle" fill="var(--ink)" font-size="21" font-weight="800">100%</text>
+        <text x="65" y="80" text-anchor="middle" fill="var(--muted)" font-size="9">Tổng cơ cấu</text>
+      </svg>
+      <div class="knleg">
+        <div><span class="knd" style="background:var(--emerald)"></span><b>55%</b> &nbsp;Sản phẩm cốt lõi</div>
+        <div><span class="knd" style="background:var(--teal)"></span><b>30%</b> &nbsp;Dịch vụ mới</div>
+        <div><span class="knd" style="background:var(--navy)"></span><b>15%</b> &nbsp;Mảng khác</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme</span><span class="num">09 / 09</span></div>
+</section>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.3});
+document.querySelectorAll('.slide').forEach(function(s){io.observe(s)});
+var sl=[].slice.call(document.querySelectorAll('.slide'));
+addEventListener('keydown',function(e){var i=sl.findIndex(function(s){return Math.abs(s.getBoundingClientRect().top)<innerHeight/2});
+if(['ArrowDown','ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();if(sl[i+1])sl[i+1].scrollIntoView()}
+if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();if(sl[i-1])sl[i-1].scrollIntoView()}});
+</script>
+<script>/*pv-preview-mode*/(function(){if(location.hash!=='#preview')return;
+var de=document.documentElement;
+var st=document.createElement('style');st.textContent='::-webkit-scrollbar{display:none}html{scrollbar-width:none!important}';document.head.appendChild(st);
+de.style.scrollSnapType='none';
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+var DWELL=1400;
+function ih(){return innerHeight;}
+function n(){return Math.max(1,Math.round(de.scrollHeight/ih()));}
+var i=0;
+function show(idx,smooth){de.style.scrollBehavior=(smooth&&!reduce)?'smooth':'auto';scrollTo(0,idx*ih());}
+function tick(){var c=n();var ni=(i+1)%c;show(ni,ni!==0);i=ni;}
+setTimeout(function(){setInterval(tick,DWELL);},DWELL);})();</script>
+</body>
+</html>

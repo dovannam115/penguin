@@ -1,0 +1,63 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# user runtime data (SQLite db, uploads, auth tokens)
+/.data/
+/password-backup.txt
+
+# Embedded Python runtime — too large for the source repo (~63MB). Developers
+# install Python 3.11+ locally; end-users get it pre-bundled inside the release
+# zip on the Releases page.
+/python-embed/
+
+# Local pack output (release zips live on the Releases page, not in git)
+/Penguin_v*.zip
+
+# In-app updater scratch
+/.update-pending
+/.update-staging/
+/.migrated
+
+# Editor / OS noise
+.vscode/
+.idea/
+Thumbs.db

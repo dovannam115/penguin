@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>18 · Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf7f2; --panel:#ffffff; --ink:#16181d; --muted:#5d6470; --line:#e9e3d8;
+  --blue:#1e40af; --blue-soft:#e6eaf6; --green:#047857; --green-soft:#e3f1ec; --rose:#b3324a; --rose-soft:#f7e6ea;
+  --pad: clamp(1.9rem, 5.5vw, 5rem);
+  --gap: clamp(.9rem, 1.6vw, 1.4rem);
+  --display: clamp(2.4rem, 6vw, 4.8rem);
+  --h1: clamp(1.7rem, 3.6vw, 2.8rem);
+  --body: clamp(1rem, 1.45vw, 1.18rem);
+  --kicker: clamp(.66rem,.92vw,.78rem);
+  --cap: clamp(.66rem,.9vw,.8rem);
+  --radius: 18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:"Be Vietnam Pro",system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.slide{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:var(--pad)}
+.inner{width:100%;max-width:1160px;margin:0 auto}
+.kicker{display:inline-flex;align-items:center;gap:.55rem;font-family:"Space Grotesk";font-size:var(--kicker);font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--blue)}
+.kicker .n{font-family:"Space Grotesk";font-weight:700;background:var(--blue);color:#fff;border-radius:6px;padding:.1rem .45rem}
+.display{font-weight:800;font-size:var(--display);line-height:1.03;letter-spacing:-.025em;margin:.5em 0 .42em}
+.h1{font-weight:800;font-size:var(--h1);line-height:1.1;letter-spacing:-.02em}
+.lead{font-size:var(--body);line-height:1.62;color:var(--muted);max-width:54ch}
+.footer{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(var(--pad)*.5);display:flex;justify-content:space-between;font-size:var(--cap);color:var(--muted);border-top:1px solid var(--line);padding-top:.8rem}
+.footer .num{font-family:"Space Grotesk";font-weight:700;color:var(--ink)}
+.ico{display:inline-flex}
+.ico svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.meta{display:flex;gap:2.2rem;flex-wrap:wrap;margin-top:1.9rem;border-top:1px solid var(--line);padding-top:1.3rem}
+.meta .mi{font-size:var(--cap);color:var(--muted)}
+.meta .mi b{display:block;font-family:"Space Grotesk";font-weight:700;font-size:clamp(1.05rem,1.7vw,1.35rem);color:var(--ink);margin-top:.25rem}
+
+/* problem cards */
+.probs{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);margin-top:2rem}
+.prob{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--rose);border-radius:var(--radius);padding:clamp(1.2rem,2vw,1.7rem)}
+.prob .pi{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;background:var(--rose-soft);color:var(--rose);font-size:1.25rem;margin-bottom:.9rem}
+.prob h3{font-weight:700;font-size:clamp(1.02rem,1.6vw,1.22rem);margin-bottom:.35rem}
+.prob p{font-size:var(--cap);color:var(--muted);line-height:1.6}
+
+/* approach steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);margin-top:2rem;position:relative}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(1.2rem,2vw,1.7rem)}
+.step .sn{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;font-family:"Space Grotesk";font-weight:700;font-size:var(--cap);margin-bottom:.9rem}
+.step h3{font-weight:700;font-size:clamp(1.02rem,1.6vw,1.22rem);margin-bottom:.35rem}
+.step p{font-size:var(--cap);color:var(--muted);line-height:1.6}
+
+/* results before/after */
+.results{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);margin-top:2rem}
+.res{background:var(--green-soft);border:1px solid #cfe7db;border-radius:var(--radius);padding:clamp(1.3rem,2.2vw,1.9rem)}
+.res .rl{font-size:var(--cap);color:#2f5f49;font-weight:600;margin-bottom:.8rem}
+.res .rn{font-family:"Space Grotesk";font-weight:700;font-size:clamp(2rem,4vw,3rem);line-height:1;letter-spacing:-.02em;color:var(--green);display:flex;align-items:baseline;gap:.3rem}
+.res .rn .u{font-size:.4em;color:#2f5f49}
+.res .ba{font-size:var(--cap);color:var(--muted);margin-top:.7rem}
+.res .ba s{color:#a0a6ac}
+
+/* quote */
+.quote{max-width:46ch}
+.quote .qm{font-family:"Space Grotesk";font-weight:700;font-size:4rem;line-height:.6;color:var(--blue)}
+.quote p{font-size:clamp(1.3rem,2.6vw,2rem);line-height:1.35;font-weight:600;letter-spacing:-.01em;margin:.4em 0 1.3rem}
+.quote .who{display:flex;align-items:center;gap:.9rem}
+.quote .av{width:46px;height:46px;border-radius:50%;background:var(--blue-soft);color:var(--blue);display:inline-flex;align-items:center;justify-content:center;font-family:"Space Grotesk";font-weight:700}
+.quote .who b{font-weight:700;display:block}.quote .who span{font-size:var(--cap);color:var(--muted)}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+.slide.in .reveal{opacity:1;transform:none}
+.slide.in .d1{transition-delay:.05s}.slide.in .d2{transition-delay:.11s}.slide.in .d3{transition-delay:.17s}.slide.in .d4{transition-delay:.23s}
+@media(max-width:860px){.probs,.steps,.results{grid-template-columns:1fr}.meta{gap:1.4rem}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<!-- 1 · COVER -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal d1"><span class="n">CASE</span>Câu chuyện khách hàng</div>
+    <h1 class="display reveal d2">Rút ngắn 60% thời gian<br>chốt số mỗi tháng</h1>
+    <p class="lead reveal d3">Cách một đội phân tích thay quy trình thủ công bằng công cụ tự động, để dành thời gian cho việc tạo ra giá trị thật.</p>
+    <div class="meta reveal d4">
+      <div class="mi">Khách hàng<b>Công ty ABC</b></div>
+      <div class="mi">Ngành<b>Tài chính</b></div>
+      <div class="mi">Thời gian<b>8 tuần</b></div>
+    </div>
+  </div>
+  <div class="footer"><span>Case study · ABC</span><span class="num">01</span></div>
+</section>
+
+<!-- 2 · CHALLENGE -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal d1"><span class="n">01</span>Vấn đề</div>
+    <h2 class="h1 reveal d2" style="margin-top:.4em">Quy trình thủ công kéo lùi cả đội</h2>
+    <div class="probs">
+      <div class="prob reveal d2"><div class="pi"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg></span></div><h3>Tốn thời gian</h3><p>Mỗi kỳ chốt số mất nhiều ngày gom và đối chiếu dữ liệu bằng tay.</p></div>
+      <div class="prob reveal d3"><div class="pi"><span class="ico"><svg viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span></div><h3>Dễ sai sót</h3><p>Thao tác lặp lại trên nhiều file làm tăng rủi ro nhầm lẫn số liệu.</p></div>
+      <div class="prob reveal d4"><div class="pi"><span class="ico"><svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></span></div><h3>Khó mở rộng</h3><p>Khối lượng tăng nhưng cách làm cũ không thể theo kịp.</p></div>
+    </div>
+  </div>
+  <div class="footer"><span>Case study · ABC</span><span class="num">02</span></div>
+</section>
+
+<!-- 3 · APPROACH -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal d1"><span class="n">02</span>Cách làm</div>
+    <h2 class="h1 reveal d2" style="margin-top:.4em">Ba bước thay đổi cách vận hành</h2>
+    <div class="steps">
+      <div class="step reveal d2"><div class="sn">1</div><h3>Chuẩn hóa nguồn</h3><p>Gom mọi nguồn dữ liệu rời rạc về một nơi với định dạng thống nhất.</p></div>
+      <div class="step reveal d3"><div class="sn">2</div><h3>Tự động hóa</h3><p>Dựng công cụ xử lý và đối chiếu số liệu chỉ với một thao tác.</p></div>
+      <div class="step reveal d4"><div class="sn">3</div><h3>Kiểm soát chất lượng</h3><p>Thêm bước kiểm tra tự động để bắt lỗi trước khi xuất báo cáo.</p></div>
+    </div>
+  </div>
+  <div class="footer"><span>Case study · ABC</span><span class="num">03</span></div>
+</section>
+
+<!-- 4 · RESULTS -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal d1"><span class="n">03</span>Kết quả</div>
+    <h2 class="h1 reveal d2" style="margin-top:.4em">Thay đổi đo lường được</h2>
+    <div class="results">
+      <div class="res reveal d2"><div class="rl">Thời gian chốt số</div><div class="rn">-60<span class="u">%</span></div><div class="ba">Từ <s>5 ngày</s> còn 2 ngày</div></div>
+      <div class="res reveal d3"><div class="rl">Sai sót thủ công</div><div class="rn">-85<span class="u">%</span></div><div class="ba">Gần như không còn nhầm lẫn</div></div>
+      <div class="res reveal d4"><div class="rl">Năng lực xử lý</div><div class="rn">3<span class="u">×</span></div><div class="ba">Cùng đội ngũ, gấp ba khối lượng</div></div>
+    </div>
+  </div>
+  <div class="footer"><span>Case study · ABC</span><span class="num">04</span></div>
+</section>
+
+<!-- 5 · QUOTE / CLOSING -->
+<section class="slide">
+  <div class="inner">
+    <div class="quote">
+      <div class="qm reveal d1">”</div>
+      <p class="reveal d2">Đội ngũ giờ dành thời gian để phân tích và tư vấn, thay vì loay hoay với bảng tính.</p>
+      <div class="who reveal d3"><span class="av">NM</span><div><b>Nguyễn Minh</b><span>Trưởng phòng Phân tích, ABC</span></div></div>
+    </div>
+  </div>
+  <div class="footer"><span>Case study · ABC</span><span class="num">05</span></div>
+</section>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.3});
+document.querySelectorAll('.slide').forEach(function(s){io.observe(s)});
+var sl=[].slice.call(document.querySelectorAll('.slide'));
+addEventListener('keydown',function(e){var i=sl.findIndex(function(s){return Math.abs(s.getBoundingClientRect().top)<innerHeight/2});
+if(['ArrowDown','ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();if(sl[i+1])sl[i+1].scrollIntoView()}
+if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();if(sl[i-1])sl[i-1].scrollIntoView()}});
+</script>
+<script>/*pv-preview-mode*/(function(){if(location.hash!=='#preview')return;
+var de=document.documentElement;
+var st=document.createElement('style');st.textContent='::-webkit-scrollbar{display:none}html{scrollbar-width:none!important}';document.head.appendChild(st);
+de.style.scrollSnapType='none';
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+var DWELL=1400;
+function ih(){return innerHeight;}
+function n(){return Math.max(1,Math.round(de.scrollHeight/ih()));}
+var i=0;
+function show(idx,smooth){de.style.scrollBehavior=(smooth&&!reduce)?'smooth':'auto';scrollTo(0,idx*ih());}
+function tick(){var c=n();var ni=(i+1)%c;show(ni,ni!==0);i=ni;}
+setTimeout(function(){setInterval(tick,DWELL);},DWELL);})();</script>
+</body>
+</html>

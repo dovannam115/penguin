@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>07 · SaaS Gradient</title>
+<!--
+  ============================================================
+  IMAGE FRAMES — how to drop in your own photos:
+  Each image area is a .duo element. Add an <img> inside and
+  it will be automatically tinted to match the slide palette.
+
+      <div class="duo">
+        <img src="your-photo.jpg" alt="">
+      </div>
+
+  - No <img> present → shows a styled placeholder label.
+  - Add class .circle  → circular crop.
+  - Add class .r       → rounded rectangle (22px radius).
+  - Overlay color/strength is controlled by --tint / --tint-color vars.
+  ============================================================
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+:root{
+  /* core palette */
+  --base:#0b0b14;
+  --base2:#0f0f1e;
+  --base3:#13132a;
+  --indigo:#4f46e5;
+  --violet:#7c3aed;
+  --fuchsia:#db2777;
+  --indigo-soft:rgba(79,70,229,.18);
+  --violet-soft:rgba(124,58,237,.18);
+  --glass-bg:rgba(255,255,255,.045);
+  --glass-border:rgba(255,255,255,.1);
+  --ink:#f0eeff;
+  --muted:rgba(240,238,255,.6);
+  --muted2:rgba(240,238,255,.38);
+
+  /* type scale */
+  --pad: clamp(2rem, 5.5vw, 5rem);
+  --display: clamp(2.8rem, 7.5vw, 5.6rem);
+  --h1: clamp(1.9rem, 4.4vw, 3.4rem);
+  --h2: clamp(1.4rem, 2.8vw, 2.2rem);
+  --stat: clamp(2.2rem, 5vw, 3.8rem);
+  --body: clamp(.98rem, 1.5vw, 1.18rem);
+  --kicker: clamp(.68rem,.95vw,.82rem);
+  --cap: clamp(.7rem,.92vw,.84rem);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:"Be Vietnam Pro",system-ui,sans-serif;background:var(--base);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+/* ---- slides ---- */
+.slide{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start}
+
+/* ---- ambient noise texture via SVG filter ---- */
+.slide::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 120% 80% at 70% -10%,rgba(124,58,237,.22) 0%,transparent 60%),
+  radial-gradient(ellipse 80% 60% at -10% 90%,rgba(79,70,229,.16) 0%,transparent 55%);pointer-events:none;z-index:0}
+
+/* ---- layout helpers ---- */
+.pad{padding:var(--pad)}
+.center{display:flex;flex-direction:column;justify-content:center;height:100%}
+.split{display:grid;height:100%}
+.s5050{grid-template-columns:1fr 1fr}
+.s6040{grid-template-columns:1.5fr 1fr}
+.s4060{grid-template-columns:1fr 1.5fr}
+.cell{position:relative}
+
+/* ---- gradient text ---- */
+.grad{background:linear-gradient(135deg,#818cf8 0%,#a78bfa 40%,#f472b6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.grad-hot{background:linear-gradient(135deg,#a78bfa 0%,#db2777 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ---- typography ---- */
+.web{position:absolute;top:var(--pad);right:var(--pad);font-size:var(--cap);letter-spacing:.02em;color:var(--muted);z-index:5;font-family:"Inter",sans-serif}
+.kicker{display:inline-flex;align-items:center;gap:.45em;font-weight:600;font-size:var(--kicker);letter-spacing:.14em;text-transform:uppercase;
+  background:var(--glass-bg);border:1px solid var(--glass-border);color:rgba(167,139,250,.9);
+  padding:.42em 1em;border-radius:999px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.kicker .dot{width:6px;height:6px;border-radius:50%;background:var(--violet);display:inline-block}
+.display{font-weight:700;font-size:var(--display);line-height:1;letter-spacing:-.03em}
+.h1{font-weight:700;font-size:var(--h1);line-height:1.06;letter-spacing:-.02em}
+.h2{font-weight:600;font-size:var(--h2);line-height:1.1;letter-spacing:-.015em}
+.lead{font-size:var(--body);line-height:1.65;color:var(--muted);max-width:44ch;font-weight:400}
+.cap{font-size:var(--cap);line-height:1.65;color:var(--muted)}
+
+/* ---- footer ---- */
+.footer{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(var(--pad)*.5);
+  display:flex;justify-content:space-between;font-size:var(--cap);color:var(--muted2);z-index:5;
+  font-family:"Inter",sans-serif;letter-spacing:.02em}
+.footer .num{font-weight:600;background:linear-gradient(135deg,#818cf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ---- glassy cards ---- */
+.glass{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:20px;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.glow{box-shadow:0 0 0 1px rgba(124,58,237,.25),0 8px 40px rgba(79,70,229,.18)}
+
+/* ---- IMAGE FRAMES — VERBATIM from 05-green-overlay.html ---- */
+.duo{position:relative;overflow:hidden;background:linear-gradient(135deg,#1e1b4b,#0b0b14);
+  --tint:.8;--tint-color:#7c3aed;--obj-pos:50% 50%;--obj-scale:1}
+.duo>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--obj-pos);
+  transform:scale(var(--obj-scale));transform-origin:center;filter:grayscale(var(--tint));opacity:var(--img-opacity,1);pointer-events:none;z-index:1}
+.duo>[data-tint]{position:absolute;inset:0;background:var(--tint-color);opacity:var(--tint);mix-blend-mode:multiply;pointer-events:none;z-index:2}
+.duo .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.5rem;
+  z-index:4;color:rgba(240,238,255,.45);font-size:var(--cap);letter-spacing:.05em;pointer-events:none;text-align:center}
+.duo .ph svg{width:34px;height:34px;opacity:.7}
+.duo:has(img) .ph{display:none}
+.duo.circle{border-radius:50%}
+.duo.r{border-radius:22px}
+
+/* ---- problem points ---- */
+.problem-list{display:flex;flex-direction:column;gap:1.2rem;margin-top:1.8rem}
+.problem-item{display:flex;gap:1rem;align-items:flex-start}
+.problem-num{flex-shrink:0;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:var(--cap);background:linear-gradient(135deg,rgba(79,70,229,.35),rgba(124,58,237,.35));
+  border:1px solid rgba(167,139,250,.3);color:rgba(167,139,250,.9)}
+.problem-item h3{font-weight:600;font-size:clamp(1rem,1.6vw,1.15rem);margin-bottom:.22rem;color:var(--ink)}
+.problem-item p{font-size:var(--cap);color:var(--muted);line-height:1.55}
+
+/* ---- step cards (how it works) ---- */
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.9rem,1.8vw,1.4rem);margin-top:2rem}
+.step-card{border-radius:18px;padding:clamp(1.2rem,2vw,1.7rem);border:1px solid var(--glass-border);
+  background:var(--glass-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:relative}
+.step-num{font-weight:700;font-size:clamp(2.4rem,4vw,3.2rem);line-height:1;letter-spacing:-.04em;margin-bottom:.6rem;
+  background:linear-gradient(135deg,#818cf8 0%,#a78bfa 45%,#f472b6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.step-card h3{font-weight:600;font-size:clamp(1rem,1.7vw,1.2rem);margin-bottom:.45rem;color:var(--ink)}
+.step-card p{font-size:var(--cap);color:var(--muted);line-height:1.6}
+.step-arrow{position:absolute;top:50%;right:-1.5rem;transform:translateY(-50%);color:rgba(167,139,250,.4);font-size:1.4rem;z-index:2}
+
+/* ---- metrics ---- */
+.metrics-row{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.9rem,1.8vw,1.4rem);margin-bottom:1.6rem}
+.metric-card{border-radius:18px;padding:clamp(1.2rem,2vw,1.7rem);border:1px solid var(--glass-border);
+  background:var(--glass-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.metric-card .n{font-weight:700;font-size:var(--stat);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+  background:linear-gradient(135deg,#818cf8 0%,#a78bfa 45%,#f472b6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.metric-card .lab{margin-top:.4rem;font-size:var(--cap);color:var(--muted)}
+
+/* ---- agenda list ---- */
+.agenda-list{display:flex;flex-direction:column;gap:.85rem;margin-top:1.8rem}
+.agenda-item{display:flex;align-items:center;gap:1.1rem;padding:.85rem 1.2rem;border-radius:14px;
+  border:1px solid var(--glass-border);background:var(--glass-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.agenda-idx{font-weight:700;font-size:var(--kicker);letter-spacing:.1em;width:28px;text-align:center;flex-shrink:0;
+  background:linear-gradient(135deg,#818cf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.agenda-item span{font-size:var(--body);font-weight:500;color:var(--ink)}
+
+/* ---- roadmap timeline ---- */
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:2rem;position:relative}
+.timeline::before{content:"";position:absolute;top:22px;left:10%;right:10%;height:2px;
+  background:linear-gradient(90deg,#4f46e5,#7c3aed,#db2777);z-index:0;border-radius:2px}
+.milestone{display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1;padding:0 .5rem}
+.ms-dot{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:.9rem;
+  border:2px solid rgba(167,139,250,.4);background:var(--base2);flex-shrink:0}
+.ms-dot svg{width:20px;height:20px;stroke:rgba(167,139,250,.85);stroke-width:1.6;fill:none}
+.ms-dot.done{background:linear-gradient(135deg,rgba(79,70,229,.4),rgba(124,58,237,.4));border-color:rgba(167,139,250,.7)}
+.ms-dot.active{background:linear-gradient(135deg,rgba(124,58,237,.5),rgba(219,39,119,.4));border-color:#f472b6;
+  box-shadow:0 0 18px rgba(219,39,119,.3)}
+.ms-label{font-weight:600;font-size:var(--cap);color:var(--ink);margin-bottom:.3rem;line-height:1.3}
+.ms-date{font-size:var(--cap);color:var(--muted);font-family:"Inter",sans-serif}
+.ms-tag{display:inline-block;margin-top:.4rem;padding:.18em .7em;border-radius:6px;font-size:calc(var(--cap) * .9);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.ms-tag.shipped{background:rgba(79,70,229,.2);color:#818cf8;border:1px solid rgba(129,140,248,.25)}
+.ms-tag.inprog{background:rgba(219,39,119,.18);color:#f472b6;border:1px solid rgba(244,114,182,.25)}
+.ms-tag.planned{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--glass-border)}
+
+/* ---- glow orbs ---- */
+.orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+
+/* ---- reveal ---- */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+.slide.in .reveal{opacity:1;transform:none}
+.slide.in .r1{transition-delay:.06s}.slide.in .r2{transition-delay:.14s}.slide.in .r3{transition-delay:.22s}.slide.in .r4{transition-delay:.30s}.slide.in .r5{transition-delay:.38s}
+
+@media(max-width:780px){
+  .split{grid-template-columns:1fr!important;grid-template-rows:auto 1fr}
+  .steps-grid,.metrics-row{grid-template-columns:1fr}
+  .timeline{grid-template-columns:1fr 1fr;gap:1.2rem}
+  .timeline::before{display:none}
+  .step-arrow{display:none}
+}
+/* ---- key numbers + donut (new) ---- */
+.kn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.9rem,1.8vw,1.4rem);margin-top:2rem}
+.kn-block{border-radius:18px;padding:clamp(1.2rem,2.2vw,1.8rem);border:1px solid var(--glass-border);position:relative;overflow:hidden}
+.kn-block::after{content:"";position:absolute;inset:0;opacity:.16;pointer-events:none;z-index:0}
+.kn-block:nth-child(1){background:rgba(79,70,229,.1)}.kn-block:nth-child(1)::after{background:radial-gradient(120% 120% at 0% 0%,#4f46e5,transparent 70%)}
+.kn-block:nth-child(2){background:rgba(124,58,237,.1)}.kn-block:nth-child(2)::after{background:radial-gradient(120% 120% at 0% 0%,#7c3aed,transparent 70%)}
+.kn-block:nth-child(3){background:rgba(219,39,119,.1)}.kn-block:nth-child(3)::after{background:radial-gradient(120% 120% at 0% 0%,#db2777,transparent 70%)}
+.kn-block .kn-n{position:relative;z-index:1;font-weight:700;font-size:var(--stat);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.kn-block:nth-child(1) .kn-n{color:#818cf8}.kn-block:nth-child(2) .kn-n{color:#a78bfa}.kn-block:nth-child(3) .kn-n{color:#f472b6}
+.kn-block .kn-l{position:relative;z-index:1;margin-top:.45rem;font-size:var(--cap);color:var(--muted);line-height:1.55}
+.kn-donutrow{display:flex;align-items:center;gap:clamp(1.8rem,4vw,3.4rem);margin-top:2rem;flex-wrap:wrap}
+.kn-donutrow svg{width:clamp(150px,16vw,190px);height:auto;flex-shrink:0}
+.kn-leg{font-size:var(--cap);color:var(--muted);line-height:2.2}
+.kn-leg b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+.kn-leg .kn-dot{display:inline-block;width:11px;height:11px;border-radius:4px;margin-right:.6rem;vertical-align:middle}
+@media(max-width:780px){.kn-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<!-- ===== 01 · COVER ===== -->
+<section class="slide">
+  <div class="orb" style="width:55vw;height:55vw;top:-20%;left:-10%;background:rgba(79,70,229,.18)"></div>
+  <div class="orb" style="width:40vw;height:40vw;top:10%;right:-8%;background:rgba(219,39,119,.12)"></div>
+  <span class="web">www.acme.com</span>
+
+  <!-- right image panel -->
+  <div class="duo" style="position:absolute;top:0;right:0;width:42%;height:100%;--tint:.72;--tint-color:#0b0b14">
+    <div class="ph">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+      Hình ảnh
+    </div>
+  </div>
+  <!-- gradient vignette to blend panel -->
+  <div style="position:absolute;top:0;right:42%;width:20%;height:100%;background:linear-gradient(to right,transparent,rgba(11,11,20,.9));z-index:1;pointer-events:none"></div>
+
+  <div style="position:absolute;left:var(--pad);right:46%;bottom:18vh;z-index:2">
+    <span class="kicker reveal r1"><span class="dot"></span>Giới thiệu nhà đầu tư · Q2 2026</span>
+    <h1 class="display reveal r2" style="margin:.6em 0 .5em"><span class="grad">Acme</span><br>Nền tảng Vận hành</h1>
+    <p class="lead reveal r3">Hợp nhất quy trình, dữ liệu và quyết định cho đội ngũ vận hành hiện đại — từ giai đoạn seed đến mở rộng quy mô.</p>
+    <div class="reveal r4" style="margin-top:2.2rem;display:flex;gap:1.4rem;flex-wrap:wrap;align-items:center">
+      <div style="font-size:var(--cap);color:var(--muted);line-height:1.8">
+        <span style="color:var(--ink);font-weight:600">Acme Corp</span><br>
+        Nhóm Sản phẩm &amp; Chiến lược<br>
+        Tháng 5, 2026
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme · Bảo mật</span><span class="num">01</span></div>
+</section>
+
+<!-- ===== 02 · AGENDA ===== -->
+<section class="slide pad center">
+  <div class="orb" style="width:45vw;height:45vw;top:-15%;right:-8%;background:rgba(124,58,237,.14)"></div>
+  <div style="position:relative;z-index:1;max-width:860px;margin:0 auto;width:100%">
+    <span class="web">www.acme.com</span>
+    <span class="kicker reveal r1"><span class="dot"></span>Chương trình hôm nay</span>
+    <h2 class="h1 reveal r2" style="margin:.7em 0 0">Những gì chúng ta sẽ <span class="grad">trình bày.</span></h2>
+    <div class="agenda-list">
+      <div class="agenda-item reveal r2"><span class="agenda-idx">01</span><span>Vấn đề — tại sao các đội vận hành đang bị tắc nghẽn</span></div>
+      <div class="agenda-item reveal r3"><span class="agenda-idx">02</span><span>Cách Acme hoạt động — quy trình ba bước của chúng tôi</span></div>
+      <div class="agenda-item reveal r3"><span class="agenda-idx">03</span><span>Kết quả thực tế &amp; chỉ số — chúng tôi đang ở đâu</span></div>
+      <div class="agenda-item reveal r4"><span class="agenda-idx">04</span><span>Lộ trình — những gì sắp ra mắt</span></div>
+      <div class="agenda-item reveal r5"><span class="agenda-idx">05</span><span>Hỏi &amp; đáp và bước tiếp theo</span></div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme · Bảo mật</span><span class="num">02</span></div>
+</section>
+
+<!-- ===== 03 · PROBLEM / MARKET CONTEXT ===== -->
+<section class="slide split s5050">
+  <div class="cell" style="position:relative;overflow:hidden">
+    <div class="duo" style="position:absolute;inset:0;--tint:.78;--tint-color:#4f46e5">
+      <div class="ph">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        Hình ảnh
+      </div>
+    </div>
+    <!-- stat overlay -->
+    <div class="glass" style="position:absolute;bottom:clamp(1.5rem,3vw,2.8rem);left:clamp(1.2rem,2.5vw,2.2rem);right:clamp(1.2rem,2.5vw,2.2rem);padding:1.2rem 1.4rem;z-index:5">
+      <p class="cap" style="color:rgba(240,238,255,.82)">"Đội vận hành tầm trung bình thường dùng 11 công cụ rời rạc và mất 6 giờ mỗi tuần để xử lý thủ công."</p>
+      <p style="font-size:var(--cap);color:rgba(167,139,250,.8);margin-top:.5rem;font-weight:500">— Forrester, State of Operations 2025</p>
+    </div>
+  </div>
+  <div class="cell center pad" style="z-index:1">
+    <span class="web">www.acme.com</span>
+    <span class="kicker reveal r1"><span class="dot"></span>Vấn đề</span>
+    <h2 class="h1 reveal r2" style="margin:.7em 0 0">Đội vận hành đang chìm<br>trong <span class="grad">mớ công cụ hỗn loạn.</span></h2>
+    <div class="problem-list">
+      <div class="problem-item reveal r3">
+        <div class="problem-num">01</div>
+        <div><h3>Quy trình manh mún</h3><p>Dữ liệu nằm rải rác ở 11+ công cụ riêng lẻ. Mỗi bàn giao là một lần copy-paste thủ công — lỗi tích lũy từng ngày.</p></div>
+      </div>
+      <div class="problem-item reveal r4">
+        <div class="problem-num">02</div>
+        <div><h3>Không có nguồn dữ liệu duy nhất</h3><p>Ban lãnh đạo ra quyết định dựa trên bảng tính cũ, không phải số liệu thời gian thực. Những điểm mù này tiêu tốn doanh thu thật.</p></div>
+      </div>
+      <div class="problem-item reveal r5">
+        <div class="problem-num">03</div>
+        <div><h3>Nghẽn cổ chai kỹ thuật</h3><p>Mọi tích hợp mới đều phải xếp hàng chờ. Bộ phận kinh doanh mất hàng tuần chỉ để có một tự động hóa đơn giản.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme · Bảo mật</span><span class="num">03</span></div>
+</section>
+
+<!-- ===== 04 · HOW IT WORKS ===== -->
+<section class="slide pad center">
+  <div class="orb" style="width:50vw;height:50vw;top:-25%;right:-10%;background:rgba(124,58,237,.15)"></div>
+  <div style="position:relative;z-index:1;max-width:1200px;margin:0 auto;width:100%">
+    <span class="web">www.acme.com</span>
+    <span class="kicker reveal r1"><span class="dot"></span>Cách tiếp cận của chúng tôi</span>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin:.7em 0 0">
+      <h2 class="h1 reveal r2">Acme <span class="grad">hoạt động thế nào.</span></h2>
+      <p class="lead reveal r3" style="max-width:38ch;margin:0;font-size:var(--cap)">Ba bước từ hỗn loạn đến rõ ràng — không cần nguồn lực kỹ thuật.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal r2" style="position:relative">
+        <div class="step-num">01</div>
+        <h3>Kết nối hệ thống của bạn</h3>
+        <p>Tích hợp 200+ công cụ chỉ trong vài phút — Salesforce, Slack, Sheets, cơ sở dữ liệu và nhiều hơn nữa. Không cần code, không cần ticket IT.</p>
+        <span class="step-arrow">&#8594;</span>
+      </div>
+      <div class="step-card reveal r3" style="position:relative">
+        <div class="step-num">02</div>
+        <h3>Tự động hóa việc lặp lại</h3>
+        <p>Xây dựng luồng công việc trực quan kích hoạt xuyên suốt các ứng dụng theo thời gian thực. Cài đặt một lần; Acme xử lý mọi bàn giao tự động.</p>
+        <span class="step-arrow">&#8594;</span>
+      </div>
+      <div class="step-card reveal r4">
+        <div class="step-num">03</div>
+        <h3>Quyết định trên dữ liệu trực tiếp</h3>
+        <p>Dashboard theo vai trò cập nhật mỗi 30 giây. Đặt câu hỏi bằng tiếng Việt và nhận câu trả lời tức thì từ AI đồng hành của bạn.</p>
+      </div>
+    </div>
+    <div class="reveal r5" style="margin-top:1.6rem;padding:1rem 1.4rem;border-radius:14px;border:1px solid rgba(167,139,250,.22);background:rgba(124,58,237,.08);display:inline-block">
+      <p style="font-size:var(--cap);color:rgba(240,238,255,.85)">Thời gian trung bình để tạo luồng đầu tiên: <strong style="color:#a78bfa">14 phút.</strong> Thời gian trung bình đến khi hoàn vốn: <strong style="color:#a78bfa">6 ngày.</strong></p>
+    </div>
+  </div>
+  <div class="footer"><span>Acme · Bảo mật</span><span class="num">04</span></div>
+</section>
+
+<!-- ===== 05 · TRACTION & METRICS ===== -->
+<section class="slide pad center">
+  <div class="orb" style="width:45vw;height:45vw;bottom:-15%;left:-8%;background:rgba(79,70,229,.16)"></div>
+  <div style="position:relative;z-index:1;max-width:1200px;margin:0 auto;width:100%">
+    <span class="web">www.acme.com</span>
+    <span class="kicker reveal r1"><span class="dot"></span>Kết quả thực tế</span>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin:.7em 0 1.2em">
+      <h2 class="h1 reveal r2">Tăng trưởng đang <span class="grad">bứt phá.</span></h2>
+      <p class="reveal r3" style="font-size:var(--cap);color:#a78bfa;font-weight:600;max-width:36ch;margin:0">ARR tăng gấp 3 so với năm ngoái; tỷ lệ giữ chân doanh thu thuần vượt 125% — khách hàng mở rộng, không rời đi.</p>
+    </div>
+
+    <div class="metrics-row">
+      <div class="metric-card reveal r2"><div class="n">$4.2M</div><div class="lab">ARR — tăng 3x so với năm ngoái</div></div>
+      <div class="metric-card reveal r3"><div class="n">12,400</div><div class="lab">Đội đang trả phí sử dụng</div></div>
+      <div class="metric-card reveal r4"><div class="n">127%</div><div class="lab">Tỷ lệ giữ chân doanh thu thuần</div></div>
+    </div>
+
+    <!-- Inline SVG area/line chart -->
+    <div class="glass reveal r3" style="padding:1.6rem 1.8rem;position:relative;overflow:hidden">
+      <p style="font-size:var(--cap);font-weight:600;color:var(--muted);margin-bottom:1rem;letter-spacing:.05em;text-transform:uppercase">Tăng trưởng ARR (Triệu USD) — Theo tháng</p>
+      <svg viewBox="0 0 800 180" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" style="display:block;overflow:visible" role="img" aria-label="Biểu đồ tăng trưởng ARR">
+        <defs>
+          <linearGradient id="line-grad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#4f46e5"/>
+            <stop offset="50%" stop-color="#7c3aed"/>
+            <stop offset="100%" stop-color="#db2777"/>
+          </linearGradient>
+          <linearGradient id="area-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#7c3aed" stop-opacity=".3"/>
+            <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
+          </linearGradient>
+          <filter id="line-glow">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- grid lines -->
+        <line x1="40" y1="20" x2="40" y2="155" stroke="rgba(255,255,255,.07)" stroke-width="1"/>
+        <line x1="40" y1="55" x2="790" y2="55" stroke="rgba(255,255,255,.07)" stroke-width="1" stroke-dasharray="4 4"/>
+        <line x1="40" y1="90" x2="790" y2="90" stroke="rgba(255,255,255,.07)" stroke-width="1" stroke-dasharray="4 4"/>
+        <line x1="40" y1="125" x2="790" y2="125" stroke="rgba(255,255,255,.07)" stroke-width="1" stroke-dasharray="4 4"/>
+        <line x1="40" y1="155" x2="790" y2="155" stroke="rgba(255,255,255,.07)" stroke-width="1"/>
+        <!-- y labels -->
+        <text x="30" y="59" fill="rgba(240,238,255,.4)" font-size="11" text-anchor="end" font-family="Inter,sans-serif">$4.5M</text>
+        <text x="30" y="94" fill="rgba(240,238,255,.4)" font-size="11" text-anchor="end" font-family="Inter,sans-serif">$3M</text>
+        <text x="30" y="129" fill="rgba(240,238,255,.4)" font-size="11" text-anchor="end" font-family="Inter,sans-serif">$1.5M</text>
+        <!-- x month labels -->
+        <text x="95"  y="172" fill="rgba(240,238,255,.38)" font-size="10" text-anchor="middle" font-family="Inter,sans-serif">T1</text>
+        <text x="170" y="172" fill="rgba(240,238,255,.38)" font-size="10" text-anchor="middle" font-family="Inter,sans-serif">T2</text>
+        <text x="245" y="172" fill="rgba(240,238,255,.38)" font-size="10" text-anchor="middle" font-family="Inter,sans-serif">T3</text>
+        <text x="320" y="172" fill="rgba(240,238,255,.38)" font-size="10" text-anchor="middle" font-family="Inter,sans-serif">T4</text>
+        <text x="395" y="172" fill="rgba(240,238,255,.38)" font-size="10" text-anchor="middle" font-family="Inter,sans-serif">T5</text>
+        <text x="470" y="172" fill="rgba(240,238,255,.38)" font-size="10" text-anchor="middle" font-family="Inter,sans-serif">T6</text>
+        <text x="545" y="172" fill="rgba(240,238,255,.38)" font-size="10" text-anchor="middle" font-family="Inter,sans-serif">T7</text>
+        <text x="620" y="172" fill="rgba(240,238,255,.38)" font-size="10" text-anchor="middle" font-family="Inter,sans-serif">T8</text>
+        <text x="695" y="172" fill="rgba(240,238,255,.38)" font-size="10" text-anchor="middle" font-family="Inter,sans-serif">T9</text>
+        <text x="770" y="172" fill="rgba(240,238,255,.38)" font-size="10" text-anchor="middle" font-family="Inter,sans-serif">T10</text>
+        <!-- area fill -->
+        <path d="M95,148 C120,146 145,143 170,141 C195,139 220,136 245,133 C270,130 295,126 320,121 C345,116 370,110 395,103 C420,96 445,89 470,81 C495,73 520,64 545,56 C570,48 595,40 620,36 C645,32 670,27 695,23 C720,20 745,20 770,20 L790,20 L790,155 L40,155 Z"
+              fill="url(#area-grad)"/>
+        <!-- line -->
+        <path d="M95,148 C120,146 145,143 170,141 C195,139 220,136 245,133 C270,130 295,126 320,121 C345,116 370,110 395,103 C420,96 445,89 470,81 C495,73 520,64 545,56 C570,48 595,40 620,36 C645,32 670,27 695,23 C720,20 745,20 770,20"
+              fill="none" stroke="url(#line-grad)" stroke-width="3" stroke-linecap="round" filter="url(#line-glow)"/>
+        <!-- end dot -->
+        <circle cx="770" cy="20" r="5" fill="#db2777" filter="url(#line-glow)"/>
+        <circle cx="770" cy="20" r="9" fill="none" stroke="rgba(219,39,119,.4)" stroke-width="1.5"/>
+        <!-- callout -->
+        <text x="762" y="14" fill="#f472b6" font-size="11" text-anchor="end" font-family="Inter,sans-serif" font-weight="600">$4.2M</text>
+      </svg>
+    </div>
+  </div>
+  <div class="footer"><span>Acme · Bảo mật</span><span class="num">05</span></div>
+</section>
+
+<!-- ===== 06 · ROADMAP ===== -->
+<section class="slide pad center">
+  <div class="orb" style="width:50vw;height:50vw;top:-20%;right:-12%;background:rgba(219,39,119,.1)"></div>
+  <div style="position:relative;z-index:1;max-width:1200px;margin:0 auto;width:100%">
+    <span class="web">www.acme.com</span>
+    <span class="kicker reveal r1"><span class="dot"></span>Tiếp theo là gì</span>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin:.7em 0 0">
+      <h2 class="h1 reveal r2">Lộ trình: <span class="grad">H2 2026.</span></h2>
+      <p class="lead reveal r3" style="max-width:36ch;margin:0;font-size:var(--cap)">Bốn cột mốc tập trung vào chiều sâu sản phẩm, sẵn sàng cho doanh nghiệp lớn và thị trường quốc tế đầu tiên.</p>
+    </div>
+
+    <div class="timeline reveal r3">
+      <!-- M1 -->
+      <div class="milestone">
+        <div class="ms-dot done">
+          <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <p class="ms-label">AI Đồng hành v1</p>
+        <p class="ms-date">Q1 2026</p>
+        <span class="ms-tag shipped">Đã ra mắt</span>
+      </div>
+      <!-- M2 -->
+      <div class="milestone">
+        <div class="ms-dot active">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4" stroke-linecap="round"/></svg>
+        </div>
+        <p class="ms-label">Enterprise SSO + RBAC</p>
+        <p class="ms-date">Q2 2026</p>
+        <span class="ms-tag inprog">Đang thực hiện</span>
+      </div>
+      <!-- M3 -->
+      <div class="milestone">
+        <div class="ms-dot">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17.5h7M17.5 14v7" stroke-linecap="round"/></svg>
+        </div>
+        <p class="ms-label">Marketplace &amp; API đối tác</p>
+        <p class="ms-date">Q3 2026</p>
+        <span class="ms-tag planned">Đã lên kế hoạch</span>
+      </div>
+      <!-- M4 -->
+      <div class="milestone">
+        <div class="ms-dot">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20M12 2a14.5 14.5 0 0 1 0 20M2 12h20" stroke-linecap="round"/></svg>
+        </div>
+        <p class="ms-label">Ra mắt thị trường Đông Nam Á</p>
+        <p class="ms-date">Q4 2026</p>
+        <span class="ms-tag planned">Đã lên kế hoạch</span>
+      </div>
+    </div>
+
+    <!-- context bullets -->
+    <div class="reveal r4" style="margin-top:2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.8rem,1.5vw,1.2rem)">
+      <div class="glass" style="padding:1rem 1.2rem;border-radius:14px">
+        <p style="font-size:var(--cap);font-weight:600;color:var(--ink);margin-bottom:.3rem">Đóng vòng Series A</p>
+        <p style="font-size:var(--cap);color:var(--muted)">Gọi vốn $12M đóng trong Q2 — tài trợ mở rộng GTM doanh nghiệp và thâm nhập Đông Nam Á.</p>
+      </div>
+      <div class="glass" style="padding:1rem 1.2rem;border-radius:14px">
+        <p style="font-size:var(--cap);font-weight:600;color:var(--ink);margin-bottom:.3rem">Kế hoạch tuyển dụng</p>
+        <p style="font-size:var(--cap);color:var(--muted)">+18 nhân sự ở mảng kỹ thuật, kinh doanh và chăm sóc khách hàng trước cuối Q3.</p>
+      </div>
+      <div class="glass" style="padding:1rem 1.2rem;border-radius:14px">
+        <p style="font-size:var(--cap);font-weight:600;color:var(--ink);margin-bottom:.3rem">Mục tiêu ARR</p>
+        <p style="font-size:var(--cap);color:var(--muted)">$12M ARR vào tháng 12/2026 — được đảm bảo bởi NRR 127% hiện tại.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme · Bảo mật</span><span class="num">06</span></div>
+</section>
+
+<!-- ===== 07 · THANK YOU / CONTACT ===== -->
+<section class="slide">
+  <div class="orb" style="width:70vw;height:70vw;top:-30%;left:-20%;background:rgba(79,70,229,.2)"></div>
+  <div class="orb" style="width:50vw;height:50vw;bottom:-20%;right:-10%;background:rgba(219,39,119,.16)"></div>
+
+  <!-- right image frame -->
+  <div class="duo" style="position:absolute;top:0;right:0;width:38%;height:100%;--tint:.76;--tint-color:#0b0b14">
+    <div class="ph">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+      Hình ảnh
+    </div>
+  </div>
+  <div style="position:absolute;top:0;right:38%;width:16%;height:100%;background:linear-gradient(to right,transparent,rgba(11,11,20,.95));z-index:1;pointer-events:none"></div>
+
+  <span class="web">www.acme.com</span>
+  <div class="center pad" style="position:relative;z-index:2;max-width:54%">
+    <span class="kicker reveal r1"><span class="dot"></span>Acme · Q2 2026</span>
+    <h1 class="display reveal r2" style="margin:.6em 0 .5em">Xin<br><span class="grad">cảm ơn.</span></h1>
+    <p class="lead reveal r3" style="margin-bottom:2.4rem">Câu hỏi, thẩm định thêm, hay một buổi demo sản phẩm — chúng tôi luôn sẵn sàng.</p>
+    <div class="reveal r4" style="font-size:var(--cap);line-height:2.4;color:var(--muted)">
+      <div style="font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;background:linear-gradient(135deg,#818cf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Liên hệ</div>
+      <div>Jane Smith, CEO &nbsp;·&nbsp; jane@acme.com</div>
+      <div>Mark Lee, CFO &nbsp;·&nbsp; mark@acme.com</div>
+      <div style="margin-top:.4rem">+1 (800) 555-0199 &nbsp;·&nbsp; www.acme.com</div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme · Bảo mật</span><span class="num">07</span></div>
+</section>
+
+<!-- ===== 08 · KEY NUMBERS / RESULTS ===== -->
+<section class="slide pad center">
+  <div class="orb" style="width:46vw;height:46vw;top:-18%;right:-10%;background:rgba(124,58,237,.15)"></div>
+  <div class="orb" style="width:40vw;height:40vw;bottom:-16%;left:-8%;background:rgba(219,39,119,.12)"></div>
+  <div style="position:relative;z-index:1;max-width:1100px;margin:0 auto;width:100%">
+    <span class="web">www.acme.com</span>
+    <span class="kicker reveal r1"><span class="dot"></span>Những con số biết nói</span>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin:.7em 0 0">
+      <h2 class="h1 reveal r2">Kết quả <span class="grad">nổi bật.</span></h2>
+      <p class="reveal r3" style="font-size:var(--cap);color:#a78bfa;font-weight:600;max-width:34ch;margin:0">Tăng trưởng, quy mô người dùng và mức độ giữ chân — cùng cơ cấu đóng góp doanh thu theo từng mảng.</p>
+    </div>
+
+    <div class="kn-grid">
+      <div class="kn-block reveal r2"><div class="kn-n">+38%</div><div class="kn-l">Tăng trưởng doanh thu so với cùng kỳ</div></div>
+      <div class="kn-block reveal r3"><div class="kn-n">1.2M</div><div class="kn-l">Người dùng đang hoạt động hàng tháng</div></div>
+      <div class="kn-block reveal r4"><div class="kn-n">92%</div><div class="kn-l">Tỷ lệ khách hàng tiếp tục gắn bó</div></div>
+    </div>
+
+    <div class="kn-donutrow reveal r3">
+      <svg viewBox="0 0 130 130" role="img" aria-label="Cơ cấu doanh thu">
+        <circle cx="65" cy="65" r="50" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="20"/>
+        <circle cx="65" cy="65" r="50" fill="none" stroke="#7c3aed" stroke-width="20" stroke-dasharray="173 314" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+        <circle cx="65" cy="65" r="50" fill="none" stroke="#4f46e5" stroke-width="20" stroke-dasharray="94 314" stroke-dashoffset="-173" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+        <circle cx="65" cy="65" r="50" fill="none" stroke="#db2777" stroke-width="20" stroke-dasharray="47 314" stroke-dashoffset="-267" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+        <text x="65" y="61" text-anchor="middle" fill="var(--ink)" font-size="21" font-weight="700" font-family="Inter,sans-serif">100%</text>
+        <text x="65" y="80" text-anchor="middle" fill="var(--muted2)" font-size="9" font-family="Inter,sans-serif">Tổng cơ cấu</text>
+      </svg>
+      <div class="kn-leg">
+        <div><span class="kn-dot" style="background:#7c3aed"></span><b>55%</b> &nbsp;Sản phẩm cốt lõi</div>
+        <div><span class="kn-dot" style="background:#4f46e5"></span><b>30%</b> &nbsp;Dịch vụ mới</div>
+        <div><span class="kn-dot" style="background:#db2777"></span><b>15%</b> &nbsp;Mảng khác</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Acme · Bảo mật</span><span class="num">08</span></div>
+</section>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.3});
+document.querySelectorAll('.slide').forEach(function(s){io.observe(s)});
+var sl=[].slice.call(document.querySelectorAll('.slide'));
+addEventListener('keydown',function(e){var i=sl.findIndex(function(s){return Math.abs(s.getBoundingClientRect().top)<innerHeight/2});
+if(['ArrowDown','ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();if(sl[i+1])sl[i+1].scrollIntoView()}
+if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();if(sl[i-1])sl[i-1].scrollIntoView()}});
+</script>
+<script>/*pv-preview-mode*/(function(){if(location.hash!=='#preview')return;
+var de=document.documentElement;
+var st=document.createElement('style');st.textContent='::-webkit-scrollbar{display:none}html{scrollbar-width:none!important}';document.head.appendChild(st);
+de.style.scrollSnapType='none';
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+var DWELL=1400;
+function ih(){return innerHeight;}
+function n(){return Math.max(1,Math.round(de.scrollHeight/ih()));}
+var i=0;
+function show(idx,smooth){de.style.scrollBehavior=(smooth&&!reduce)?'smooth':'auto';scrollTo(0,idx*ih());}
+function tick(){var c=n();var ni=(i+1)%c;show(ni,ni!==0);i=ni;}
+setTimeout(function(){setInterval(tick,DWELL);},DWELL);})();</script>
+</body>
+</html>

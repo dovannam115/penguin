@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03 · Aurora Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;800&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+:root{
+  --bg:#edf2f2; --ink:#10282b; --body:#566b6d; --card:#ffffff; --line:#dbe6e5;
+  --s1:#46cf90; --s2:#28be93; --s3:#15a890; --s4:#0f8d86; --s5:#0c706d; --s6:#0a5455;
+  --pad:clamp(1.5rem,4vw,3rem);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:"Be Vietnam Pro",system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.slide{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:var(--pad) var(--pad) var(--pad) calc(var(--pad) + 18px);background:var(--bg)}
+.slide::before{content:"";position:absolute;left:0;top:0;bottom:0;width:10px;background:linear-gradient(180deg,var(--s1),var(--s4) 55%,var(--s6));z-index:10}
+.head{text-align:left;width:100%;max-width:1100px;margin:0 auto clamp(1.5rem,4.2vh,2.6rem);flex:0 0 auto;position:relative;padding-top:1.2rem}
+.head::before{content:"";position:absolute;top:0;left:0;width:56px;height:5px;border-radius:3px;background:linear-gradient(90deg,var(--s1),var(--s3))}
+.title{font-weight:800;font-size:clamp(1.7rem,3.7vw,2.75rem);letter-spacing:-.02em;line-height:1.1}
+.sub{font-weight:500;color:var(--body);font-size:clamp(.92rem,1.5vw,1.18rem);margin-top:.6rem;line-height:1.5;max-width:64ch}
+.stage{flex:0 1 auto;display:flex;align-items:center;justify-content:center;width:100%;max-width:1200px;margin:0 auto}
+.foot{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(var(--pad)*.45);display:flex;justify-content:space-between;font-size:.7rem;color:var(--body);opacity:.65}
+.foot .num{font-weight:800;color:var(--s4)}
+svg.ic{width:100%;height:100%;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.kick{display:inline-block;font-weight:800;font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:#fff;background:var(--s3);padding:.45em 1em;border-radius:999px}
+
+/* ===== COVER / CLOSING ===== */
+.cover{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;max-width:1100px;margin:0 auto;width:100%}
+.cover h1{font-weight:800;font-size:clamp(2.4rem,6vw,4.6rem);line-height:1.02;letter-spacing:-.025em;margin:.5em 0 .35em}
+.cover h1 em{font-style:normal;background:linear-gradient(90deg,var(--s1),var(--s4));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.cover p{font-size:clamp(1rem,1.6vw,1.3rem);color:var(--body);max-width:46ch;line-height:1.55;font-weight:500}
+.sweep{display:flex;gap:8px;margin-top:2.2rem}
+.sweep span{height:12px;width:64px;border-radius:999px}
+.sweep span:nth-child(1){background:var(--s1)}.sweep span:nth-child(2){background:var(--s2)}.sweep span:nth-child(3){background:var(--s3)}.sweep span:nth-child(4){background:var(--s4)}.sweep span:nth-child(5){background:var(--s5)}.sweep span:nth-child(6){background:var(--s6)}
+.cend{margin-top:2rem;display:flex;flex-direction:column;gap:.5rem}
+.cend span{font-weight:600;color:var(--body);font-size:clamp(.9rem,1.2vw,1.05rem)}
+.cend b{color:var(--ink);font-weight:800}
+
+/* ===== AGENDA / MỤC LỤC ===== */
+.agenda{display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(2rem,5vw,4.5rem);align-items:center;width:100%;max-width:1120px;margin:0 auto}
+.ag-l h2{font-weight:800;font-size:clamp(2rem,4.2vw,3.3rem);line-height:1.04;letter-spacing:-.025em;margin:.7rem 0 0}
+.ag-l p{color:var(--body);margin-top:1rem;max-width:30ch;line-height:1.55;font-weight:500}
+.aglist{display:flex;flex-direction:column}
+.agitem{display:flex;align-items:center;gap:1.3rem;padding:1rem .3rem;border-bottom:1px solid var(--line)}
+.agitem:last-child{border-bottom:0}
+.agnum{flex:none;width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:1.05rem;box-shadow:0 10px 18px -7px rgba(18,55,55,.4)}
+.agitem:nth-child(1) .agnum{background:var(--s1)}.agitem:nth-child(2) .agnum{background:var(--s2)}.agitem:nth-child(3) .agnum{background:var(--s3)}.agitem:nth-child(4) .agnum{background:var(--s4)}.agitem:nth-child(5) .agnum{background:var(--s6)}
+.agitem h4{font-weight:800;font-size:clamp(1rem,1.35vw,1.2rem);line-height:1.2}
+.agitem p{font-size:.84rem;color:var(--body);margin-top:.12rem;line-height:1.4}
+.agitem .agar{margin-left:auto;flex:none;width:22px;height:22px;color:#b3cac6}
+
+/* ===== PROSE / TEXT + BULLET ===== */
+.prose{width:100%;max-width:1000px;margin:0 auto}
+.prose .lead{font-size:clamp(1.05rem,1.7vw,1.32rem);color:var(--ink);line-height:1.6;font-weight:600;border-left:4px solid var(--s3);padding-left:1.3rem;margin-bottom:2rem}
+.blist{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem 2.8rem}
+.bli{display:flex;gap:1rem;align-items:flex-start}
+.bli .bic{flex:none;width:34px;height:34px;border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;margin-top:1px;box-shadow:0 8px 15px -6px rgba(18,55,55,.4)}
+.bli .bic .glyph{width:18px;height:18px}
+.bli:nth-child(1) .bic{background:var(--s1)}.bli:nth-child(2) .bic{background:var(--s2)}.bli:nth-child(3) .bic{background:var(--s3)}.bli:nth-child(4) .bic{background:var(--s4)}.bli:nth-child(5) .bic{background:var(--s5)}.bli:nth-child(6) .bic{background:var(--s6)}
+.bli h4{font-weight:800;font-size:clamp(1rem,1.3vw,1.14rem);line-height:1.2}
+.bli p{font-size:.86rem;color:var(--body);line-height:1.48;margin-top:.2rem}
+
+/* ===== SPLIT (TEXT + CHART) ===== */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4.5rem);align-items:center;width:100%;max-width:1120px;margin:0 auto}
+.split-text h2{font-weight:800;font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1.08;letter-spacing:-.02em}
+.split-text .lead{color:var(--body);line-height:1.6;margin:1rem 0 1.6rem;font-weight:500;font-size:clamp(.95rem,1.3vw,1.08rem)}
+.split-text ul{list-style:none;display:flex;flex-direction:column;gap:.85rem}
+.split-text li{display:flex;gap:.8rem;align-items:center;font-weight:600;font-size:clamp(.9rem,1.2vw,1.02rem)}
+.split-text li b{color:var(--s4);font-weight:800}
+.split-text li::before{content:"";width:11px;height:11px;border-radius:4px;background:var(--s3);flex:none}
+.chartcard{background:var(--card);border-radius:18px;padding:clamp(1.4rem,2.6vw,2.2rem);box-shadow:0 26px 50px -24px rgba(18,55,55,.26),0 8px 18px -10px rgba(18,55,55,.12)}
+.chartcard h5{font-weight:800;font-size:.92rem;color:var(--ink);margin-bottom:1rem}
+.chartcard svg{width:100%;height:auto;display:block}
+
+/* ===== HORIZONTAL TIMELINE ===== */
+.htl{position:relative;width:100%;max-width:1140px;margin:0 auto;padding:clamp(120px,20vh,150px) 0}
+.htl::before{content:"";position:absolute;left:6%;right:6%;top:50%;transform:translateY(-50%);height:3px;background:linear-gradient(90deg,var(--s1),var(--s6))}
+.htlrow{display:flex;justify-content:space-between;position:relative}
+.htlnode{flex:1;display:flex;justify-content:center;position:relative}
+.htldot{width:60px;height:60px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;z-index:1;box-shadow:0 12px 22px -7px rgba(18,55,55,.34)}
+.htldot .glyph{width:27px;height:27px}
+.htlnode:nth-child(1) .htldot{color:var(--s1)}.htlnode:nth-child(2) .htldot{color:var(--s3)}.htlnode:nth-child(3) .htldot{color:var(--s4)}.htlnode:nth-child(4) .htldot{color:var(--s6)}
+.htlcard{position:absolute;left:50%;transform:translateX(-50%);width:clamp(180px,22vw,238px);background:var(--card);border-radius:14px;padding:1rem 1.15rem;box-shadow:0 18px 34px -18px rgba(18,55,55,.28);text-align:center}
+.htlnode:nth-child(odd) .htlcard{bottom:calc(50% + 48px)}
+.htlnode:nth-child(even) .htlcard{top:calc(50% + 48px)}
+.htlcard .yr{font-weight:800;font-size:1.08rem;color:var(--s4);font-variant-numeric:tabular-nums}
+.htlcard h4{font-weight:800;font-size:.98rem;margin:.12rem 0 .28rem;line-height:1.2}
+.htlcard p{font-size:.79rem;color:var(--body);line-height:1.42}
+
+/* ===== PYRAMID ===== */
+.pyramid{display:grid;grid-template-columns:1fr auto 1fr;column-gap:clamp(1rem,2.5vw,2.4rem);row-gap:1px;align-items:center;width:100%;max-width:1080px;margin:0 auto}
+.pyramid .plabel{text-align:right;font-weight:800;font-size:clamp(.9rem,1.2vw,1.12rem);color:var(--ink)}
+.pyramid .pdesc{font-size:clamp(.74rem,.92vw,.84rem);color:var(--body);line-height:1.42}
+.player{width:clamp(300px,33vw,410px)}
+.player svg{width:100%;height:auto;display:block;overflow:visible;filter:drop-shadow(0 12px 15px rgba(18,55,55,.3))}
+.player .glyph{width:30px;height:30px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+
+
+
+
+
+/* ===== TABLE ===== */
+.tblwrap{width:100%;max-width:1040px;margin:0 auto;border-radius:16px;overflow:hidden;box-shadow:0 26px 50px -24px rgba(18,55,55,.24),0 8px 18px -10px rgba(18,55,55,.12)}
+table.tbl{width:100%;border-collapse:collapse;background:var(--card);font-size:clamp(.82rem,1.05vw,.98rem)}
+.tbl thead th{background:var(--s6);color:#fff;font-weight:700;text-align:left;padding:1rem 1.4rem;font-size:.92rem;letter-spacing:.01em}
+.tbl thead th:not(:first-child){text-align:center}
+.tbl tbody td{padding:.9rem 1.4rem;border-top:1px solid var(--line);color:var(--ink);vertical-align:middle}
+.tbl tbody td:not(:first-child){text-align:center}
+.tbl tbody td:first-child{font-weight:700}
+.tbl tbody tr:nth-child(even){background:#f3f8f7}
+.tbl .hl{font-weight:800;color:var(--s4);font-variant-numeric:tabular-nums}
+.tbl .tag{display:inline-block;padding:.22em .8em;border-radius:999px;font-size:.78rem;font-weight:700}
+.tag.good{background:#dcf3e8;color:#1c8a4e}.tag.warn{background:#fcefdc;color:#b9772a}.tag.bad{background:#fae6e6;color:#bd3a3a}
+
+/* ===== STATS + DONUT ===== */
+.results{display:flex;flex-direction:column;gap:clamp(1.4rem,3.4vh,2.8rem);width:100%;max-width:1060px;margin:0 auto}
+.kpi3{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(.8rem,1.6vw,1.3rem)}
+.kbox{border-radius:16px;padding:clamp(1.1rem,2vw,1.7rem);color:#fff;box-shadow:0 20px 40px -20px rgba(18,55,55,.42)}
+.kbox:nth-child(1){background:var(--s2)}.kbox:nth-child(2){background:var(--s3)}.kbox:nth-child(3){background:var(--s4)}.kbox:nth-child(4){background:var(--s6)}
+.kbox .kn{font-weight:800;font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kbox .kl{margin-top:.55rem;font-size:.85rem;font-weight:600;opacity:.92;line-height:1.45}
+.donutrow{display:flex;align-items:center;justify-content:center;gap:clamp(1.8rem,4.5vw,3.6rem);flex-wrap:wrap}
+.donutrow svg{width:clamp(150px,17vw,196px);height:auto;filter:drop-shadow(0 12px 18px rgba(18,55,55,.16))}
+.dleg{font-size:.9rem;color:var(--body);line-height:2.3}
+.dleg b{color:var(--ink);font-weight:800}
+.dleg .dt{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:.6rem;vertical-align:middle}
+
+/* ===== COMPARISON ===== */
+.cmp{display:grid;grid-template-columns:1fr 1px 1fr;gap:clamp(1.4rem,3.5vw,3rem);align-items:start;width:100%;max-width:1060px;margin:0 auto}
+.cmp-div{align-self:stretch;background:var(--line)}
+.cmp-head{display:inline-flex;align-items:center;border-radius:999px;padding:.55rem 1.7rem;font-weight:800;font-size:clamp(1rem,1.6vw,1.3rem);margin-bottom:clamp(.8rem,1.6vw,1.3rem)}
+.cmp-head.old{background:var(--card);color:var(--body);border:1.5px solid var(--line)}
+.cmp-head.new{background:var(--s3);color:#fff;box-shadow:0 10px 22px -10px var(--s3)}
+.cmp-li{display:flex;gap:.85rem;padding:clamp(.78rem,1.45vw,1.1rem) 0;border-bottom:1px solid var(--line)}
+.cmp-li:last-child{border-bottom:none}
+.cmp-li .cico{width:clamp(38px,3.8vw,46px);height:clamp(38px,3.8vw,46px);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cmp-li.old .cico{background:#e2ecea;color:var(--body)}
+.cmp-li.new .cico{background:var(--s1);color:#fff}
+.cmp-li .cico .glyph{width:52%;height:52%}
+.cmp-li h4{font-weight:800;font-size:clamp(.95rem,1.3vw,1.1rem);line-height:1.2}
+.cmp-li p{font-size:clamp(.74rem,.92vw,.84rem);color:var(--body);line-height:1.45;margin-top:.18rem}
+
+/* ===== SEMICIRCLE ARCH ===== */
+.archwrap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(.8rem,2.4vw,2.2rem);width:100%;max-width:1200px;margin:0 auto}
+.archcol{display:flex;flex-direction:column;gap:clamp(1.4rem,5vh,3rem)}
+.archcol.left{align-items:flex-end;text-align:right}
+.archcol.right{align-items:flex-start;text-align:left}
+.archlab{max-width:248px}
+.archcol.left .archlab{border-right:3px solid;padding-right:1rem}
+.archcol.right .archlab{border-left:3px solid;padding-left:1rem}
+.archcol.left .archlab:nth-child(1){border-color:var(--s1)}.archcol.left .archlab:nth-child(2){border-color:var(--s2)}.archcol.left .archlab:nth-child(3){border-color:var(--s3)}
+.archcol.right .archlab:nth-child(1){border-color:var(--s4)}.archcol.right .archlab:nth-child(2){border-color:var(--s5)}.archcol.right .archlab:nth-child(3){border-color:var(--s6)}
+.archlab h4{font-weight:800;font-size:clamp(.95rem,1.25vw,1.16rem);line-height:1.2;margin-bottom:.25rem}
+.archlab p{font-size:clamp(.74rem,.92vw,.84rem);color:var(--body);line-height:1.42}
+.archsvg{width:clamp(330px,37vw,500px)}
+.archsvg svg{width:100%;height:auto;display:block;overflow:visible;filter:drop-shadow(0 16px 24px rgba(18,55,55,.22))}
+
+/* ===== SPLIT COVER ===== */
+.cover--split{display:grid;grid-template-columns:1.05fr .82fr;gap:clamp(1.5rem,4vw,3.2rem);align-items:center;max-width:1140px}
+.cover-orbit{justify-self:center;width:clamp(240px,30vw,400px);aspect-ratio:1}
+.cover-orbit svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 20px 36px rgba(18,55,55,.22))}
+@media(max-width:860px){.cover--split{grid-template-columns:1fr}.cover-orbit{display:none}}
+
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.reveal{opacity:0;transition:opacity .55s ease}
+.slide.in .reveal,.slide.visible .reveal{opacity:1}
+.slide.in .r1{transition-delay:.06s}.slide.in .r2{transition-delay:.12s}.slide.in .r3{transition-delay:.18s}.slide.in .r4{transition-delay:.24s}.slide.in .r5{transition-delay:.3s}.slide.in .r6{transition-delay:.36s}
+.hdwrap{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(1.8rem,4.5vw,3.8rem);align-items:center;width:100%;max-width:1080px;margin:0 auto}
+.hdchart svg{width:100%;height:auto;display:block;overflow:visible;filter:drop-shadow(0 16px 24px rgba(18,55,55,.16))}
+.hdlegend{display:flex;flex-direction:column;gap:clamp(.65rem,1.7vh,1.05rem)}
+.hdpill{display:flex;align-items:center;gap:1rem;background:#fff;border-radius:999px;padding:.55rem .7rem;box-shadow:0 16px 30px -20px rgba(18,55,55,.34),0 4px 10px -6px rgba(18,55,55,.14)}
+.hdpill .hdval{flex:none;width:clamp(54px,5vw,66px);text-align:center;color:#fff;font-weight:800;font-size:clamp(1.02rem,1.5vw,1.3rem);padding:.55em 0;border-radius:999px}
+.hdpill .hdtxt h4{font-weight:800;font-size:clamp(.95rem,1.25vw,1.12rem);line-height:1.2}
+.hdpill .hdtxt p{font-size:clamp(.76rem,.95vw,.86rem);color:var(--body);line-height:1.38;margin-top:.1rem}
+</style>
+</head>
+<body>
+
+<!-- ===== SLIDE 1 — COVER ===== -->
+<section class="slide">
+  <div class="cover cover--split">
+    <div class="cover-text">
+      <span class="kick reveal">Trải nghiệm 2027</span>
+      <h1 class="reveal r1">Hành trình <em>khách hàng</em><br>liền mạch</h1>
+      <p class="reveal r2">Thiết kế trải nghiệm số xuyên suốt mọi điểm chạm — từ nhận biết đến gắn bó lâu dài với thương hiệu.</p>
+      <div class="sweep reveal r3"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    </div>
+    <div class="cover-orbit reveal r2">
+      <svg viewBox="0 0 300 300" aria-hidden="true">
+        <defs><linearGradient id="cog" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--s1)"/><stop offset="1" stop-color="var(--s5)"/></linearGradient></defs>
+        <circle cx="150" cy="150" r="142" fill="none" stroke="var(--s3)" stroke-width="1.5" opacity=".35"/>
+        <circle cx="150" cy="150" r="108" fill="none" stroke="var(--s2)" stroke-width="3" stroke-dasharray="150 520" stroke-linecap="round" transform="rotate(-55 150 150)"/>
+        <circle cx="150" cy="150" r="92" fill="none" stroke="var(--s4)" stroke-width="14" opacity=".15"/>
+        <circle cx="150" cy="150" r="62" fill="url(#cog)"/>
+        <g transform="translate(150,150) scale(1.7) translate(-12,-12)" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8Z"/></g>
+        <circle cx="150" cy="42" r="9" fill="var(--s1)"/>
+        <circle cx="248" cy="172" r="6" fill="var(--s4)"/>
+      </svg>
+    </div>
+  </div>
+  <div class="foot"><span>Aurora Flow</span><span class="num">01</span></div>
+</section>
+
+<!-- ===== SLIDE 2 — AGENDA ===== -->
+<section class="slide">
+  <div class="stage">
+    <div class="agenda">
+      <div class="ag-l">
+        <span class="kick reveal">Mục lục</span>
+        <h2 class="reveal r1">Nội dung<br>chính</h2>
+        <p class="reveal r2">Năm phần xây dựng bức tranh đầy đủ về hành trình khách hàng.</p>
+      </div>
+      <div class="aglist">
+        <div class="agitem reveal r1"><div class="agnum">01</div><div><h4>Chân dung khách hàng</h4><p>Hiểu rõ nhu cầu, hành vi và kỳ vọng.</p></div><div class="agar"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+        <div class="agitem reveal r2"><div class="agnum">02</div><div><h4>Bản đồ điểm chạm</h4><p>Mọi tương tác trên hành trình mua hàng.</p></div><div class="agar"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+        <div class="agitem reveal r3"><div class="agnum">03</div><div><h4>Giải pháp trải nghiệm</h4><p>Cá nhân hóa và tối ưu từng điểm chạm.</p></div><div class="agar"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+        <div class="agitem reveal r4"><div class="agnum">04</div><div><h4>Đo lường hiệu quả</h4><p>Các chỉ số hài lòng và gắn bó.</p></div><div class="agar"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+        <div class="agitem reveal r5"><div class="agnum">05</div><div><h4>Kế hoạch hành động</h4><p>Lộ trình triển khai theo từng quý.</p></div><div class="agar"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Aurora Flow</span><span class="num">02</span></div>
+</section>
+
+<!-- ===== SLIDE 3 — PROSE / TEXT + BULLET ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Khách hàng ngày nay kỳ vọng gì</h2>
+    <p class="sub">Bốn kỳ vọng cốt lõi định hình trải nghiệm số xuất sắc.</p>
+  </div>
+  <div class="stage">
+    <div class="prose">
+      <p class="lead reveal r1">Khách hàng không còn so sánh bạn với đối thủ — họ so sánh với trải nghiệm tốt nhất họ từng có ở bất kỳ đâu. Đáp ứng được những kỳ vọng dưới đây là lợi thế cạnh tranh.</p>
+      <div class="blist">
+        <div class="bli reveal r1"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Nhanh và tức thì</h4><p>Phản hồi và xử lý ngay, không bắt khách hàng chờ đợi.</p></div></div>
+        <div class="bli reveal r2"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Cá nhân hóa</h4><p>Nội dung và đề xuất phù hợp với từng khách hàng.</p></div></div>
+        <div class="bli reveal r3"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Liền mạch đa kênh</h4><p>Trải nghiệm nhất quán dù trên web, app hay cửa hàng.</p></div></div>
+        <div class="bli reveal r4"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Minh bạch và tin cậy</h4><p>Thông tin rõ ràng, bảo mật dữ liệu cá nhân.</p></div></div>
+        <div class="bli reveal r5"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Chủ động hỗ trợ</h4><p>Dự đoán nhu cầu và đề xuất giải pháp trước khi khách hỏi.</p></div></div>
+        <div class="bli reveal r6"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Nhất quán thương hiệu</h4><p>Giọng điệu và hình ảnh đồng nhất trên mọi điểm chạm.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Aurora Flow</span><span class="num">03</span></div>
+</section>
+
+<!-- ===== SLIDE 4 — SPLIT (TEXT + CHART) ===== -->
+<section class="slide">
+  <div class="stage">
+    <div class="split">
+      <div class="split-text">
+        <h2 class="reveal r1">Mức độ hài lòng tăng đều</h2>
+        <p class="lead reveal r2">Cải thiện trải nghiệm số đã nâng điểm hài lòng khách hàng (CSAT) ổn định qua từng quý.</p>
+        <ul>
+          <li class="reveal r3"><b>+27%</b> điểm hài lòng so với đầu kỳ</li>
+          <li class="reveal r4"><b>-41%</b> thời gian chờ trung bình</li>
+          <li class="reveal r5"><b>4,7/5</b> đánh giá trên các kênh</li>
+        </ul>
+      </div>
+      <div class="chartcard reveal r2">
+        <h5>Điểm CSAT theo quý</h5>
+        <svg viewBox="0 0 340 220" aria-label="Biểu đồ cột CSAT">
+          <line x1="20" y1="190" x2="330" y2="190" stroke="var(--line)" stroke-width="2"/>
+          <g font-size="12" font-weight="800" fill="var(--ink)" text-anchor="middle">
+            <rect x="34" y="120" width="42" height="70" rx="6" fill="var(--s1)"/><text x="55" y="110">71</text>
+            <rect x="94" y="100" width="42" height="90" rx="6" fill="var(--s2)"/><text x="115" y="90">78</text>
+            <rect x="154" y="78" width="42" height="112" rx="6" fill="var(--s3)"/><text x="175" y="68">84</text>
+            <rect x="214" y="58" width="42" height="132" rx="6" fill="var(--s4)"/><text x="235" y="48">89</text>
+            <rect x="274" y="40" width="42" height="150" rx="6" fill="var(--s6)"/><text x="295" y="30">94</text>
+          </g>
+          <g font-size="11" font-weight="600" fill="var(--body)" text-anchor="middle">
+            <text x="55" y="207">Q1</text><text x="115" y="207">Q2</text><text x="175" y="207">Q3</text><text x="235" y="207">Q4</text><text x="295" y="207">Q5</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Aurora Flow</span><span class="num">04</span></div>
+</section>
+
+<!-- ===== SLIDE 5 — HORIZONTAL TIMELINE ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Lộ trình triển khai theo quý</h2>
+    <p class="sub">Bốn giai đoạn từ khảo sát đến vận hành và mở rộng trải nghiệm.</p>
+  </div>
+  <div class="stage">
+    <div class="htl">
+      <div class="htlrow">
+        <div class="htlnode reveal r1">
+          <div class="htldot"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4-4"/></svg></div></div>
+          <div class="htlcard"><div class="yr">Quý 1</div><h4>Khảo sát</h4><p>Lắng nghe khách hàng và lập bản đồ điểm chạm.</p></div>
+        </div>
+        <div class="htlnode reveal r2">
+          <div class="htldot"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></div></div>
+          <div class="htlcard"><div class="yr">Quý 2</div><h4>Thiết kế</h4><p>Xây dựng giải pháp trải nghiệm và thử nghiệm.</p></div>
+        </div>
+        <div class="htlnode reveal r3">
+          <div class="htldot"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M4 10v4l9 4V6l-9 4Z"/><path d="M13 8a4 4 0 0 1 0 8"/></svg></div></div>
+          <div class="htlcard"><div class="yr">Quý 3</div><h4>Triển khai</h4><p>Áp dụng trên các kênh chính có kiểm soát.</p></div>
+        </div>
+        <div class="htlnode reveal r4">
+          <div class="htldot"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 20V10"/><path d="M12 20V5"/><path d="M19 20v-8"/></svg></div></div>
+          <div class="htlcard"><div class="yr">Quý 4</div><h4>Mở rộng</h4><p>Đo lường, tối ưu và nhân rộng mô hình.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Aurora Flow</span><span class="num">05</span></div>
+</section>
+
+<!-- ===== SLIDE 6 — PYRAMID ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Tháp trải nghiệm khách hàng</h2>
+    <p class="sub">Bốn tầng nền tảng tạo nên một trải nghiệm số xuất sắc và bền vững.</p>
+  </div>
+  <div class="stage">
+    <div class="pyramid">
+      <div class="plabel reveal r1">Gắn bó &amp; trung thành</div>
+      <div class="player l1 reveal r1"><svg viewBox="0 0 410 98" aria-hidden="true"><defs><linearGradient id="pg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset=".48" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".24"/></linearGradient></defs><polygon points="148,18 262,18 255,0 155,0" fill="var(--s1)"/><polygon points="148,18 262,18 255,0 155,0" fill="#fff" opacity=".36"/><polygon points="148,18 262,18 295,98 115,98" fill="var(--s1)"/><polygon points="148,18 262,18 295,98 115,98" fill="url(#pg1)"/><g transform="translate(205,61) scale(1.2) translate(-12,-12)" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-9.5-9A5 5 0 0 1 12 7a5 5 0 0 1 9.5 5C19 16.5 12 21 12 21Z"/></g></svg></div>
+      <div class="pdesc reveal r1">Khách hàng yêu thích và chủ động giới thiệu thương hiệu.</div>
+      <div class="plabel reveal r2">Cá nhân hóa</div>
+      <div class="player l2 reveal r2"><svg viewBox="0 0 410 98" aria-hidden="true"><defs><linearGradient id="pg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset=".48" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".24"/></linearGradient></defs><polygon points="115,18 295,18 288,0 122,0" fill="var(--s2)"/><polygon points="115,18 295,18 288,0 122,0" fill="#fff" opacity=".36"/><polygon points="115,18 295,18 328,98 82,98" fill="var(--s2)"/><polygon points="115,18 295,18 328,98 82,98" fill="url(#pg2)"/><g transform="translate(205,61) scale(1.2) translate(-12,-12)" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></g></svg></div>
+      <div class="pdesc reveal r2">Nội dung và dịch vụ phù hợp riêng với từng người.</div>
+      <div class="plabel reveal r3">Liền mạch đa kênh</div>
+      <div class="player l3 reveal r3"><svg viewBox="0 0 410 98" aria-hidden="true"><defs><linearGradient id="pg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset=".48" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".24"/></linearGradient></defs><polygon points="82,18 328,18 321,0 89,0" fill="var(--s4)"/><polygon points="82,18 328,18 321,0 89,0" fill="#fff" opacity=".36"/><polygon points="82,18 328,18 361,98 49,98" fill="var(--s4)"/><polygon points="82,18 328,18 361,98 49,98" fill="url(#pg3)"/><g transform="translate(205,61) scale(1.2) translate(-12,-12)" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="14" height="10" rx="2"/><rect x="14" y="9" width="8" height="11" rx="2"/></g></svg></div>
+      <div class="pdesc reveal r3">Trải nghiệm nhất quán trên mọi nền tảng và điểm chạm.</div>
+      <div class="plabel reveal r4">Nền tảng dữ liệu</div>
+      <div class="player l4 reveal r4"><svg viewBox="0 0 410 98" aria-hidden="true"><defs><linearGradient id="pg4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset=".48" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".24"/></linearGradient></defs><polygon points="49,18 361,18 354,0 56,0" fill="var(--s6)"/><polygon points="49,18 361,18 354,0 56,0" fill="#fff" opacity=".36"/><polygon points="49,18 361,18 394,98 16,98" fill="var(--s6)"/><polygon points="49,18 361,18 394,98 16,98" fill="url(#pg4)"/><g transform="translate(205,61) scale(1.2) translate(-12,-12)" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></g></svg></div>
+      <div class="pdesc reveal r4">Hạ tầng dữ liệu khách hàng hợp nhất làm nền cho mọi quyết định.</div>
+    </div>
+  </div>
+  <div class="foot"><span>Aurora Flow</span><span class="num">06</span></div>
+</section>
+
+<!-- ===== SLIDE 7 — TABLE ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">So sánh hiệu quả các kênh</h2>
+    <p class="sub">Tổng hợp chỉ số theo từng kênh tương tác với khách hàng.</p>
+  </div>
+  <div class="stage">
+    <div class="tblwrap reveal r1">
+      <table class="tbl">
+        <thead><tr><th>Kênh</th><th>Tỷ lệ phản hồi</th><th>Hài lòng</th><th>Chi phí</th></tr></thead>
+        <tbody>
+          <tr><td>Tổng đài</td><td class="hl">76%</td><td><span class="tag warn">Trung bình</span></td><td>Cao</td></tr>
+          <tr><td>Email</td><td class="hl">62%</td><td><span class="tag warn">Trung bình</span></td><td>Thấp</td></tr>
+          <tr><td>Live chat</td><td class="hl">88%</td><td><span class="tag good">Tốt</span></td><td>Thấp</td></tr>
+          <tr><td>Ứng dụng</td><td class="hl">91%</td><td><span class="tag good">Rất tốt</span></td><td>Trung bình</td></tr>
+          <tr><td>Mạng xã hội</td><td class="hl">69%</td><td><span class="tag good">Tốt</span></td><td>Thấp</td></tr>
+          <tr><td>Chatbot AI</td><td class="hl">95%</td><td><span class="tag good">Rất tốt</span></td><td>Thấp</td></tr>
+          <tr><td>Trung tâm trợ giúp</td><td class="hl">58%</td><td><span class="tag warn">Trung bình</span></td><td>Thấp</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="foot"><span>Aurora Flow</span><span class="num">07</span></div>
+</section>
+
+<!-- ===== SLIDE 8 — STATS + DONUT ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Kết quả nổi bật</h2>
+    <p class="sub">Tác động của trải nghiệm số đến các chỉ số kinh doanh chính.</p>
+  </div>
+  <div class="stage">
+    <div class="results">
+      <div class="kpi3">
+        <div class="kbox reveal r1"><div class="kn">+27%</div><div class="kl">Điểm hài lòng khách hàng (CSAT)</div></div>
+        <div class="kbox reveal r2"><div class="kn">2,4M</div><div class="kl">Lượt tương tác số mỗi tháng</div></div>
+        <div class="kbox reveal r3"><div class="kn">+19%</div><div class="kl">Tỷ lệ khách hàng quay lại</div></div>
+        <div class="kbox reveal r4"><div class="kn">-41%</div><div class="kl">Thời gian chờ phản hồi trung bình</div></div>
+      </div>
+      <div class="donutrow reveal r2">
+        <svg viewBox="0 0 130 130" aria-label="Cơ cấu tương tác">
+          <circle cx="65" cy="65" r="50" fill="none" stroke="#d2e6e2" stroke-width="20"/>
+          <circle cx="65" cy="65" r="50" fill="none" stroke="var(--s1)" stroke-width="20" stroke-dasharray="151 314" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+          <circle cx="65" cy="65" r="50" fill="none" stroke="var(--s3)" stroke-width="20" stroke-dasharray="107 314" stroke-dashoffset="-151" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+          <text x="65" y="61" text-anchor="middle" fill="var(--ink)" font-size="21" font-weight="800">100%</text>
+          <text x="65" y="80" text-anchor="middle" fill="var(--body)" font-size="9">Kênh tương tác</text>
+        </svg>
+        <div class="dleg">
+          <div><span class="dt" style="background:var(--s1)"></span><b>48%</b> &nbsp;Ứng dụng &amp; web</div>
+          <div><span class="dt" style="background:var(--s3)"></span><b>34%</b> &nbsp;Live chat &amp; tổng đài</div>
+          <div><span class="dt" style="background:#d2e6e2"></span><b>18%</b> &nbsp;Email &amp; mạng xã hội</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Aurora Flow</span><span class="num">08</span></div>
+</section>
+
+<!-- ===== SLIDE 9 — COMPARISON ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Trước và sau chuyển đổi</h2>
+    <p class="sub">Sự khác biệt rõ rệt khi đặt khách hàng làm trung tâm của trải nghiệm số.</p>
+  </div>
+  <div class="stage">
+    <div class="cmp">
+      <div>
+        <span class="cmp-head old reveal r1">Trước đây</span>
+        <div class="cmp-li old reveal r1"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Kênh rời rạc</h4><p>Mỗi kênh hoạt động độc lập, dữ liệu phân mảnh.</p></div></div>
+        <div class="cmp-li old reveal r2"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Phản hồi chậm</h4><p>Khách hàng phải chờ lâu, lặp lại thông tin nhiều lần.</p></div></div>
+        <div class="cmp-li old reveal r3"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Phục vụ đại trà</h4><p>Cùng một thông điệp cho tất cả, thiếu cá nhân hóa.</p></div></div>
+        <div class="cmp-li old reveal r4"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Khó mở rộng</h4><p>Hệ thống cũ khó tích hợp thêm kênh và công nghệ mới.</p></div></div>
+      </div>
+      <div class="cmp-div reveal r1"></div>
+      <div>
+        <span class="cmp-head new reveal r1">Hiện tại</span>
+        <div class="cmp-li new reveal r1"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Hợp nhất đa kênh</h4><p>Dữ liệu liền mạch, trải nghiệm nhất quán mọi nơi.</p></div></div>
+        <div class="cmp-li new reveal r2"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Phản hồi tức thì</h4><p>Tự động hóa và trợ lý ảo xử lý ngay nhu cầu.</p></div></div>
+        <div class="cmp-li new reveal r3"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Cá nhân hóa sâu</h4><p>Mỗi khách hàng nhận trải nghiệm riêng theo dữ liệu.</p></div></div>
+        <div class="cmp-li new reveal r4"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Dễ mở rộng</h4><p>Kiến trúc linh hoạt, thêm kênh và tính năng mới nhanh chóng.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Aurora Flow</span><span class="num">09</span></div>
+</section>
+
+<!-- ===== SLIDE 10 — HALF DONUT ===== -->
+<section class="slide">
+  <div class="head"><h2 class="title">Ngân sách chuyển đổi số 2025</h2><p class="sub">Bốn nhóm ưu tiên đầu tư cho năm tới và tỷ trọng phân bổ tương ứng.</p></div>
+  <div class="stage">
+    <div class="hdwrap">
+      <div class="hdchart reveal r1"><svg viewBox="0 0 410 232" aria-hidden="true"><path d="M20.0,205.0 A185,185 0 0 1 136.9,33.0 L163.8,100.9 A112,112 0 0 0 93.0,205.0 Z" fill="var(--s1)" stroke="#fff" stroke-width="3"/><path d="M136.9,33.0 A185,185 0 0 1 289.0,40.2 L255.8,105.2 A112,112 0 0 0 163.8,100.9 Z" fill="var(--s2)" stroke="#fff" stroke-width="3"/><path d="M289.0,40.2 A185,185 0 0 1 372.4,126.2 L306.3,157.3 A112,112 0 0 0 255.8,105.2 Z" fill="var(--s4)" stroke="#fff" stroke-width="3"/><path d="M372.4,126.2 A185,185 0 0 1 390.0,205.0 L317.0,205.0 A112,112 0 0 0 306.3,157.3 Z" fill="var(--s6)" stroke="#fff" stroke-width="3"/><text x="205" y="168" fill="var(--ink)" font-size="42" font-weight="800" text-anchor="middle">100%</text><text x="205" y="192" fill="var(--body)" font-size="14" font-weight="600" text-anchor="middle">Tổng ngân sách số</text><text x="82.2" y="121.5" fill="#fff" font-size="17" font-weight="800" text-anchor="middle" dominant-baseline="central">38%</text><text x="212.0" y="56.7" fill="#fff" font-size="17" font-weight="800" text-anchor="middle" dominant-baseline="central">27%</text><text x="311.6" y="101.7" fill="#fff" font-size="17" font-weight="800" text-anchor="middle" dominant-baseline="central">21%</text><text x="349.9" y="172.6" fill="#fff" font-size="17" font-weight="800" text-anchor="middle" dominant-baseline="central">14%</text></svg></div>
+      <div class="hdlegend"><div class="hdpill reveal r1"><div class="hdval" style="background:var(--s1)">38%</div><div class="hdtxt"><h4>Tự động hóa quy trình</h4><p>Cắt giảm thao tác thủ công lặp lại.</p></div></div><div class="hdpill reveal r2"><div class="hdval" style="background:var(--s2)">27%</div><div class="hdtxt"><h4>Phân tích dữ liệu</h4><p>Ra quyết định dựa trên số liệu thời gian thực.</p></div></div><div class="hdpill reveal r3"><div class="hdval" style="background:var(--s4)">21%</div><div class="hdtxt"><h4>Trải nghiệm khách hàng</h4><p>Cá nhân hóa hành trình đa kênh.</p></div></div><div class="hdpill reveal r4"><div class="hdval" style="background:var(--s6)">14%</div><div class="hdtxt"><h4>Tối ưu vận hành</h4><p>Tinh gọn chi phí và nguồn lực.</p></div></div></div>
+    </div>
+  </div>
+  <div class="foot"><span>Aurora Flow</span><span class="num">10</span></div>
+</section>
+
+<!-- ===== SLIDE 11 — CLOSING ===== -->
+<section class="slide">
+  <div class="cover">
+    <span class="kick reveal">Cảm ơn</span>
+    <h1 class="reveal r1">Đặt khách hàng<br><em>làm trung tâm</em></h1>
+    <p class="reveal r2">Trải nghiệm tuyệt vời là lợi thế cạnh tranh bền vững nhất. Hãy bắt đầu từ khách hàng của bạn.</p>
+    <div class="cend reveal r3">
+      <span><b>Email</b>&nbsp;&nbsp;hello@aurora.vn</span>
+      <span><b>Website</b>&nbsp;&nbsp;www.aurora.vn</span>
+    </div>
+    <div class="sweep reveal r4"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+  <div class="foot"><span>Aurora Flow</span><span class="num">11</span></div>
+</section>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.3});
+document.querySelectorAll('.slide').forEach(function(s){io.observe(s)});
+</script>
+<script>/*pv-preview-mode*/(function(){if(location.hash!=='#preview')return;
+var de=document.documentElement;
+var st=document.createElement('style');st.textContent='::-webkit-scrollbar{display:none}html{scrollbar-width:none!important}';document.head.appendChild(st);
+de.style.scrollSnapType='none';
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+var DWELL=1400;
+function ih(){return innerHeight;}
+function n(){return Math.max(1,Math.round(de.scrollHeight/ih()));}
+var i=0;
+function show(idx,smooth){de.style.scrollBehavior=(smooth&&!reduce)?'smooth':'auto';scrollTo(0,idx*ih());}
+function tick(){var c=n();var ni=(i+1)%c;show(ni,ni!==0);i=ni;}
+setTimeout(function(){setInterval(tick,DWELL);},DWELL);})();</script>
+</body>
+</html>

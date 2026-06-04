@@ -1,0 +1,47 @@
+App renamed to Penguin with a new icon
+- The app is renamed from Agent P to Penguin. New icon: penguin avatar on a blue rounded background, with a chat bubble. White corners from the source PNG are now alpha-keyed (flood-fill from each corner) so taskbar / shortcut icons have transparent corners with no white halo at any resolution.
+- The icon shows on the taskbar, Desktop and Start Menu shortcuts, the Edge tab, splash screen, and login.
+- Old "Agent P" / "Agent Crew" shortcuts on Desktop and Start Menu are removed automatically. The pinned taskbar shortcut stays in place; its icon and Windows AUMID are refreshed without re-pinning.
+- The local data folder %LOCALAPPDATA%\AgentP\ keeps its name. No migration runs, and the saved login still works.
+- Update repo is now github.com/dovannam115/penguin-releases (old name redirects).
+
+New model option: Opus 4.8
+- Each employee's model dropdown in Settings now lists Opus 4.8 at the top of the Claude group, alongside Opus 4.7, Sonnet 4.6, and Haiku 4.5.
+- Claude Max accounts can use it right away, no extra configuration.
+
+Warmer dark + softer light theme
+- Dark mode swaps cool slate-blue for a warm near-neutral palette (~#1F1E1B family) inspired by claude.ai. Easier on the eyes for long sessions.
+- Light mode replaces pure white with a warm cream (#FAFAF7) and warm-gray text (#3D3D3A) so the screen no longer feels stark.
+- Light overrides retuned with warm RGBA gradients so chat bubbles, hover states, and borders keep their contrast on both themes.
+
+Login screen
+- Penguin avatar floats gently above the wordmark with a soft glow pulse behind, no rotation or bouncing.
+
+Collapsible sidebar
+- New Collapse / Expand button on the sidebar header. Collapsed state shrinks the sidebar to a 40px rail with New Task + Settings shortcuts, giving the chat pane the full width.
+- Ctrl+B (or Cmd+B) toggles. Preference is saved locally so it sticks across reloads.
+
+Splash screen
+- Slow determinate progress bar that fills per phase (env check, dependencies, server start, route warmup, ready) instead of an indeterminate spinner.
+- "by Nam Do" credit removed from splash + login.
+
+Animated close icons (Lordicon)
+- Settings dialog and the Files / Workflow side panel use animated Lordicon close icons on hover. Colors auto-tint to match dark / light theme via a MutationObserver on the html class.
+- Lordicon loads from CDN once and caches in the browser. Components fall back to no-icon if the script fails to load (button still works).
+
+Fix: in-app updater silently did nothing after Restart
+- Symptom: clicking Restart in Settings then Update appeared to work (the page reloaded), but after closing and reopening the app the version was still the previous one and Settings still said "new version available".
+- Cause: the apply step spawned the PowerShell swap script with Node's detached:true + unref() pattern, which is not reliable on Windows. The child PowerShell got cleaned up together with the Node parent before it could even start, so the staged files in .update-staging\extracted\ never got copied over the install.
+- Fix: the apply step now launches the swap script through cmd /c start /B, which moves the launched PowerShell into its own process tree so the parent Node can safely exit while the swap continues. Exit delay also raised from 500ms to 1500ms as a small extra margin.
+
+Fix: version stayed stuck on the previous number after an update
+- Symptom: after installing an update, closing and reopening the app, Settings then Update kept saying "new version available", because the displayed current version did not change.
+- Cause: the compiled .next/ bundle from the previous version baked the old version number at build time, and a partial file swap could leave old chunks mixed with new ones.
+- Fix: the in-app updater now wipes the old .next/ folder before applying the staged files, so only the fresh bundle serves requests after restart. The /api/update/check route also reads package.json from disk at runtime instead of importing it as a baked constant, so a partial swap can no longer cause a wrong version to be reported.
+
+How to install from a previous Agent P version (one-time)
+The in-app updater in earlier Agent P versions has a Windows spawn-detached bug that prevents the swap from running. To install Penguin v2.2, use the legacy method one time:
+1. Download Penguin_v2.2.zip from this release.
+2. Copy the zip into your install folder (the folder that contains start.bat).
+3. Double-click apply-update.bat, press Y when prompted, and wait ~30-60s.
+Alternative: extract Penguin_v2.2.zip into a new empty folder and double-click start.bat. The launcher detects your previous install (AGENT-P, Agent P, Penguin, mas-ai-office-*) in Desktop / Documents / Downloads and migrates chat history, files, and password automatically. After this release, in-app updates work as expected for future releases.

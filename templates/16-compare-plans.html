@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>16 · Compare &amp; Plans</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf7f2; --panel:#ffffff; --ink:#14181c; --muted:#5f6b6a; --line:#e9e3d8;
+  --accent:#047857; --accent-soft:#e3f1ec; --navy:#1e3a8a; --navy-soft:#e7ecf9;
+  --pad: clamp(1.9rem, 5.5vw, 5rem);
+  --gap: clamp(.9rem, 1.6vw, 1.4rem);
+  --display: clamp(2.4rem, 6vw, 4.8rem);
+  --h1: clamp(1.7rem, 3.6vw, 2.8rem);
+  --body: clamp(1rem, 1.45vw, 1.18rem);
+  --kicker: clamp(.66rem,.92vw,.78rem);
+  --cap: clamp(.66rem,.9vw,.8rem);
+  --radius: 18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:"Be Vietnam Pro",system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.slide{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:var(--pad)}
+.inner{width:100%;max-width:1160px;margin:0 auto}
+.kicker{display:inline-flex;align-items:center;gap:.5rem;font-family:"Space Grotesk";font-size:var(--kicker);font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.kicker .dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.display{font-weight:800;font-size:var(--display);line-height:1.03;letter-spacing:-.025em;margin:.5em 0 .42em}
+.h1{font-weight:800;font-size:var(--h1);line-height:1.1;letter-spacing:-.02em}
+.lead{font-size:var(--body);line-height:1.62;color:var(--muted);max-width:52ch}
+.footer{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(var(--pad)*.5);display:flex;justify-content:space-between;font-size:var(--cap);color:var(--muted);border-top:1px solid var(--line);padding-top:.8rem}
+.footer .num{font-family:"Space Grotesk";font-weight:700;color:var(--ink)}
+.ico{display:inline-flex}
+.ico svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+.chips{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.7rem}
+.chip{font-size:var(--cap);font-weight:600;padding:.45rem .9rem;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--muted)}
+
+/* comparison table */
+.ctable{margin-top:2rem;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--panel)}
+.crow{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;align-items:center}
+.crow + .crow{border-top:1px solid var(--line)}
+.crow > div{padding:clamp(.85rem,1.5vw,1.15rem) clamp(.9rem,1.6vw,1.4rem)}
+.crow .feat{font-weight:600;font-size:var(--cap);color:var(--ink)}
+.crow .cell{text-align:center;font-size:var(--cap);color:var(--muted)}
+.chead{background:var(--bg)}
+.chead .feat{font-family:"Space Grotesk";font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-size:calc(var(--cap) - 1px)}
+.chead .cell{font-weight:700;color:var(--ink);font-size:var(--body)}
+.col-hi{background:var(--accent-soft)}
+.chead .col-hi{background:var(--accent);color:#fff}
+.chead .col-hi .tagp{display:block;font-family:"Be Vietnam Pro";font-weight:600;font-size:calc(var(--cap) - 2px);text-transform:none;letter-spacing:0;color:rgba(255,255,255,.85);margin-top:.15rem}
+.yes{color:var(--accent);font-size:1.05rem} .no{color:#c2c8c6;font-size:1.05rem}
+.col-hi .yes{color:var(--accent)}
+
+/* plan cards */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);margin-top:2rem;align-items:stretch}
+.plan{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(1.3rem,2.2vw,1.9rem);display:flex;flex-direction:column}
+.plan.hot{border-color:var(--accent);box-shadow:0 14px 40px -18px rgba(15,118,110,.5);position:relative}
+.plan.hot .badge{position:absolute;top:-11px;left:50%;margin-left:-52px;width:104px;text-align:center;background:var(--accent);color:#fff;font-size:calc(var(--cap) - 1px);font-weight:700;padding:.3rem 0;border-radius:999px}
+.plan .pname{font-family:"Space Grotesk";font-weight:700;font-size:var(--cap);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.plan .price{font-family:"Space Grotesk";font-weight:700;font-size:clamp(2rem,4vw,3rem);line-height:1;letter-spacing:-.02em;margin:.7rem 0 .2rem}
+.plan .price .u{font-size:.34em;color:var(--muted);font-weight:600;margin-left:.15em}
+.plan .pd{font-size:var(--cap);color:var(--muted);line-height:1.5;margin-bottom:1.1rem}
+.plan ul{list-style:none;font-size:var(--cap);line-height:1.5;margin-bottom:1.3rem;flex:1}
+.plan ul li{display:grid;grid-template-columns:auto 1fr;gap:.6rem;padding:.45rem 0;align-items:start}
+.plan ul li .ico{color:var(--accent);font-size:1rem;margin-top:.05rem}
+.plan .btn{text-align:center;font-weight:700;font-size:var(--cap);padding:.8rem;border-radius:11px;background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.plan.hot .btn{background:var(--accent);color:#fff;border-color:transparent}
+
+/* feature grid */
+.fgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--gap);margin-top:2rem}
+.fcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(1.2rem,2vw,1.7rem);display:grid;grid-template-columns:auto 1fr;gap:1.1rem;align-items:start}
+.fcard .fi{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:13px;background:var(--accent-soft);color:var(--accent);font-size:1.35rem;flex-shrink:0}
+.fcard:nth-child(2) .fi,.fcard:nth-child(3) .fi{background:var(--navy-soft);color:var(--navy)}
+.fcard h3{font-weight:700;font-size:clamp(1.05rem,1.6vw,1.25rem);margin-bottom:.35rem}
+.fcard p{font-size:var(--cap);color:var(--muted);line-height:1.6}
+
+/* closing */
+.close-card{border-radius:calc(var(--radius) + 6px);background:linear-gradient(120deg,#047857,#1e3a8a);color:#fff;padding:clamp(2.2rem,5vw,4rem);position:relative;overflow:hidden}
+.close-card::after{content:"";position:absolute;right:-50px;top:-60px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.09)}
+.close-card .kicker{color:#bfeee7}.close-card .kicker .dot{background:#bfeee7}
+.close-card h2{font-weight:800;font-size:clamp(1.9rem,4.4vw,3.2rem);line-height:1.07;letter-spacing:-.02em;margin:.5em 0 .4em;max-width:20ch}
+.close-card p{color:rgba(255,255,255,.88);font-size:var(--body);line-height:1.6;max-width:48ch}
+.cta{display:inline-flex;align-items:center;gap:.6rem;margin-top:1.7rem;background:#fff;color:var(--accent);font-weight:700;font-size:var(--cap);padding:.85rem 1.5rem;border-radius:999px}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+.slide.in .reveal{opacity:1;transform:none}
+.slide.in .d1{transition-delay:.05s}.slide.in .d2{transition-delay:.11s}.slide.in .d3{transition-delay:.17s}.slide.in .d4{transition-delay:.23s}
+@media(max-width:860px){.plans,.fgrid{grid-template-columns:1fr}.crow{grid-template-columns:1.4fr 1fr 1fr 1fr;font-size:.85em}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<!-- 1 · COVER -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal d1"><span class="dot"></span>So sánh giải pháp · 2026</div>
+    <h1 class="display reveal d2">Chọn gói phù hợp<br>với nhu cầu</h1>
+    <p class="lead reveal d3">So sánh khách quan giữa các lựa chọn theo từng tiêu chí, kèm gợi ý gói phù hợp để anh chị dễ quyết định.</p>
+    <div class="chips reveal d4">
+      <span class="chip">3 lựa chọn</span>
+      <span class="chip">6 tiêu chí</span>
+      <span class="chip">Cập nhật 05/2026</span>
+    </div>
+  </div>
+  <div class="footer"><span>Giải pháp ABC</span><span class="num">01</span></div>
+</section>
+
+<!-- 2 · COMPARISON TABLE -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal d1"><span class="dot"></span>So sánh chi tiết</div>
+    <h2 class="h1 reveal d2" style="margin-top:.4em">Đặt cạnh nhau theo từng tiêu chí</h2>
+    <div class="ctable reveal d2">
+      <div class="crow chead">
+        <div class="feat">Tiêu chí</div>
+        <div class="cell">Cơ bản</div>
+        <div class="cell col-hi">Tiêu chuẩn<span class="tagp">Khuyên dùng</span></div>
+        <div class="cell">Nâng cao</div>
+      </div>
+      <div class="crow">
+        <div class="feat">Báo cáo theo thời gian thực</div>
+        <div class="cell"><span class="no ico"><svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></div>
+        <div class="cell col-hi"><span class="yes ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span></div>
+        <div class="cell"><span class="yes ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span></div>
+      </div>
+      <div class="crow">
+        <div class="feat">Số người dùng</div>
+        <div class="cell">5</div>
+        <div class="cell col-hi">25</div>
+        <div class="cell">Không giới hạn</div>
+      </div>
+      <div class="crow">
+        <div class="feat">Tích hợp hệ thống ngoài</div>
+        <div class="cell"><span class="no ico"><svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></div>
+        <div class="cell col-hi"><span class="yes ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span></div>
+        <div class="cell"><span class="yes ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span></div>
+      </div>
+      <div class="crow">
+        <div class="feat">Hỗ trợ ưu tiên</div>
+        <div class="cell">Email</div>
+        <div class="cell col-hi">Email &amp; chat</div>
+        <div class="cell">Chuyên viên riêng</div>
+      </div>
+      <div class="crow">
+        <div class="feat">Sao lưu &amp; bảo mật nâng cao</div>
+        <div class="cell"><span class="no ico"><svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></div>
+        <div class="cell col-hi"><span class="yes ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span></div>
+        <div class="cell"><span class="yes ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Giải pháp ABC</span><span class="num">02</span></div>
+</section>
+
+<!-- 3 · PLAN CARDS -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal d1"><span class="dot"></span>Bảng gói</div>
+    <h2 class="h1 reveal d2" style="margin-top:.4em">Ba gói, một lựa chọn vừa vặn</h2>
+    <div class="plans">
+      <div class="plan reveal d2">
+        <div class="pname">Cơ bản</div>
+        <div class="price">2,9<span class="u">tr/tháng</span></div>
+        <div class="pd">Cho nhóm nhỏ mới bắt đầu.</div>
+        <ul>
+          <li><span class="ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span>5 người dùng</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span>Báo cáo cơ bản</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span>Hỗ trợ qua email</li>
+        </ul>
+        <div class="btn">Chọn gói này</div>
+      </div>
+      <div class="plan hot reveal d3">
+        <div class="badge">Phổ biến</div>
+        <div class="pname">Tiêu chuẩn</div>
+        <div class="price">6,9<span class="u">tr/tháng</span></div>
+        <div class="pd">Lựa chọn cân bằng nhất.</div>
+        <ul>
+          <li><span class="ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span>25 người dùng</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span>Báo cáo thời gian thực</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span>Tích hợp &amp; bảo mật nâng cao</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span>Hỗ trợ email &amp; chat</li>
+        </ul>
+        <div class="btn">Chọn gói này</div>
+      </div>
+      <div class="plan reveal d4">
+        <div class="pname">Nâng cao</div>
+        <div class="price">Liên hệ</div>
+        <div class="pd">Cho tổ chức lớn, nhu cầu riêng.</div>
+        <ul>
+          <li><span class="ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span>Người dùng không giới hạn</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span>Tùy biến theo yêu cầu</li>
+          <li><span class="ico"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span>Chuyên viên hỗ trợ riêng</li>
+        </ul>
+        <div class="btn">Liên hệ tư vấn</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Giải pháp ABC</span><span class="num">03</span></div>
+</section>
+
+<!-- 4 · FEATURE GRID -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker reveal d1"><span class="dot"></span>Vì sao chọn</div>
+    <h2 class="h1 reveal d2" style="margin-top:.4em">Bốn lý do nổi bật</h2>
+    <div class="fgrid">
+      <div class="fcard reveal d1"><div class="fi"><span class="ico"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span></div><div><h3>Triển khai nhanh</h3><p>Cài đặt và đưa vào sử dụng chỉ trong vài ngày, không gián đoạn vận hành.</p></div></div>
+      <div class="fcard reveal d2"><div class="fi"><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span></div><div><h3>An toàn dữ liệu</h3><p>Mã hóa và sao lưu định kỳ, tuân thủ chuẩn bảo mật cho doanh nghiệp.</p></div></div>
+      <div class="fcard reveal d3"><div class="fi"><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><polyline points="14 7 21 7 21 14"/></svg></span></div><div><h3>Mở rộng linh hoạt</h3><p>Nâng cấp theo tốc độ phát triển, không phải làm lại từ đầu.</p></div></div>
+      <div class="fcard reveal d4"><div class="fi"><span class="ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></div><div><h3>Đồng hành tận tâm</h3><p>Đội ngũ hỗ trợ phản hồi nhanh, giúp anh chị tận dụng tối đa giải pháp.</p></div></div>
+    </div>
+  </div>
+  <div class="footer"><span>Giải pháp ABC</span><span class="num">04</span></div>
+</section>
+
+<!-- 5 · CLOSING -->
+<section class="slide">
+  <div class="inner">
+    <div class="close-card reveal d1">
+      <div class="kicker"><span class="dot"></span>Bước tiếp theo</div>
+      <h2>Sẵn sàng chọn gói phù hợp với anh chị.</h2>
+      <p>Đặt lịch tư vấn để được demo trực tiếp và nhận báo giá riêng theo nhu cầu thực tế.</p>
+      <span class="cta">Đặt lịch tư vấn
+        <span class="ico"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+      </span>
+    </div>
+  </div>
+  <div class="footer"><span>Giải pháp ABC</span><span class="num">05</span></div>
+</section>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.3});
+document.querySelectorAll('.slide').forEach(function(s){io.observe(s)});
+var sl=[].slice.call(document.querySelectorAll('.slide'));
+addEventListener('keydown',function(e){var i=sl.findIndex(function(s){return Math.abs(s.getBoundingClientRect().top)<innerHeight/2});
+if(['ArrowDown','ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();if(sl[i+1])sl[i+1].scrollIntoView()}
+if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();if(sl[i-1])sl[i-1].scrollIntoView()}});
+</script>
+<script>/*pv-preview-mode*/(function(){if(location.hash!=='#preview')return;
+var de=document.documentElement;
+var st=document.createElement('style');st.textContent='::-webkit-scrollbar{display:none}html{scrollbar-width:none!important}';document.head.appendChild(st);
+de.style.scrollSnapType='none';
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+var DWELL=1400;
+function ih(){return innerHeight;}
+function n(){return Math.max(1,Math.round(de.scrollHeight/ih()));}
+var i=0;
+function show(idx,smooth){de.style.scrollBehavior=(smooth&&!reduce)?'smooth':'auto';scrollTo(0,idx*ih());}
+function tick(){var c=n();var ni=(i+1)%c;show(ni,ni!==0);i=ni;}
+setTimeout(function(){setInterval(tick,DWELL);},DWELL);})();</script>
+</body>
+</html>

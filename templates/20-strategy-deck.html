@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>20 · Strategy Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f5f2; --panel:#ffffff; --ink:#1a1d23; --muted:#5f6772; --line:#e9e3d8; --line2:#f1ece2;
+  --navy:#1e3a8a; --navy-soft:#e6eaf6; --signal:#6d28d9; --signal-soft:#efe9fb; --gold:#b8902f; --gold-soft:#f6efdd;
+  --pad: clamp(1.4rem, 3.6vw, 3rem);
+  --gap: clamp(.7rem, 1.2vw, 1.05rem);
+  --display: clamp(2rem, 4.6vw, 3.6rem);
+  --h1: clamp(1.3rem, 2.6vw, 2rem);
+  --body: clamp(.92rem, 1.2vw, 1.05rem);
+  --kicker: clamp(.6rem,.85vw,.72rem);
+  --cap: clamp(.62rem,.82vw,.74rem);
+  --tiny: clamp(.58rem,.76vw,.68rem);
+  --radius: 12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:"Be Vietnam Pro",system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.slide{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:var(--pad)}
+.inner{width:100%;max-width:1240px;margin:0 auto}
+.mono{font-family:"Space Grotesk";font-variant-numeric:tabular-nums}
+.kicker{display:inline-flex;align-items:center;gap:.55rem;font-family:"Space Grotesk";font-size:var(--kicker);font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--signal)}
+.kicker::before{content:"";width:22px;height:2px;background:var(--signal)}
+.h1{font-weight:800;font-size:var(--h1);line-height:1.12;letter-spacing:-.02em}
+.shead{border-bottom:2px solid var(--navy);padding-bottom:.65rem;margin-bottom:1.05rem;display:flex;align-items:flex-end;justify-content:space-between;gap:1rem}
+.shead .rt{font-size:var(--tiny);color:var(--muted);text-align:right;font-family:"Space Grotesk";letter-spacing:.06em;text-transform:uppercase}
+.footer{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(var(--pad)*.45);display:flex;justify-content:space-between;font-size:var(--tiny);color:var(--muted);border-top:1px solid var(--line);padding-top:.55rem}
+.footer .num{font-family:"Space Grotesk";font-weight:700;color:var(--ink)}
+.ico{display:inline-flex}.ico svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* cover */
+.cover{display:grid;grid-template-columns:1.55fr 1fr;gap:clamp(1.5rem,4vw,3.5rem);align-items:center;height:100%}
+.cover .tagline{font-family:"Space Grotesk";font-weight:700;letter-spacing:.24em;text-transform:uppercase;font-size:var(--kicker);color:var(--signal)}
+.cover .display{font-weight:800;font-size:var(--display);line-height:1.02;letter-spacing:-.025em;margin:.5em 0 .55em}
+.cover .lead{font-size:var(--body);line-height:1.6;color:var(--muted);max-width:46ch}
+.cover .toc{border-left:2px solid var(--navy);padding-left:1.3rem}
+.cover .toc h4{font-family:"Space Grotesk";font-size:var(--tiny);text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.9rem}
+.cover .toc ol{list-style:none;counter-reset:t}
+.cover .toc li{counter-increment:t;display:grid;grid-template-columns:auto 1fr;gap:.8rem;padding:.5rem 0;font-size:var(--cap);border-top:1px solid var(--line2)}
+.cover .toc li:first-child{border-top:0}
+.cover .toc li::before{content:counter(t,decimal-leading-zero);font-family:"Space Grotesk";font-weight:700;color:var(--signal)}
+.metastrip{display:flex;gap:1.6rem;flex-wrap:wrap;margin-top:1.4rem;border-top:1px solid var(--line);padding-top:1rem}
+.metastrip .mi{font-size:var(--tiny);color:var(--muted)}.metastrip .mi b{display:block;font-family:"Space Grotesk";font-weight:700;font-size:var(--body);color:var(--ink);margin-top:.15rem}
+
+/* context: columns + sidebar */
+.ctx{display:grid;grid-template-columns:1.7fr 1fr;gap:clamp(1.3rem,3vw,2.4rem)}
+.cols{columns:2;column-gap:1.8rem;font-size:var(--cap);line-height:1.6;color:var(--ink)}
+.cols p{margin-bottom:.8rem;break-inside:avoid}
+.cols p b{color:var(--navy)}
+.sidebar{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:1.1rem 1.2rem}
+.sidebar h4{font-family:"Space Grotesk";font-size:var(--tiny);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.9rem}
+.statline{display:flex;align-items:baseline;gap:.7rem;padding:.7rem 0;border-top:1px solid var(--line2)}
+.statline:first-of-type{border-top:0}
+.statline .sv{font-family:"Space Grotesk";font-weight:700;font-size:clamp(1.4rem,2.6vw,2.1rem);line-height:1;color:var(--signal);min-width:3.4em}
+.statline .sl{font-size:var(--tiny);color:var(--muted);line-height:1.4}
+.src{font-size:var(--tiny);color:var(--muted);margin-top:1rem;border-top:1px dashed var(--line);padding-top:.6rem}
+
+/* 2x2 matrix */
+.mx{display:grid;grid-template-columns:auto 1fr;grid-template-rows:1fr auto;gap:.6rem;height:clamp(330px,54vh,470px);margin-top:.4rem}
+.mx .yax{writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;font-family:"Space Grotesk";font-size:var(--tiny);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);align-self:center}
+.mx .xax{grid-column:2;text-align:center;font-family:"Space Grotesk";font-size:var(--tiny);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.grid4{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.grid4 .q{background:var(--panel);padding:.7rem .8rem;position:relative}
+.grid4 .q.hot{background:var(--signal-soft)}
+.grid4 .q .ql{font-family:"Space Grotesk";font-size:var(--tiny);font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.bub{position:absolute;display:flex;flex-direction:column;align-items:center;gap:.25rem;transform:translate(-50%,-50%)}
+.bub .dot{width:clamp(26px,3vw,38px);height:clamp(26px,3vw,38px);border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Space Grotesk";font-weight:700;font-size:var(--cap);box-shadow:0 4px 10px -3px rgba(0,0,0,.4)}
+.bub.s .dot{background:var(--signal)} .bub.g .dot{background:var(--gold)}
+.bub .lab{font-size:var(--tiny);color:var(--ink);font-weight:600;white-space:nowrap;background:rgba(255,255,255,.8);padding:0 .25rem;border-radius:4px}
+.mxlegend{grid-column:2;display:flex;gap:1.3rem;flex-wrap:wrap;font-size:var(--tiny);color:var(--muted);margin-top:.2rem}
+.mxlegend .lg{display:inline-flex;align-items:center;gap:.4rem}.mxlegend .d{width:12px;height:12px;border-radius:50%}
+
+/* options table with ratings */
+.optbl{width:100%;border-collapse:collapse;font-size:var(--cap);margin-top:.3rem}
+.optbl th,.optbl td{padding:.6rem .8rem;border-bottom:1px solid var(--line2);text-align:center}
+.optbl th:first-child,.optbl td:first-child{text-align:left}
+.optbl thead th{font-family:"Space Grotesk";font-size:var(--tiny);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1.5px solid var(--navy)}
+.optbl tbody tr.rec{background:var(--signal-soft)}
+.optbl .opt{font-weight:700}
+.optbl .rec .opt::after{content:"Đề xuất";font-family:"Be Vietnam Pro";font-size:var(--tiny);font-weight:700;background:var(--signal);color:#fff;border-radius:99px;padding:.1rem .5rem;margin-left:.5rem}
+.rate{letter-spacing:.12em;color:var(--navy)}.rate .o{color:#cfd4da}
+
+/* recommendation */
+.rec2{display:grid;grid-template-columns:1.5fr 1fr;gap:var(--gap)}
+.initlist{list-style:none}
+.initlist li{display:grid;grid-template-columns:auto 1fr auto;gap:.9rem;align-items:center;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--signal);border-radius:var(--radius);padding:.7rem .9rem;margin-bottom:.55rem}
+.initlist .pn{width:26px;height:26px;border-radius:7px;background:var(--navy);color:#fff;font-family:"Space Grotesk";font-weight:700;font-size:var(--cap);display:inline-flex;align-items:center;justify-content:center}
+.initlist h3{font-weight:700;font-size:var(--cap)}.initlist p{font-size:var(--tiny);color:var(--muted);line-height:1.4}
+.initlist .imp{font-family:"Space Grotesk";font-size:var(--tiny);font-weight:700;color:var(--signal);text-align:right;white-space:nowrap}
+.phase{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:1rem 1.1rem}
+.phase .pt{font-family:"Space Grotesk";font-weight:600;font-size:var(--tiny);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.9rem}
+.phrow{display:grid;grid-template-columns:auto 1fr;gap:.8rem;padding:.6rem 0;border-top:1px solid var(--line2);align-items:center}
+.phrow:first-of-type{border-top:0}
+.phrow .pp{font-family:"Space Grotesk";font-weight:700;font-size:var(--tiny);color:#fff;background:var(--navy);border-radius:6px;padding:.2rem .5rem;white-space:nowrap}
+.phrow:nth-child(2) .pp{background:var(--signal)}.phrow:nth-child(3) .pp{background:var(--gold)}
+.phrow span{font-size:var(--cap);color:var(--muted)}.phrow span b{color:var(--ink)}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .55s cubic-bezier(.16,1,.3,1)}
+.slide.in .reveal{opacity:1;transform:none}
+.slide.in .d1{transition-delay:.04s}.slide.in .d2{transition-delay:.1s}.slide.in .d3{transition-delay:.16s}.slide.in .d4{transition-delay:.22s}
+@media(max-width:900px){.cover,.ctx,.rec2{grid-template-columns:1fr}.cols{columns:1}.mx{height:auto}.grid4{height:300px}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<!-- 1 · COVER -->
+<section class="slide">
+  <div class="inner cover">
+    <div>
+      <div class="tagline reveal d1">Đề xuất chiến lược</div>
+      <h1 class="display reveal d2">Định hướng tăng trưởng giai đoạn 2026 đến 2028</h1>
+      <p class="lead reveal d3">Phân tích bối cảnh, khung lựa chọn chiến lược và khuyến nghị hành động được ưu tiên theo tác động và nguồn lực.</p>
+      <div class="metastrip reveal d4">
+        <div class="mi">Chuẩn bị cho<b>Ban điều hành</b></div>
+        <div class="mi">Thực hiện<b>Phòng Chiến lược</b></div>
+        <div class="mi">Phiên bản<b>v1.0 · 05/2026</b></div>
+      </div>
+    </div>
+    <div class="toc reveal d3">
+      <h4>Mục lục</h4>
+      <ol>
+        <li>Bối cảnh &amp; thách thức</li>
+        <li>Khung lựa chọn chiến lược</li>
+        <li>So sánh phương án</li>
+        <li>Khuyến nghị &amp; lộ trình</li>
+      </ol>
+    </div>
+  </div>
+  <div class="footer"><span>Phòng Chiến lược · Lưu hành nội bộ</span><span class="num">01</span></div>
+</section>
+
+<!-- 2 · CONTEXT -->
+<section class="slide">
+  <div class="inner">
+    <div class="shead reveal d1"><div><div class="kicker">Mục 01</div><div class="h1">Bối cảnh &amp; thách thức</div></div><div class="rt">Tổng quan thị trường</div></div>
+    <div class="ctx">
+      <div class="cols reveal d2">
+        <p><b>Thị trường đang dịch chuyển.</b> Khách hàng kỳ vọng trải nghiệm số liền mạch, trong khi các kênh truyền thống chững lại. Đối thủ mới gia nhập với chi phí thấp và tốc độ cao.</p>
+        <p>Nội tại doanh nghiệp có nền tảng tốt: thương hiệu uy tín, tệp khách trung thành và năng lực vận hành ổn định. Tuy nhiên quy trình còn nặng thủ công và dữ liệu phân mảnh.</p>
+        <p><b>Cơ hội rõ ràng.</b> Nhóm sản phẩm biên cao đang tăng nhanh, kênh trực tuyến còn nhiều dư địa, và việc số hóa vận hành có thể giải phóng đáng kể nguồn lực.</p>
+        <p>Thách thức lớn nhất là tốc độ thực thi: cần chọn đúng ít việc trọng tâm thay vì dàn trải, và đo lường được kết quả theo từng giai đoạn.</p>
+      </div>
+      <div class="sidebar reveal d3">
+        <h4>Con số bối cảnh</h4>
+        <div class="statline"><span class="sv">+18<span style="font-size:.5em">%</span></span><span class="sl">Tăng trưởng mảng số toàn ngành mỗi năm</span></div>
+        <div class="statline"><span class="sv">46<span style="font-size:.5em">%</span></span><span class="sl">Doanh thu đến từ kênh trực tuyến của ta</span></div>
+        <div class="statline"><span class="sv">3<span style="font-size:.5em">ngày</span></span><span class="sl">Thời gian chốt số trung bình mỗi kỳ</span></div>
+        <div class="src">Nguồn: báo cáo nội bộ &amp; khảo sát ngành 2026.</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Phòng Chiến lược · Lưu hành nội bộ</span><span class="num">02</span></div>
+</section>
+
+<!-- 3 · 2x2 MATRIX -->
+<section class="slide">
+  <div class="inner">
+    <div class="shead reveal d1"><div><div class="kicker">Mục 02</div><div class="h1">Khung lựa chọn: Tác động và Nguồn lực</div></div><div class="rt">Sáu sáng kiến</div></div>
+    <div class="mx reveal d2">
+      <div class="yax">Tác động thấp → cao</div>
+      <div class="grid4">
+        <div class="q hot"><span class="ql">Ưu tiên làm ngay</span></div>
+        <div class="q"><span class="ql">Dự án lớn</span></div>
+        <div class="q"><span class="ql">Cân nhắc sau</span></div>
+        <div class="q"><span class="ql">Việc phụ</span></div>
+        <div class="bub s" style="left:26%;top:24%"><span class="dot">1</span><span class="lab">Kênh online</span></div>
+        <div class="bub s" style="left:38%;top:38%"><span class="dot">2</span><span class="lab">Giữ chân VIP</span></div>
+        <div class="bub" style="left:72%;top:30%"><span class="dot">3</span><span class="lab">Số hóa lõi</span></div>
+        <div class="bub g" style="left:30%;top:70%"><span class="dot">4</span><span class="lab">Tái kích hoạt</span></div>
+        <div class="bub" style="left:68%;top:74%"><span class="dot">5</span><span class="lab">Mở thị trường</span></div>
+        <div class="bub g" style="left:82%;top:60%"><span class="dot">6</span><span class="lab">Đối tác mới</span></div>
+      </div>
+      <div class="xax">Nguồn lực thấp → cao</div>
+      <div class="mxlegend"><span class="lg"><span class="d" style="background:var(--signal)"></span>Làm ngay</span><span class="lg"><span class="d" style="background:var(--navy)"></span>Dự án lớn / dài hơi</span><span class="lg"><span class="d" style="background:var(--gold)"></span>Thử nghiệm nhỏ</span></div>
+    </div>
+  </div>
+  <div class="footer"><span>Phòng Chiến lược · Lưu hành nội bộ</span><span class="num">03</span></div>
+</section>
+
+<!-- 4 · OPTIONS TABLE -->
+<section class="slide">
+  <div class="inner">
+    <div class="shead reveal d1"><div><div class="kicker">Mục 03</div><div class="h1">So sánh ba phương án chiến lược</div></div><div class="rt">Thang điểm 1 đến 5</div></div>
+    <table class="optbl reveal d2">
+      <thead><tr><th>Phương án</th><th>Tăng trưởng</th><th>Lợi nhuận</th><th>Rủi ro</th><th>Tốc độ</th><th>Nguồn lực</th></tr></thead>
+      <tbody>
+        <tr><td class="opt">A · Tối ưu hiện tại</td><td><span class="rate">●●●<span class="o">●●</span></span></td><td><span class="rate">●●●●<span class="o">●</span></span></td><td><span class="rate">●●●●<span class="o">●</span></span></td><td><span class="rate">●●●●<span class="o">●</span></span></td><td><span class="rate">●●<span class="o">●●●</span></span></td></tr>
+        <tr class="rec"><td class="opt">B · Tăng tốc số</td><td><span class="rate">●●●●<span class="o">●</span></span></td><td><span class="rate">●●●●<span class="o">●</span></span></td><td><span class="rate">●●●<span class="o">●●</span></span></td><td><span class="rate">●●●<span class="o">●●</span></span></td><td><span class="rate">●●●<span class="o">●●</span></span></td></tr>
+        <tr><td class="opt">C · Mở rộng mạnh</td><td><span class="rate">●●●●●</span></td><td><span class="rate">●●●<span class="o">●●</span></span></td><td><span class="rate">●●<span class="o">●●●</span></span></td><td><span class="rate">●●<span class="o">●●●</span></span></td><td><span class="rate">●<span class="o">●●●●</span></span></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:var(--cap);color:var(--muted);line-height:1.55;margin-top:1.1rem;max-width:80ch" class="reveal d3"><b style="color:var(--ink)">Khuyến nghị phương án B:</b> cân bằng tốt nhất giữa tăng trưởng, lợi nhuận và rủi ro; tận dụng được nền tảng sẵn có mà không đòi hỏi nguồn lực quá lớn như phương án mở rộng mạnh.</p>
+  </div>
+  <div class="footer"><span>Phòng Chiến lược · Lưu hành nội bộ</span><span class="num">04</span></div>
+</section>
+
+<!-- 5 · RECOMMENDATION -->
+<section class="slide">
+  <div class="inner">
+    <div class="shead reveal d1"><div><div class="kicker">Mục 04</div><div class="h1">Khuyến nghị &amp; lộ trình triển khai</div></div><div class="rt">12 tháng tới</div></div>
+    <div class="rec2">
+      <ul class="initlist reveal d2">
+        <li><span class="pn">1</span><div><h3>Tăng tốc kênh trực tuyến</h3><p>Tối ưu phễu, mở rộng quảng bá nhóm sản phẩm biên cao.</p></div><span class="imp">Tác động cao</span></li>
+        <li><span class="pn">2</span><div><h3>Số hóa quy trình lõi</h3><p>Tự động hóa chốt số và đối chiếu, giải phóng nguồn lực.</p></div><span class="imp">Nền tảng</span></li>
+        <li><span class="pn">3</span><div><h3>Chương trình giữ chân VIP</h3><p>Chăm sóc riêng nhóm khách giá trị cao, tăng bán thêm.</p></div><span class="imp">Tác động cao</span></li>
+        <li><span class="pn">4</span><div><h3>Thử nghiệm tái kích hoạt</h3><p>Chiến dịch nhắc tái tục đúng thời điểm, quy mô nhỏ.</p></div><span class="imp">Chi phí thấp</span></li>
+      </ul>
+      <div class="phase reveal d3">
+        <div class="pt">Lộ trình theo giai đoạn</div>
+        <div class="phrow"><span class="pp">Quý 3</span><span><b>Nền móng:</b> chuẩn hóa dữ liệu, dựng công cụ tự động.</span></div>
+        <div class="phrow"><span class="pp">Quý 4</span><span><b>Tăng tốc:</b> đẩy kênh online, chạy chương trình giữ chân.</span></div>
+        <div class="phrow"><span class="pp">Quý 1+</span><span><b>Mở rộng:</b> nhân rộng thử nghiệm hiệu quả, tính đối tác.</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Phòng Chiến lược · Lưu hành nội bộ</span><span class="num">05</span></div>
+</section>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.25});
+document.querySelectorAll('.slide').forEach(function(s){io.observe(s)});
+var sl=[].slice.call(document.querySelectorAll('.slide'));
+addEventListener('keydown',function(e){var i=sl.findIndex(function(s){return Math.abs(s.getBoundingClientRect().top)<innerHeight/2});
+if(['ArrowDown','ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();if(sl[i+1])sl[i+1].scrollIntoView()}
+if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();if(sl[i-1])sl[i-1].scrollIntoView()}});
+</script>
+<script>/*pv-preview-mode*/(function(){if(location.hash!=='#preview')return;
+var de=document.documentElement;
+var st=document.createElement('style');st.textContent='::-webkit-scrollbar{display:none}html{scrollbar-width:none!important}';document.head.appendChild(st);
+de.style.scrollSnapType='none';
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+var DWELL=1400;
+function ih(){return innerHeight;}
+function n(){return Math.max(1,Math.round(de.scrollHeight/ih()));}
+var i=0;
+function show(idx,smooth){de.style.scrollBehavior=(smooth&&!reduce)?'smooth':'auto';scrollTo(0,idx*ih());}
+function tick(){var c=n();var ni=(i+1)%c;show(ni,ni!==0);i=ni;}
+setTimeout(function(){setInterval(tick,DWELL);},DWELL);})();</script>
+</body>
+</html>

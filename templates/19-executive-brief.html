@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>19 · Executive Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf7f2; --panel:#ffffff; --ink:#111722; --muted:#5a6675; --line:#e9e3d8; --line2:#f1ece2;
+  --navy:#1e3a8a; --blue:#1e40af; --blue-soft:#e6eaf6; --teal:#047857; --teal-soft:#e3f1ec;
+  --amber:#b8902f; --amber-soft:#f6efdd; --rose:#b3324a;
+  --pad: clamp(1.4rem, 3.6vw, 3rem);
+  --gap: clamp(.7rem, 1.1vw, 1rem);
+  --display: clamp(2rem, 4.6vw, 3.6rem);
+  --h1: clamp(1.3rem, 2.6vw, 2rem);
+  --body: clamp(.92rem, 1.2vw, 1.05rem);
+  --kicker: clamp(.6rem,.85vw,.72rem);
+  --cap: clamp(.62rem,.82vw,.74rem);
+  --tiny: clamp(.58rem,.76vw,.68rem);
+  --radius: 13px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:"Be Vietnam Pro",system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.slide{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:var(--pad)}
+.inner{width:100%;max-width:1240px;margin:0 auto}
+.mono{font-family:"Space Grotesk";font-variant-numeric:tabular-nums}
+.kicker{display:inline-flex;align-items:center;gap:.5rem;font-family:"Space Grotesk";font-size:var(--kicker);font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue)}
+.kicker .dot{width:6px;height:6px;border-radius:50%;background:var(--blue)}
+.h1{font-weight:800;font-size:var(--h1);line-height:1.12;letter-spacing:-.02em}
+.shead{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;border-bottom:2px solid var(--navy);padding-bottom:.7rem;margin-bottom:1.1rem}
+.shead .rt{font-size:var(--cap);color:var(--muted);text-align:right}
+.footer{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(var(--pad)*.45);display:flex;justify-content:space-between;font-size:var(--tiny);color:var(--muted);border-top:1px solid var(--line);padding-top:.55rem}
+.footer .num{font-family:"Space Grotesk";font-weight:700;color:var(--ink)}
+.ico{display:inline-flex}
+.ico svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* cover */
+.cover{display:grid;grid-template-columns:1.5fr 1fr;gap:clamp(1.5rem,4vw,4rem);align-items:center;height:100%}
+.cover .display{font-weight:800;font-size:var(--display);line-height:1.02;letter-spacing:-.025em;margin:.45em 0 .5em}
+.cover .lead{font-size:var(--body);line-height:1.6;color:var(--muted);max-width:46ch}
+.cover .agenda{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(1.1rem,1.8vw,1.6rem)}
+.cover .agenda h4{font-family:"Space Grotesk";font-size:var(--cap);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.8rem}
+.cover .agenda ol{list-style:none;counter-reset:a}
+.cover .agenda li{counter-increment:a;display:grid;grid-template-columns:auto 1fr;gap:.7rem;padding:.55rem 0;border-top:1px solid var(--line2);font-size:var(--cap)}
+.cover .agenda li:first-child{border-top:0}
+.cover .agenda li::before{content:counter(a,decimal-leading-zero);font-family:"Space Grotesk";font-weight:700;color:var(--blue)}
+.metastrip{display:flex;gap:1.6rem;flex-wrap:wrap;margin-top:1.4rem;border-top:1px solid var(--line);padding-top:1rem}
+.metastrip .mi{font-size:var(--tiny);color:var(--muted)}
+.metastrip .mi b{display:block;font-family:"Space Grotesk";font-weight:700;font-size:var(--body);color:var(--ink);margin-top:.15rem}
+
+/* kpi row */
+.kpirow{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--gap)}
+.kc{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:.85rem .95rem}
+.kc .kl{font-size:var(--tiny);color:var(--muted);font-weight:600;display:flex;align-items:center;justify-content:space-between}
+.kc .kn{font-family:"Space Grotesk";font-weight:700;font-size:clamp(1.3rem,2.3vw,1.9rem);line-height:1;letter-spacing:-.02em;margin-top:.5rem}
+.kc .kn .u{font-size:.45em;color:var(--muted);margin-left:.1em}
+.kc .kt{font-family:"Space Grotesk";font-weight:700;font-size:var(--tiny);margin-top:.35rem}
+.kc .up{color:var(--teal)} .kc .down{color:var(--rose)}
+.kc .ico{color:var(--blue);font-size:.95rem}
+
+/* dashboard body */
+.dash{display:grid;grid-template-columns:1.6fr 1fr;gap:var(--gap);margin-top:var(--gap)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:1rem 1.1rem}
+.panel .pt{font-family:"Space Grotesk";font-weight:600;font-size:var(--tiny);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.8rem;display:flex;justify-content:space-between}
+.combo{display:grid;grid-template-columns:repeat(6,1fr);gap:.6rem;align-items:end;height:clamp(110px,15vh,170px)}
+.combo .bar{display:flex;flex-direction:column;align-items:center;gap:.4rem;height:100%;justify-content:flex-end}
+.combo .bar .col{width:60%;border-radius:5px 5px 0 0;background:var(--blue-soft)}
+.combo .bar .col.hot{background:linear-gradient(180deg,#2747c0,#1e3a8a)}
+.combo .bar .x{font-size:var(--tiny);color:var(--muted)}
+.rankmini{list-style:none}
+.rankmini li{display:grid;grid-template-columns:1fr auto;gap:.6rem;align-items:center;padding:.5rem 0;border-top:1px solid var(--line2);font-size:var(--cap)}
+.rankmini li:first-child{border-top:0}
+.rankmini .track{height:6px;border-radius:99px;background:var(--line2);margin-top:.3rem;overflow:hidden}
+.rankmini .track i{display:block;height:100%;background:var(--teal);border-radius:99px}
+.rankmini .v{font-family:"Space Grotesk";font-weight:700;color:var(--ink)}
+.callouts{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);margin-top:var(--gap)}
+.co{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:var(--radius);padding:.75rem .9rem;font-size:var(--cap);color:var(--muted);line-height:1.45}
+.co b{color:var(--ink)}
+.co:nth-child(2){border-left-color:var(--teal)}.co:nth-child(3){border-left-color:var(--amber)}
+
+/* table */
+.tbl{width:100%;border-collapse:collapse;font-size:var(--cap)}
+.tbl th,.tbl td{text-align:right;padding:.5rem .7rem;border-bottom:1px solid var(--line2)}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl thead th{font-family:"Space Grotesk";font-size:var(--tiny);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1.5px solid var(--line)}
+.tbl tbody tr:hover{background:var(--line2)}
+.tbl td .mono{font-weight:600}
+.tbl .pos{color:var(--teal);font-weight:600}.tbl .neg{color:var(--rose);font-weight:600}
+.twocol{display:grid;grid-template-columns:1.7fr 1fr;gap:var(--gap)}
+.notes{list-style:none;font-size:var(--cap);color:var(--muted);line-height:1.5}
+.notes li{display:grid;grid-template-columns:auto 1fr;gap:.55rem;padding:.5rem 0;border-top:1px solid var(--line2)}
+.notes li:first-child{border-top:0}
+.notes .ib{color:var(--blue);margin-top:.1rem}
+
+/* quadrants */
+.quad{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:var(--gap);height:clamp(330px,52vh,460px)}
+.qd{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:1rem 1.1rem;display:flex;flex-direction:column}
+.qd .qh{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem}
+.qd .qi{width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;background:var(--blue-soft);color:var(--blue);font-size:1rem}
+.qd:nth-child(2) .qi{background:var(--teal-soft);color:var(--teal)}
+.qd:nth-child(3) .qi{background:var(--amber-soft);color:var(--amber)}
+.qd:nth-child(4) .qi{background:#fde7ec;color:var(--rose)}
+.qd h3{font-weight:700;font-size:var(--body)}
+.qd .qn{font-family:"Space Grotesk";font-weight:700;font-size:clamp(1.4rem,2.4vw,2rem);line-height:1;margin:.2rem 0 .5rem}
+.qd p{font-size:var(--cap);color:var(--muted);line-height:1.5}
+.qd .qbar{margin-top:auto;height:6px;border-radius:99px;background:var(--line2);overflow:hidden}
+.qd .qbar i{display:block;height:100%;background:var(--blue);border-radius:99px}
+.qd:nth-child(2) .qbar i{background:var(--teal)}.qd:nth-child(3) .qbar i{background:var(--amber)}.qd:nth-child(4) .qbar i{background:var(--rose)}
+
+/* priorities */
+.prio{display:grid;grid-template-columns:1.4fr 1fr;gap:var(--gap)}
+.plist{list-style:none}
+.plist li{display:grid;grid-template-columns:auto 1fr auto;gap:.9rem;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:.7rem .9rem;margin-bottom:.55rem}
+.plist .pn{width:28px;height:28px;border-radius:8px;background:var(--navy);color:#fff;font-family:"Space Grotesk";font-weight:700;font-size:var(--cap);display:inline-flex;align-items:center;justify-content:center}
+.plist h3{font-weight:700;font-size:var(--cap)}
+.plist p{font-size:var(--tiny);color:var(--muted);line-height:1.4}
+.plist .tag{font-size:var(--tiny);font-weight:700;padding:.2rem .55rem;border-radius:99px;background:var(--teal-soft);color:var(--teal)}
+.plist .tag.b2{background:var(--amber-soft);color:var(--amber)}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .55s cubic-bezier(.16,1,.3,1)}
+.slide.in .reveal{opacity:1;transform:none}
+.slide.in .d1{transition-delay:.04s}.slide.in .d2{transition-delay:.1s}.slide.in .d3{transition-delay:.16s}.slide.in .d4{transition-delay:.22s}
+@media(max-width:900px){.cover,.dash,.twocol,.prio{grid-template-columns:1fr}.kpirow{grid-template-columns:repeat(2,1fr)}.quad{height:auto;grid-template-columns:1fr;grid-template-rows:none}.callouts{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<!-- 1 · COVER -->
+<section class="slide">
+  <div class="inner cover">
+    <div>
+      <div class="kicker reveal d1"><span class="dot"></span>Báo cáo điều hành · Tháng 05/2026</div>
+      <h1 class="display reveal d2">Tổng quan kết quả kinh doanh tháng 5</h1>
+      <p class="lead reveal d3">Bức tranh đầy đủ về doanh thu, hiệu suất vận hành, phân khúc và các ưu tiên trọng tâm cho ban điều hành.</p>
+      <div class="metastrip reveal d4">
+        <div class="mi">Kỳ<b>T05/2026</b></div>
+        <div class="mi">Người lập<b>Phòng Phân tích</b></div>
+        <div class="mi">Phân phối<b>Ban điều hành</b></div>
+        <div class="mi">Trạng thái<b>Đã chốt</b></div>
+      </div>
+    </div>
+    <div class="agenda reveal d3">
+      <h4>Nội dung</h4>
+      <ol>
+        <li>Bảng điều hành chỉ số</li>
+        <li>Chi tiết hiệu suất theo dòng</li>
+        <li>Phân khúc theo bốn nhóm</li>
+        <li>Ưu tiên &amp; bước tiếp theo</li>
+      </ol>
+    </div>
+  </div>
+  <div class="footer"><span>Công ty Cổ phần ABC · Mật</span><span class="num">01</span></div>
+</section>
+
+<!-- 2 · DASHBOARD -->
+<section class="slide">
+  <div class="inner">
+    <div class="shead reveal d1"><div><div class="kicker"><span class="dot"></span>Mục 01</div><div class="h1">Bảng điều hành chỉ số</div></div><div class="rt">Cập nhật<br><b class="mono">29/05/2026</b></div></div>
+    <div class="kpirow reveal d1">
+      <div class="kc"><div class="kl">Doanh thu <span class="ico"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span></div><div class="kn">128<span class="u">tỷ</span></div><div class="kt up">▲ 38% YoY</div></div>
+      <div class="kc"><div class="kl">Lợi nhuận <span class="ico"><svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/></svg></span></div><div class="kn">24<span class="u">tỷ</span></div><div class="kt up">▲ 5,2pt</div></div>
+      <div class="kc"><div class="kl">Đơn hàng <span class="ico"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span></div><div class="kn">4,2<span class="u">K</span></div><div class="kt up">▲ 12%</div></div>
+      <div class="kc"><div class="kl">Khách mới <span class="ico"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span></div><div class="kn">612</div><div class="kt up">▲ 9%</div></div>
+      <div class="kc"><div class="kl">Giữ chân <span class="ico"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></span></div><div class="kn">92<span class="u">%</span></div><div class="kt up">▲ 3pt</div></div>
+    </div>
+    <div class="dash">
+      <div class="panel reveal d2">
+        <div class="pt"><span>Doanh thu 6 tháng (tỷ đồng)</span><span class="mono">H1 2026</span></div>
+        <div class="combo">
+          <div class="bar"><div class="col" style="height:48%"></div><div class="x">T1</div></div>
+          <div class="bar"><div class="col" style="height:58%"></div><div class="x">T2</div></div>
+          <div class="bar"><div class="col" style="height:64%"></div><div class="x">T3</div></div>
+          <div class="bar"><div class="col" style="height:76%"></div><div class="x">T4</div></div>
+          <div class="bar"><div class="col" style="height:86%"></div><div class="x">T5</div></div>
+          <div class="bar"><div class="col hot" style="height:100%"></div><div class="x">T6</div></div>
+        </div>
+      </div>
+      <div class="panel reveal d3">
+        <div class="pt"><span>Top kênh đóng góp</span><span class="mono">%DT</span></div>
+        <ul class="rankmini">
+          <li><div>Trực tuyến<div class="track"><i style="width:92%"></i></div></div><span class="v">46%</span></li>
+          <li><div>Đại lý<div class="track"><i style="width:60%"></i></div></div><span class="v">28%</span></li>
+          <li><div>Đối tác<div class="track"><i style="width:36%"></i></div></div><span class="v">16%</span></li>
+          <li><div>Khác<div class="track"><i style="width:22%"></i></div></div><span class="v">10%</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="callouts reveal d4">
+      <div class="co"><b>Biên lợi nhuận 18,8%</b>, cải thiện 1,4 điểm nhờ chi phí vận hành đi ngang.</div>
+      <div class="co"><b>Kênh trực tuyến</b> dẫn dắt tăng trưởng, chiếm gần một nửa doanh thu.</div>
+      <div class="co"><b>Cần theo dõi</b> chi phí thu hút khách ở nhóm đại lý đang nhích lên.</div>
+    </div>
+  </div>
+  <div class="footer"><span>Công ty Cổ phần ABC · Mật</span><span class="num">02</span></div>
+</section>
+
+<!-- 3 · DETAIL TABLE -->
+<section class="slide">
+  <div class="inner">
+    <div class="shead reveal d1"><div><div class="kicker"><span class="dot"></span>Mục 02</div><div class="h1">Chi tiết hiệu suất theo dòng sản phẩm</div></div><div class="rt">Đơn vị<br><b class="mono">tỷ đồng</b></div></div>
+    <div class="twocol">
+      <div class="panel reveal d2" style="padding:.6rem .9rem">
+        <table class="tbl">
+          <thead><tr><th>Dòng sản phẩm</th><th>DT tháng</th><th>So T4</th><th>YoY</th><th>Biên LN</th></tr></thead>
+          <tbody>
+            <tr><td>Bảo hiểm xe</td><td class="mono">42,5</td><td class="pos">+6,2%</td><td class="pos">+31%</td><td class="mono">19,2%</td></tr>
+            <tr><td>Sức khỏe</td><td class="mono">34,1</td><td class="pos">+8,8%</td><td class="pos">+44%</td><td class="mono">21,5%</td></tr>
+            <tr><td>Tài sản</td><td class="mono">21,7</td><td class="pos">+3,1%</td><td class="pos">+18%</td><td class="mono">16,8%</td></tr>
+            <tr><td>Du lịch</td><td class="mono">14,3</td><td class="neg">-2,4%</td><td class="pos">+12%</td><td class="mono">23,0%</td></tr>
+            <tr><td>Trách nhiệm</td><td class="mono">9,8</td><td class="pos">+1,9%</td><td class="pos">+7%</td><td class="mono">15,1%</td></tr>
+            <tr><td>Khác</td><td class="mono">5,6</td><td class="pos">+4,0%</td><td class="pos">+9%</td><td class="mono">14,2%</td></tr>
+            <tr><td><b>Tổng</b></td><td class="mono"><b>128,0</b></td><td class="pos"><b>+5,1%</b></td><td class="pos"><b>+38%</b></td><td class="mono"><b>18,8%</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel reveal d3">
+        <div class="pt"><span>Điểm cần lưu ý</span></div>
+        <ul class="notes">
+          <li><span class="ib ico"><svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/></svg></span><div><b>Sức khỏe</b> là động lực chính, vừa tăng nhanh vừa giữ biên cao.</div></li>
+          <li><span class="ib ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg></span><div><b>Du lịch</b> chững nhẹ theo mùa, vẫn tăng so với cùng kỳ.</div></li>
+          <li><span class="ib ico"><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg></span><div><b>Cơ cấu</b> dịch dần sang nhóm biên cao, tốt cho lợi nhuận.</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Công ty Cổ phần ABC · Mật</span><span class="num">03</span></div>
+</section>
+
+<!-- 4 · QUADRANTS -->
+<section class="slide">
+  <div class="inner">
+    <div class="shead reveal d1"><div><div class="kicker"><span class="dot"></span>Mục 03</div><div class="h1">Phân khúc theo bốn nhóm khách hàng</div></div><div class="rt">Theo giá trị &amp; tăng trưởng</div></div>
+    <div class="quad">
+      <div class="qd reveal d1"><div class="qh"><span class="qi ico"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.5 5.7 21l2.3-7.1-6-4.5h7.6L12 2z"/></svg></span><h3>Khách hàng chủ lực</h3></div><div class="qn">38%</div><p>Giá trị cao, gắn bó lâu. Ưu tiên giữ chân và bán thêm.</p><div class="qbar"><i style="width:85%"></i></div></div>
+      <div class="qd reveal d2"><div class="qh"><span class="qi ico"><svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></span><h3>Tiềm năng tăng trưởng</h3></div><div class="qn">27%</div><p>Tăng nhanh, dư địa lớn. Đầu tư mở rộng quan hệ.</p><div class="qbar"><i style="width:70%"></i></div></div>
+      <div class="qd reveal d3"><div class="qh"><span class="qi ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span><h3>Cần kích hoạt lại</h3></div><div class="qn">21%</div><p>Giảm tương tác. Cần chương trình chăm sóc đúng lúc.</p><div class="qbar"><i style="width:48%"></i></div></div>
+      <div class="qd reveal d4"><div class="qh"><span class="qi ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6"/></svg></span><h3>Mới tiếp cận</h3></div><div class="qn">14%</div><p>Vừa gia nhập. Tập trung trải nghiệm đầu tiên thật tốt.</p><div class="qbar"><i style="width:32%"></i></div></div>
+    </div>
+  </div>
+  <div class="footer"><span>Công ty Cổ phần ABC · Mật</span><span class="num">04</span></div>
+</section>
+
+<!-- 5 · PRIORITIES -->
+<section class="slide">
+  <div class="inner">
+    <div class="shead reveal d1"><div><div class="kicker"><span class="dot"></span>Mục 04</div><div class="h1">Ưu tiên &amp; bước tiếp theo</div></div><div class="rt">Tháng 06/2026</div></div>
+    <div class="prio">
+      <ul class="plist reveal d2">
+        <li><span class="pn">1</span><div><h3>Đẩy mạnh kênh trực tuyến</h3><p>Tối ưu phễu và mở rộng quảng bá cho nhóm sản phẩm biên cao.</p></div><span class="tag">Cao</span></li>
+        <li><span class="pn">2</span><div><h3>Giữ chân khách chủ lực</h3><p>Triển khai chương trình chăm sóc riêng cho nhóm giá trị cao.</p></div><span class="tag">Cao</span></li>
+        <li><span class="pn">3</span><div><h3>Kiểm soát chi phí đại lý</h3><p>Rà soát chi phí thu hút khách, đặt ngưỡng cảnh báo theo tuần.</p></div><span class="tag b2">Vừa</span></li>
+        <li><span class="pn">4</span><div><h3>Kích hoạt lại nhóm ngủ đông</h3><p>Thử nghiệm chiến dịch nhắc nhở đúng thời điểm tái tục.</p></div><span class="tag b2">Vừa</span></li>
+      </ul>
+      <div class="panel reveal d3">
+        <div class="pt"><span>Phân công &amp; mốc</span></div>
+        <table class="tbl">
+          <thead><tr><th>Việc</th><th>Phụ trách</th><th>Hạn</th></tr></thead>
+          <tbody>
+            <tr><td>Tối ưu phễu online</td><td>Marketing</td><td class="mono">15/06</td></tr>
+            <tr><td>CT giữ chân VIP</td><td>CSKH</td><td class="mono">20/06</td></tr>
+            <tr><td>Báo cáo chi phí đại lý</td><td>Phân tích</td><td class="mono">10/06</td></tr>
+            <tr><td>Thử nghiệm tái tục</td><td>Sản phẩm</td><td class="mono">25/06</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Công ty Cổ phần ABC · Mật</span><span class="num">05</span></div>
+</section>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.25});
+document.querySelectorAll('.slide').forEach(function(s){io.observe(s)});
+var sl=[].slice.call(document.querySelectorAll('.slide'));
+addEventListener('keydown',function(e){var i=sl.findIndex(function(s){return Math.abs(s.getBoundingClientRect().top)<innerHeight/2});
+if(['ArrowDown','ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();if(sl[i+1])sl[i+1].scrollIntoView()}
+if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();if(sl[i-1])sl[i-1].scrollIntoView()}});
+</script>
+<script>/*pv-preview-mode*/(function(){if(location.hash!=='#preview')return;
+var de=document.documentElement;
+var st=document.createElement('style');st.textContent='::-webkit-scrollbar{display:none}html{scrollbar-width:none!important}';document.head.appendChild(st);
+de.style.scrollSnapType='none';
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+var DWELL=1400;
+function ih(){return innerHeight;}
+function n(){return Math.max(1,Math.round(de.scrollHeight/ih()));}
+var i=0;
+function show(idx,smooth){de.style.scrollBehavior=(smooth&&!reduce)?'smooth':'auto';scrollTo(0,idx*ih());}
+function tick(){var c=n();var ni=(i+1)%c;show(ni,ni!==0);i=ni;}
+setTimeout(function(){setInterval(tick,DWELL);},DWELL);})();</script>
+</body>
+</html>

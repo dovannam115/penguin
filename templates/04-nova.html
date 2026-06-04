@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>04 · Nova</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;800&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef1f8; --ink:#16203a; --body:#5a6377; --card:#ffffff; --line:#dde2ee;
+  --s1:#5d7bf2; --s2:#3f60ee; --s3:#2f54eb; --s4:#2442c9; --s5:#1d36a3; --s6:#162a72;
+  --pad:clamp(1.5rem,4vw,3rem);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:"Be Vietnam Pro",system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.slide{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:var(--pad);background:var(--bg)}
+.head{text-align:center;max-width:64ch;margin:0 auto clamp(1.8rem,5vh,3.2rem);flex:0 0 auto;position:relative;padding-bottom:1.1rem}
+.head::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:66px;height:4px;border-radius:3px;background:linear-gradient(90deg,var(--s2),var(--s5))}
+/* number-card agenda */
+.numgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1rem,2vw,1.6rem);width:100%;max-width:1080px;margin:0 auto}
+.numcard{background:#f0f4fc;border-radius:18px;padding:clamp(1.3rem,2.4vw,1.9rem);position:relative;overflow:hidden;box-shadow:0 16px 34px -20px rgba(20,38,92,.26)}
+.numcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px}
+.numcard:nth-child(1)::before{background:var(--s1)}.numcard:nth-child(2)::before{background:var(--s2)}.numcard:nth-child(3)::before{background:var(--s3)}.numcard:nth-child(4)::before{background:var(--s4)}.numcard:nth-child(5)::before{background:var(--s6)}
+.numcard .bignum{display:block;font-weight:800;font-size:clamp(2rem,3.4vw,2.9rem);line-height:1;font-variant-numeric:tabular-nums;margin-bottom:.5rem}
+.numcard:nth-child(1) .bignum{color:var(--s1)}.numcard:nth-child(2) .bignum{color:var(--s2)}.numcard:nth-child(3) .bignum{color:var(--s3)}.numcard:nth-child(4) .bignum{color:var(--s4)}.numcard:nth-child(5) .bignum{color:var(--s6)}
+.numcard h4{font-weight:800;font-size:clamp(1rem,1.3vw,1.18rem);margin-bottom:.3rem;line-height:1.2}
+.numcard p{font-size:.84rem;color:var(--body);line-height:1.45}
+.title{font-weight:800;font-size:clamp(1.7rem,3.7vw,2.75rem);letter-spacing:-.02em;line-height:1.1}
+.sub{font-weight:500;color:var(--body);font-size:clamp(.92rem,1.5vw,1.18rem);margin-top:.6rem;line-height:1.5}
+.stage{flex:0 1 auto;display:flex;align-items:center;justify-content:center;width:100%;max-width:1200px;margin:0 auto}
+.foot{position:absolute;left:var(--pad);right:var(--pad);bottom:calc(var(--pad)*.45);display:flex;justify-content:space-between;font-size:.7rem;color:var(--body);opacity:.65}
+.foot .num{font-weight:800;color:var(--s4)}
+svg.ic{width:100%;height:100%;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.kick{display:inline-block;font-weight:800;font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:#fff;background:var(--s3);padding:.45em 1em;border-radius:999px}
+
+/* ===== COVER / CLOSING ===== */
+.cover{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;max-width:1100px;margin:0 auto;width:100%}
+.cover h1{font-weight:800;font-size:clamp(2.4rem,6vw,4.6rem);line-height:1.02;letter-spacing:-.025em;margin:.5em 0 .35em}
+.cover h1 em{font-style:normal;background:linear-gradient(90deg,var(--s1),var(--s4));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.cover p{font-size:clamp(1rem,1.6vw,1.3rem);color:var(--body);max-width:46ch;line-height:1.55;font-weight:500}
+.sweep{display:flex;gap:8px;margin-top:2.2rem}
+.sweep span{height:12px;width:64px;border-radius:999px}
+.sweep span:nth-child(1){background:var(--s1)}.sweep span:nth-child(2){background:var(--s2)}.sweep span:nth-child(3){background:var(--s3)}.sweep span:nth-child(4){background:var(--s4)}.sweep span:nth-child(5){background:var(--s5)}.sweep span:nth-child(6){background:var(--s6)}
+.cend{margin-top:2rem;display:flex;flex-direction:column;gap:.5rem}
+.cend span{font-weight:600;color:var(--body);font-size:clamp(.9rem,1.2vw,1.05rem)}
+.cend b{color:var(--ink);font-weight:800}
+
+/* ===== AGENDA ===== */
+.agenda{display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(2rem,5vw,4.5rem);align-items:center;width:100%;max-width:1120px;margin:0 auto}
+.ag-l h2{font-weight:800;font-size:clamp(2rem,4.2vw,3.3rem);line-height:1.04;letter-spacing:-.025em;margin:.7rem 0 0}
+.ag-l p{color:var(--body);margin-top:1rem;max-width:30ch;line-height:1.55;font-weight:500}
+.aglist{display:flex;flex-direction:column}
+.agitem{display:flex;align-items:center;gap:1.3rem;padding:1rem .3rem;border-bottom:1px solid var(--line)}
+.agitem:last-child{border-bottom:0}
+.agnum{flex:none;width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:1.05rem;box-shadow:0 10px 18px -7px rgba(20,38,92,.4)}
+.agitem:nth-child(1) .agnum{background:var(--s1)}.agitem:nth-child(2) .agnum{background:var(--s2)}.agitem:nth-child(3) .agnum{background:var(--s3)}.agitem:nth-child(4) .agnum{background:var(--s4)}.agitem:nth-child(5) .agnum{background:var(--s6)}
+.agitem h4{font-weight:800;font-size:clamp(1rem,1.35vw,1.2rem);line-height:1.2}
+.agitem p{font-size:.84rem;color:var(--body);margin-top:.12rem;line-height:1.4}
+.agitem .agar{margin-left:auto;flex:none;width:22px;height:22px;color:#c5bcdb}
+
+/* ===== PROSE ===== */
+.prose{width:100%;max-width:1000px;margin:0 auto}
+.prose .lead{font-size:clamp(1.05rem,1.7vw,1.32rem);color:var(--ink);line-height:1.6;font-weight:600;border-left:4px solid var(--s3);padding-left:1.3rem;margin-bottom:2rem}
+.blist{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem 2.8rem}
+.bli{display:flex;gap:1rem;align-items:flex-start}
+.bli .bic{flex:none;width:34px;height:34px;border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;margin-top:1px;box-shadow:0 8px 15px -6px rgba(20,38,92,.4)}
+.bli .bic .glyph{width:18px;height:18px}
+.bli:nth-child(1) .bic{background:var(--s1)}.bli:nth-child(2) .bic{background:var(--s2)}.bli:nth-child(3) .bic{background:var(--s3)}.bli:nth-child(4) .bic{background:var(--s4)}.bli:nth-child(5) .bic{background:var(--s5)}.bli:nth-child(6) .bic{background:var(--s6)}
+.bli h4{font-weight:800;font-size:clamp(1rem,1.3vw,1.14rem);line-height:1.2}
+.bli p{font-size:.86rem;color:var(--body);line-height:1.48;margin-top:.2rem}
+
+/* ===== SPLIT (TEXT + CHART) ===== */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4.5rem);align-items:center;width:100%;max-width:1120px;margin:0 auto}
+.split-text h2{font-weight:800;font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1.08;letter-spacing:-.02em}
+.split-text .lead{color:var(--body);line-height:1.6;margin:1rem 0 1.6rem;font-weight:500;font-size:clamp(.95rem,1.3vw,1.08rem)}
+.split-text ul{list-style:none;display:flex;flex-direction:column;gap:.85rem}
+.split-text li{display:flex;gap:.8rem;align-items:center;font-weight:600;font-size:clamp(.9rem,1.2vw,1.02rem)}
+.split-text li b{color:var(--s4);font-weight:800}
+.split-text li::before{content:"";width:11px;height:11px;border-radius:4px;background:var(--s3);flex:none}
+.chartcard{background:var(--card);border-radius:18px;padding:clamp(1.4rem,2.6vw,2.2rem);box-shadow:0 26px 50px -24px rgba(20,38,92,.26),0 8px 18px -10px rgba(20,38,92,.12)}
+.chartcard h5{font-weight:800;font-size:.92rem;color:var(--ink);margin-bottom:1rem}
+.chartcard svg{width:100%;height:auto;display:block}
+
+/* ===== CAPSULE NUMBER ROW ===== */
+.caps{display:flex;justify-content:center;align-items:flex-start;gap:clamp(.6rem,1.8vw,1.6rem);width:100%;max-width:1180px;margin:0 auto}
+.cap{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;max-width:210px}
+.cap .capsule{width:clamp(88px,9vw,120px);height:clamp(150px,24vh,196px);border-radius:999px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:clamp(1.1rem,2.6vh,1.7rem) 0;color:#fff;box-shadow:0 0 0 4px #fff,0 22px 40px -16px rgba(20,38,92,.48)}
+.cap:nth-child(1) .capsule{background:var(--s1)}.cap:nth-child(2) .capsule{background:var(--s2)}.cap:nth-child(3) .capsule{background:var(--s3)}.cap:nth-child(4) .capsule{background:var(--s5)}.cap:nth-child(5) .capsule{background:var(--s6)}
+.cap .capnum{font-weight:800;font-size:clamp(1.5rem,2.7vw,2.2rem);line-height:1}
+.cap .capic{width:clamp(30px,3.2vw,40px);height:clamp(30px,3.2vw,40px)}
+.cap h4{margin-top:1.1rem;font-weight:800;font-size:clamp(.92rem,1.2vw,1.1rem);line-height:1.2}
+.cap p{margin-top:.32rem;font-size:clamp(.74rem,.92vw,.84rem);color:var(--body);line-height:1.45}
+
+/* ===== RADIAL HUB ===== */
+.hub{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(1.4rem,4vw,3.4rem);width:100%;max-width:1180px;margin:0 auto}
+.hubcol{display:flex;flex-direction:column;gap:clamp(1.4rem,4.5vh,2.8rem)}
+.hubcol.left{align-items:flex-end}
+.hubitem{display:flex;gap:1rem;align-items:center;max-width:300px}
+.hubcol.left .hubitem{flex-direction:row-reverse;text-align:right}
+.hubitem .hico{flex:none;width:clamp(46px,4.8vw,58px);height:clamp(46px,4.8vw,58px);border-radius:15px;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px #fff,0 12px 22px -7px rgba(20,38,92,.46)}
+.hubitem .hico .glyph{width:48%;height:48%}
+.hubcol.left .hubitem:nth-child(1) .hico{background:var(--s1)}.hubcol.left .hubitem:nth-child(2) .hico{background:var(--s2)}.hubcol.left .hubitem:nth-child(3) .hico{background:var(--s3)}
+.hubcol.right .hubitem:nth-child(1) .hico{background:var(--s2)}.hubcol.right .hubitem:nth-child(2) .hico{background:var(--s4)}.hubcol.right .hubitem:nth-child(3) .hico{background:var(--s6)}
+.hubitem h4{font-weight:800;font-size:clamp(.92rem,1.2vw,1.08rem);line-height:1.2}
+.hubitem p{font-size:clamp(.72rem,.9vw,.82rem);color:var(--body);line-height:1.42;margin-top:.15rem}
+.hubcenter{width:clamp(168px,17vw,222px);aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:1rem;background:radial-gradient(circle at 35% 30%,var(--s3),var(--s6));box-shadow:0 0 0 6px #fff,0 26px 50px -18px rgba(20,38,92,.6)}
+.hubcenter .hsub{font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
+.hubcenter h3{font-weight:800;font-size:clamp(1.1rem,1.8vw,1.55rem);line-height:1.06;margin-top:.3rem}
+
+/* ===== TABLE ===== */
+.tblwrap{width:100%;max-width:1040px;margin:0 auto;border-radius:16px;overflow:hidden;box-shadow:0 26px 50px -24px rgba(20,38,92,.24),0 8px 18px -10px rgba(20,38,92,.12)}
+table.tbl{width:100%;border-collapse:collapse;background:var(--card);font-size:clamp(.82rem,1.05vw,.98rem)}
+.tbl thead th{background:var(--s6);color:#fff;font-weight:700;text-align:left;padding:1rem 1.4rem;font-size:.92rem;letter-spacing:.01em}
+.tbl thead th:not(:first-child){text-align:center}
+.tbl tbody td{padding:.9rem 1.4rem;border-top:1px solid var(--line);color:var(--ink);vertical-align:middle}
+.tbl tbody td:not(:first-child){text-align:center}
+.tbl tbody td:first-child{font-weight:700}
+.tbl tbody tr:nth-child(even){background:#f6f3fb}
+.tbl .hl{font-weight:800;color:var(--s4);font-variant-numeric:tabular-nums}
+.tbl .tag{display:inline-block;padding:.22em .8em;border-radius:999px;font-size:.78rem;font-weight:700}
+.tag.good{background:#e2e9f8;color:#2442c9}.tag.warn{background:#fcefdc;color:#b9772a}.tag.bad{background:#fae6e6;color:#bd3a3a}
+
+/* ===== STATS + DONUT ===== */
+.results{display:flex;flex-direction:column;gap:clamp(1.4rem,3.4vh,2.8rem);width:100%;max-width:1060px;margin:0 auto}
+.kpi3{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(.8rem,1.6vw,1.3rem)}
+.kbox{border-radius:16px;padding:clamp(1.1rem,2vw,1.7rem);color:#fff;box-shadow:0 20px 40px -20px rgba(20,38,92,.42)}
+.kbox:nth-child(1){background:var(--s2)}.kbox:nth-child(2){background:var(--s3)}.kbox:nth-child(3){background:var(--s4)}.kbox:nth-child(4){background:var(--s6)}
+.kbox .kn{font-weight:800;font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kbox .kl{margin-top:.55rem;font-size:.85rem;font-weight:600;opacity:.92;line-height:1.45}
+.donutrow{display:flex;align-items:center;justify-content:center;gap:clamp(1.8rem,4.5vw,3.6rem);flex-wrap:wrap}
+.donutrow svg{width:clamp(150px,17vw,196px);height:auto;filter:drop-shadow(0 12px 18px rgba(20,38,92,.16))}
+.dleg{font-size:.9rem;color:var(--body);line-height:2.3}
+.dleg b{color:var(--ink);font-weight:800}
+.dleg .dt{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:.6rem;vertical-align:middle}
+
+/* ===== COMPARISON ===== */
+.cmp{display:grid;grid-template-columns:1fr 1px 1fr;gap:clamp(1.4rem,3.5vw,3rem);align-items:start;width:100%;max-width:1060px;margin:0 auto}
+.cmp-div{align-self:stretch;background:var(--line)}
+.cmp-head{display:inline-flex;align-items:center;border-radius:999px;padding:.55rem 1.7rem;font-weight:800;font-size:clamp(1rem,1.6vw,1.3rem);margin-bottom:clamp(.8rem,1.6vw,1.3rem)}
+.cmp-head.old{background:var(--card);color:var(--body);border:1.5px solid var(--line)}
+.cmp-head.new{background:var(--s3);color:#fff;box-shadow:0 10px 22px -10px var(--s3)}
+.cmp-li{display:flex;gap:.85rem;padding:clamp(.78rem,1.45vw,1.1rem) 0;border-bottom:1px solid var(--line)}
+.cmp-li:last-child{border-bottom:none}
+.cmp-li .cico{width:clamp(38px,3.8vw,46px);height:clamp(38px,3.8vw,46px);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cmp-li.old .cico{background:#e6eaf3;color:var(--body)}
+.cmp-li.new .cico{background:var(--s1);color:#fff}
+.cmp-li .cico .glyph{width:52%;height:52%}
+.cmp-li h4{font-weight:800;font-size:clamp(.95rem,1.3vw,1.1rem);line-height:1.2}
+.cmp-li p{font-size:clamp(.74rem,.92vw,.84rem);color:var(--body);line-height:1.45;margin-top:.18rem}
+
+/* ===== SEMICIRCLE ARCH ===== */
+.archwrap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(.8rem,2.4vw,2.2rem);width:100%;max-width:1200px;margin:0 auto}
+.archcol{display:flex;flex-direction:column;gap:clamp(1.4rem,5vh,3rem)}
+.archcol.left{align-items:flex-end;text-align:right}
+.archcol.right{align-items:flex-start;text-align:left}
+.archlab{max-width:248px}
+.archcol.left .archlab{border-right:3px solid;padding-right:1rem}
+.archcol.right .archlab{border-left:3px solid;padding-left:1rem}
+.archcol.left .archlab:nth-child(1){border-color:var(--s1)}.archcol.left .archlab:nth-child(2){border-color:var(--s2)}.archcol.left .archlab:nth-child(3){border-color:var(--s3)}
+.archcol.right .archlab:nth-child(1){border-color:var(--s4)}.archcol.right .archlab:nth-child(2){border-color:var(--s5)}.archcol.right .archlab:nth-child(3){border-color:var(--s6)}
+.archlab h4{font-weight:800;font-size:clamp(.95rem,1.25vw,1.16rem);line-height:1.2;margin-bottom:.25rem}
+.archlab p{font-size:clamp(.74rem,.92vw,.84rem);color:var(--body);line-height:1.42}
+.archsvg{width:clamp(330px,37vw,500px)}
+.archsvg svg{width:100%;height:auto;display:block;overflow:visible;filter:drop-shadow(0 16px 24px rgba(20,38,92,.22))}
+
+/* ===== HERO COVER (full gradient, centered) ===== */
+.slide--hero{background:linear-gradient(140deg,var(--s4) 0%,var(--s6) 100%)}
+.slide--hero .foot{color:rgba(255,255,255,.6)}.slide--hero .foot .num{color:#fff}
+.slide--hero .cover{align-items:center;text-align:center;max-width:920px}
+.slide--hero .kick{background:rgba(255,255,255,.18);color:#fff}
+.slide--hero h1{color:#fff}
+.slide--hero h1 em{background:none!important;-webkit-text-fill-color:#c2d0f8;color:#c2d0f8}
+.slide--hero p{color:rgba(255,255,255,.85)}
+.slide--hero .sweep{justify-content:center}
+.slide--hero .sweep span{background:rgba(255,255,255,.32)!important}
+.slide--hero .sweep span:nth-child(1){background:#fff!important}
+
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.reveal{opacity:0;transition:opacity .55s ease}
+.slide.in .reveal,.slide.visible .reveal{opacity:1}
+.slide.in .r1{transition-delay:.06s}.slide.in .r2{transition-delay:.12s}.slide.in .r3{transition-delay:.18s}.slide.in .r4{transition-delay:.24s}.slide.in .r5{transition-delay:.3s}.slide.in .r6{transition-delay:.36s}
+.vswrap{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.6rem,4vw,3.4rem);width:100%;max-width:1000px;margin:0 auto;align-items:stretch}
+.vscol{border-radius:22px;padding:clamp(1.5rem,3vw,2.3rem)}
+.vs-old{background:#fff;border:1px solid var(--line);box-shadow:0 18px 36px -24px rgba(20,38,92,.3)}
+.vs-new{background:linear-gradient(158deg,var(--s2),var(--s5));color:#fff;box-shadow:0 26px 50px -22px rgba(20,38,92,.55)}
+.vshd{display:flex;align-items:center;gap:.9rem;margin-bottom:1.4rem}
+.vsic{flex:none;width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center}
+.vsic svg{width:24px;height:24px}
+.vs-old .vsic{background:#eef1f8;color:var(--s3)}.vs-new .vsic{background:rgba(255,255,255,.2);color:#fff}
+.vshd h3{font-weight:800;font-size:clamp(1.1rem,1.7vw,1.48rem);line-height:1.1}
+.vscol ul{list-style:none;display:flex;flex-direction:column;gap:clamp(.7rem,1.6vh,1rem)}
+.vscol li{display:flex;gap:.75rem;align-items:flex-start;font-size:clamp(.9rem,1.2vw,1.04rem);line-height:1.38;font-weight:500}
+.vscol .vm{flex:none;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.vscol .vm svg{width:15px;height:15px}
+.vs-old .vm{background:#fdeceA;color:#d8553a}.vs-old li{color:var(--body)}
+.vs-new .vm{background:rgba(255,255,255,.22);color:#fff}
+.vsbadge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;width:clamp(54px,6vw,70px);height:clamp(54px,6vw,70px);border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(1rem,1.4vw,1.2rem);border:4px solid #fff;box-shadow:0 16px 30px -12px rgba(20,38,92,.55)}
+</style>
+</head>
+<body>
+
+<!-- ===== SLIDE 1 — COVER ===== -->
+<section class="slide slide--hero">
+  <div class="cover">
+    <span class="kick reveal">Đổi mới 2027</span>
+    <h1 class="reveal r1">Văn hóa <em>đổi mới</em><br>sáng tạo</h1>
+    <p class="reveal r2">Biến đổi mới thành năng lực cốt lõi — nơi mọi ý tưởng tốt đều có cơ hội trở thành giá trị thực.</p>
+    <div class="sweep reveal r3"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+  <div class="foot"><span>Nova</span><span class="num">01</span></div>
+</section>
+
+<!-- ===== SLIDE 2 — AGENDA (number-card grid) ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Nội dung trình bày</h2>
+    <p class="sub">Năm phần dẫn dắt từ tư duy đến hệ thống đổi mới hoàn chỉnh.</p>
+  </div>
+  <div class="stage">
+    <div class="numgrid">
+      <div class="numcard reveal r1"><span class="bignum">01</span><h4>Tư duy đổi mới</h4><p>Vì sao đổi mới là năng lực sống còn của tổ chức.</p></div>
+      <div class="numcard reveal r2"><span class="bignum">02</span><h4>Năm trụ cột</h4><p>Các yếu tố nền tảng tạo nên đổi mới bền vững.</p></div>
+      <div class="numcard reveal r3"><span class="bignum">03</span><h4>Hệ sinh thái</h4><p>Cách các yếu tố kết nối quanh con người.</p></div>
+      <div class="numcard reveal r4"><span class="bignum">04</span><h4>Đo lường tác động</h4><p>Các chỉ số phản ánh hiệu quả đổi mới.</p></div>
+      <div class="numcard reveal r5"><span class="bignum">05</span><h4>Bước tiếp theo</h4><p>Cam kết và hành động cụ thể cho đội ngũ.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Nova</span><span class="num">02</span></div>
+</section>
+
+<!-- ===== SLIDE 3 — PROSE ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Đổi mới bắt đầu từ đâu</h2>
+    <p class="sub">Bốn điều kiện nền tảng để ý tưởng nảy nở và phát triển.</p>
+  </div>
+  <div class="stage">
+    <div class="prose">
+      <p class="lead reveal r1">Đổi mới không đến từ may mắn mà từ một môi trường được thiết kế có chủ đích. Khi hội đủ những điều kiện dưới đây, sáng kiến sẽ xuất hiện một cách tự nhiên và liên tục.</p>
+      <div class="blist">
+        <div class="bli reveal r1"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>An toàn để thử</h4><p>Khuyến khích thử nghiệm, chấp nhận thất bại có kiểm soát.</p></div></div>
+        <div class="bli reveal r2"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Đa dạng góc nhìn</h4><p>Đội ngũ đa dạng tạo ra nhiều ý tưởng đột phá hơn.</p></div></div>
+        <div class="bli reveal r3"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Gần với khách hàng</h4><p>Thấu hiểu nhu cầu thực là nguồn cảm hứng tốt nhất.</p></div></div>
+        <div class="bli reveal r4"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Nguồn lực sẵn sàng</h4><p>Thời gian, ngân sách và công cụ để biến ý tưởng thành sản phẩm.</p></div></div>
+        <div class="bli reveal r5"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Ghi nhận &amp; tưởng thưởng</h4><p>Vinh danh xứng đáng những người đóng góp ý tưởng giá trị.</p></div></div>
+        <div class="bli reveal r6"><div class="bic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Kiên nhẫn dài hạn</h4><p>Cho ý tưởng đủ thời gian và không gian để trưởng thành.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Nova</span><span class="num">03</span></div>
+</section>
+
+<!-- ===== SLIDE 4 — SPLIT (TEXT + CHART) ===== -->
+<section class="slide">
+  <div class="stage">
+    <div class="split">
+      <div class="split-text">
+        <h2 class="reveal r1">Sáng kiến tăng theo năm</h2>
+        <p class="lead reveal r2">Văn hóa đổi mới đã giúp số lượng sáng kiến được triển khai tăng mạnh qua từng năm.</p>
+        <ul>
+          <li class="reveal r3"><b>3,2×</b> số sáng kiến so với năm đầu</li>
+          <li class="reveal r4"><b>64%</b> sáng kiến đến từ nhân viên</li>
+          <li class="reveal r5"><b>18</b> sản phẩm mới ra thị trường</li>
+        </ul>
+      </div>
+      <div class="chartcard reveal r2">
+        <h5>Số sáng kiến triển khai / năm</h5>
+        <svg viewBox="0 0 340 220" aria-label="Biểu đồ cột sáng kiến">
+          <line x1="20" y1="190" x2="330" y2="190" stroke="var(--line)" stroke-width="2"/>
+          <g font-size="12" font-weight="800" fill="var(--ink)" text-anchor="middle">
+            <rect x="34" y="138" width="42" height="52" rx="6" fill="var(--s1)"/><text x="55" y="128">24</text>
+            <rect x="94" y="112" width="42" height="78" rx="6" fill="var(--s2)"/><text x="115" y="102">41</text>
+            <rect x="154" y="86" width="42" height="104" rx="6" fill="var(--s3)"/><text x="175" y="76">58</text>
+            <rect x="214" y="60" width="42" height="130" rx="6" fill="var(--s4)"/><text x="235" y="50">63</text>
+            <rect x="274" y="38" width="42" height="152" rx="6" fill="var(--s6)"/><text x="295" y="28">77</text>
+          </g>
+          <g font-size="11" font-weight="600" fill="var(--body)" text-anchor="middle">
+            <text x="55" y="207">2023</text><text x="115" y="207">2024</text><text x="175" y="207">2025</text><text x="235" y="207">2026</text><text x="295" y="207">2027</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Nova</span><span class="num">04</span></div>
+</section>
+
+<!-- ===== SLIDE 5 — CAPSULE NUMBER ROW ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Năm trụ cột đổi mới</h2>
+    <p class="sub">Những yếu tố nền tảng tạo nên một tổ chức đổi mới bền vững.</p>
+  </div>
+  <div class="stage">
+    <div class="caps">
+      <div class="cap reveal r1"><div class="capsule"><span class="capnum">01</span><div class="capic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 1 4 10.5c-.7.6-1 1.2-1 2H9c0-.8-.3-1.4-1-2A6 6 0 0 1 12 3Z"/></svg></div></div></div><h4>Tầm nhìn</h4><p>Định hướng dài hạn rõ ràng và truyền cảm hứng.</p></div>
+      <div class="cap reveal r2"><div class="capsule"><span class="capnum">02</span><div class="capic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 6a3 3 0 0 1 0 6"/><path d="M19 20a6 6 0 0 0-4-5.6"/></svg></div></div></div><h4>Con người</h4><p>Đội ngũ đa dạng, được trao quyền sáng tạo.</p></div>
+      <div class="cap reveal r3"><div class="capsule"><span class="capnum">03</span><div class="capic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13 5l-2 14"/></svg></div></div></div><h4>Công nghệ</h4><p>Nền tảng và công cụ hỗ trợ thử nghiệm nhanh.</p></div>
+      <div class="cap reveal r4"><div class="capsule"><span class="capnum">04</span><div class="capic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 20V10"/><path d="M12 20V5"/><path d="M19 20v-8"/></svg></div></div></div><h4>Quy trình</h4><p>Cơ chế biến ý tưởng thành sản phẩm có hệ thống.</p></div>
+      <div class="cap reveal r5"><div class="capsule"><span class="capnum">05</span><div class="capic"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div></div></div><h4>Văn hóa</h4><p>Môi trường cởi mở, khuyến khích dám thử dám sai.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Nova</span><span class="num">05</span></div>
+</section>
+
+<!-- ===== SLIDE 6 — RADIAL HUB ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Hệ sinh thái đổi mới</h2>
+    <p class="sub">Sáu yếu tố cùng kết nối, lấy con người làm trung tâm.</p>
+  </div>
+  <div class="stage">
+    <div class="hub">
+      <div class="hubcol left">
+        <div class="hubitem reveal r1"><div class="hico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 1 4 10.5c-.7.6-1 1.2-1 2H9c0-.8-.3-1.4-1-2A6 6 0 0 1 12 3Z"/></svg></div></div><div><h4>Ý tưởng</h4><p>Khơi nguồn và thu thập sáng kiến.</p></div></div>
+        <div class="hubitem reveal r2"><div class="hico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></div></div><div><h4>Thử nghiệm</h4><p>Kiểm chứng nhanh với chi phí thấp.</p></div></div>
+        <div class="hubitem reveal r3"><div class="hico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Hợp tác</h4><p>Kết nối nguồn lực trong và ngoài.</p></div></div>
+      </div>
+      <div class="hubcenter reveal r1"><span class="hsub">Trung tâm</span><h3>Con người</h3></div>
+      <div class="hubcol right">
+        <div class="hubitem reveal r2"><div class="hico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13 5l-2 14"/></svg></div></div><div><h4>Công nghệ</h4><p>Nền tảng hỗ trợ và tăng tốc.</p></div></div>
+        <div class="hubitem reveal r3"><div class="hico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 20V10"/><path d="M12 20V5"/><path d="M19 20v-8"/></svg></div></div><div><h4>Dữ liệu</h4><p>Cơ sở để ra quyết định đúng.</p></div></div>
+        <div class="hubitem reveal r4"><div class="hico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M4.5 16.5 3 21l4.5-1.5M12 15l-3-3a9 9 0 0 1 9-9 9 9 0 0 1-9 9Z"/></svg></div></div><div><h4>Thị trường</h4><p>Đưa giá trị đến khách hàng.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Nova</span><span class="num">06</span></div>
+</section>
+
+<!-- ===== SLIDE 7 — TABLE ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">So sánh phương pháp đổi mới</h2>
+    <p class="sub">Lựa chọn cách tiếp cận phù hợp với từng loại sáng kiến.</p>
+  </div>
+  <div class="stage">
+    <div class="tblwrap reveal r1">
+      <table class="tbl">
+        <thead><tr><th>Phương pháp</th><th>Tốc độ</th><th>Chi phí</th><th>Rủi ro</th></tr></thead>
+        <tbody>
+          <tr><td>Cải tiến liên tục</td><td><span class="tag good">Nhanh</span></td><td class="hl">Thấp</td><td><span class="tag good">Thấp</span></td></tr>
+          <tr><td>Thử nghiệm A/B</td><td><span class="tag good">Nhanh</span></td><td class="hl">Thấp</td><td><span class="tag good">Thấp</span></td></tr>
+          <tr><td>Dự án thí điểm</td><td><span class="tag warn">Vừa</span></td><td class="hl">Trung bình</td><td><span class="tag warn">Vừa</span></td></tr>
+          <tr><td>Đột phá mô hình</td><td><span class="tag bad">Chậm</span></td><td class="hl">Cao</td><td><span class="tag bad">Cao</span></td></tr>
+          <tr><td>Mua lại / hợp tác</td><td><span class="tag good">Nhanh</span></td><td class="hl">Cao</td><td><span class="tag warn">Vừa</span></td></tr>
+          <tr><td>Hackathon nội bộ</td><td><span class="tag good">Nhanh</span></td><td class="hl">Thấp</td><td><span class="tag good">Thấp</span></td></tr>
+          <tr><td>Phòng lab R&amp;D</td><td><span class="tag bad">Chậm</span></td><td class="hl">Cao</td><td><span class="tag warn">Vừa</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="foot"><span>Nova</span><span class="num">07</span></div>
+</section>
+
+<!-- ===== SLIDE 8 — STATS + DONUT ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Tác động của đổi mới</h2>
+    <p class="sub">Những con số phản ánh hiệu quả của văn hóa đổi mới.</p>
+  </div>
+  <div class="stage">
+    <div class="results">
+      <div class="kpi3">
+        <div class="kbox reveal r1"><div class="kn">3,2×</div><div class="kl">Số sáng kiến triển khai mỗi năm</div></div>
+        <div class="kbox reveal r2"><div class="kn">64%</div><div class="kl">Sáng kiến đến từ chính nhân viên</div></div>
+        <div class="kbox reveal r3"><div class="kn">+22%</div><div class="kl">Doanh thu từ sản phẩm mới</div></div>
+        <div class="kbox reveal r4"><div class="kn">2,8×</div><div class="kl">Tốc độ đưa sản phẩm ra thị trường</div></div>
+      </div>
+      <div class="donutrow reveal r2">
+        <svg viewBox="0 0 130 130" aria-label="Nguồn sáng kiến">
+          <circle cx="65" cy="65" r="50" fill="none" stroke="#d7e0f3" stroke-width="20"/>
+          <circle cx="65" cy="65" r="50" fill="none" stroke="var(--s1)" stroke-width="20" stroke-dasharray="201 314" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+          <circle cx="65" cy="65" r="50" fill="none" stroke="var(--s3)" stroke-width="20" stroke-dasharray="69 314" stroke-dashoffset="-201" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+          <text x="65" y="61" text-anchor="middle" fill="var(--ink)" font-size="21" font-weight="800">100%</text>
+          <text x="65" y="80" text-anchor="middle" fill="var(--body)" font-size="9">Nguồn ý tưởng</text>
+        </svg>
+        <div class="dleg">
+          <div><span class="dt" style="background:var(--s1)"></span><b>64%</b> &nbsp;Nội bộ nhân viên</div>
+          <div><span class="dt" style="background:var(--s3)"></span><b>22%</b> &nbsp;Khách hàng &amp; đối tác</div>
+          <div><span class="dt" style="background:#d7e0f3"></span><b>14%</b> &nbsp;Nghiên cứu thị trường</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Nova</span><span class="num">08</span></div>
+</section>
+
+<!-- ===== SLIDE 9 — COMPARISON ===== -->
+<section class="slide">
+  <div class="head">
+    <h2 class="title">Tổ chức cũ và tổ chức đổi mới</h2>
+    <p class="sub">Sự khác biệt giữa nơi kìm hãm và nơi nuôi dưỡng sáng tạo.</p>
+  </div>
+  <div class="stage">
+    <div class="cmp">
+      <div>
+        <span class="cmp-head old reveal r1">Tổ chức cũ</span>
+        <div class="cmp-li old reveal r1"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Sợ thất bại</h4><p>Phạt lỗi khiến không ai dám thử điều mới.</p></div></div>
+        <div class="cmp-li old reveal r2"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Tập trung từ trên</h4><p>Ý tưởng chỉ đến từ lãnh đạo, bỏ phí tri thức.</p></div></div>
+        <div class="cmp-li old reveal r3"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Quy trình cứng nhắc</h4><p>Thủ tục rườm rà bóp nghẹt sáng kiến.</p></div></div>
+        <div class="cmp-li old reveal r4"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div></div><div><h4>Ngại rủi ro</h4><p>Né tránh thử nghiệm vì sợ ảnh hưởng kết quả ngắn hạn.</p></div></div>
+      </div>
+      <div class="cmp-div reveal r1"></div>
+      <div>
+        <span class="cmp-head new reveal r1">Tổ chức đổi mới</span>
+        <div class="cmp-li new reveal r1"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>An toàn để thử</h4><p>Coi thất bại là bài học, khuyến khích thử nghiệm.</p></div></div>
+        <div class="cmp-li new reveal r2"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Ý tưởng từ mọi nơi</h4><p>Mọi nhân viên đều có thể đóng góp sáng kiến.</p></div></div>
+        <div class="cmp-li new reveal r3"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Linh hoạt &amp; nhanh</h4><p>Quy trình gọn nhẹ giúp ý tưởng thành hiện thực.</p></div></div>
+        <div class="cmp-li new reveal r4"><div class="cico"><div class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"/></svg></div></div><div><h4>Chấp nhận rủi ro</h4><p>Coi thử nghiệm có kiểm soát là khoản đầu tư cho tương lai.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Nova</span><span class="num">09</span></div>
+</section>
+
+<!-- ===== SLIDE 10 — VS ===== -->
+<section class="slide">
+  <div class="head"><h2 class="title">Vì sao chọn Nova?</h2><p class="sub">So sánh cách làm truyền thống với nền tảng Nova.</p></div>
+  <div class="stage">
+    <div class="vswrap">
+      <div class="vscol vs-old reveal r1"><div class="vshd"><div class="vsic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg></div><h3>Cách làm cũ</h3></div><ul><li><span class="vm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>Quy trình thủ công, dễ sai sót</li><li><span class="vm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>Dữ liệu rời rạc, nằm nhiều nơi</li><li><span class="vm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>Báo cáo chậm, thiếu thời gian thực</li><li><span class="vm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span>Khó mở rộng khi tăng trưởng</li></ul></div>
+      <div class="vsbadge reveal r2">VS</div>
+      <div class="vscol vs-new reveal r3"><div class="vshd"><div class="vsic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><h3>Với Nova</h3></div><ul><li><span class="vm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Tự động hóa toàn bộ luồng việc</li><li><span class="vm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Dữ liệu hợp nhất trên một nền tảng</li><li><span class="vm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Dashboard thời gian thực mọi lúc</li><li><span class="vm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Mở rộng linh hoạt theo nhu cầu</li></ul></div>
+    </div>
+  </div>
+  <div class="foot"><span>Nova</span><span class="num">10</span></div>
+</section>
+
+<!-- ===== SLIDE 11 — CLOSING ===== -->
+<section class="slide">
+  <div class="cover">
+    <span class="kick reveal">Cảm ơn</span>
+    <h1 class="reveal r1">Mỗi ý tưởng<br><em>đều quan trọng</em></h1>
+    <p class="reveal r2">Đổi mới là hành trình của cả tổ chức. Hãy bắt đầu từ một ý tưởng nhỏ ngay hôm nay.</p>
+    <div class="cend reveal r3">
+      <span><b>Email</b>&nbsp;&nbsp;hello@nova.vn</span>
+      <span><b>Website</b>&nbsp;&nbsp;www.nova.vn</span>
+    </div>
+    <div class="sweep reveal r4"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+  <div class="foot"><span>Nova</span><span class="num">11</span></div>
+</section>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.3});
+document.querySelectorAll('.slide').forEach(function(s){io.observe(s)});
+</script>
+<script>/*pv-preview-mode*/(function(){if(location.hash!=='#preview')return;
+var de=document.documentElement;
+var st=document.createElement('style');st.textContent='::-webkit-scrollbar{display:none}html{scrollbar-width:none!important}';document.head.appendChild(st);
+de.style.scrollSnapType='none';
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+var DWELL=1400;
+function ih(){return innerHeight;}
+function n(){return Math.max(1,Math.round(de.scrollHeight/ih()));}
+var i=0;
+function show(idx,smooth){de.style.scrollBehavior=(smooth&&!reduce)?'smooth':'auto';scrollTo(0,idx*ih());}
+function tick(){var c=n();var ni=(i+1)%c;show(ni,ni!==0);i=ni;}
+setTimeout(function(){setInterval(tick,DWELL);},DWELL);})();</script>
+</body>
+</html>

@@ -52,6 +52,19 @@ next-env.d.ts
 # Local pack output (release zips live on the Releases page, not in git)
 /Penguin_v*.zip
 
+# Personal web-deploy infra (Tailscale Funnel / Cloudflare). Contains the
+# owner's private tailnet hostname + a large binary — never ship to the public
+# source repo or the release zip. These are local-only launcher scripts.
+/cloudflared.exe
+/current-url.txt
+/run-server.ps1
+/run-penguin-web.ps1
+/start-server.bat
+/start-penguin-web.bat
+/screen-off.bat
+/startup-server.ps1
+/startup-server.vbs
+
 # In-app updater scratch
 /.update-pending
 /.update-staging/

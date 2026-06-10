@@ -8,6 +8,7 @@ import { ChatSidebar } from "./chat-sidebar";
 import { ChatDrawer } from "./chat-drawer";
 import { TaskFiles } from "./task-files";
 import { TaskWorkflow } from "./task-workflow";
+import { AdminAccounts } from "./admin-accounts";
 import type { UserProfile } from "@/store/office-store";
 import { LordIcon } from "./lord-icon";
 
@@ -21,10 +22,15 @@ export function OfficeCanvas() {
   const setProfile = useOffice(s => s.setProfile);
   const setCustomSkills = useOffice(s => s.setCustomSkills);
   const setSkillOverrides = useOffice(s => s.setSkillOverrides);
+  const setSpaceContext = useOffice(s => s.setSpaceContext);
+  const setAccountStatus = useOffice(s => s.setAccountStatus);
+  const pending = useOffice(s => s.pending);
+  const currentSpaceName = useOffice(s => s.currentSpaceName);
   const activeTaskId = useOffice(s => s.activeTaskId);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   // Only one side panel open at a time (Files or Workflow).
   const [sidePanel, setSidePanel] = useState<SidePanel>(null);
@@ -74,16 +80,38 @@ export function OfficeCanvas() {
   useEffect(() => {
     fetch("/api/bootstrap")
       .then(r => r.json())
-      .then((data: { employees: Employee[]; recentMessages: Message[]; tasks: Task[]; profile: UserProfile; customSkills?: unknown[]; skillOverrides?: unknown[] }) => {
-        setEmployees(data.employees);
-        setMessages(data.recentMessages);
+      .then((data: { pending?: boolean; isAdmin?: boolean; isViewing?: boolean; viewingName?: string; employees?: Employee[]; recentMessages?: Message[]; tasks?: Task[]; profile?: UserProfile; customSkills?: unknown[]; skillOverrides?: unknown[]; currentSpaceId?: string; currentSpaceName?: string }) => {
+        if (data.pending) {
+          // Awaiting admin approval: don't load any app data, show waiting screen.
+          setAccountStatus(true, false);
+          setSpaceContext("", data.currentSpaceName ?? "");
+          return;
+        }
+        setAccountStatus(false, !!data.isAdmin, !!data.isViewing, data.viewingName ?? "");
+        setEmployees(data.employees ?? []);
+        setMessages(data.recentMessages ?? []);
         setTasks(data.tasks ?? []);
         if (data.profile) setProfile(data.profile);
         if (data.customSkills) setCustomSkills(data.customSkills as import("@/store/office-store").CustomSkill[]);
         if (data.skillOverrides) setSkillOverrides(data.skillOverrides as import("@/store/office-store").SkillOverride[]);
+        setSpaceContext(data.currentSpaceId ?? "", data.currentSpaceName ?? "");
       })
       .catch(err => console.error("bootstrap failed", err));
-  }, [setEmployees, setMessages, setTasks, setProfile, setCustomSkills, setSkillOverrides]);
+  }, [setEmployees, setMessages, setTasks, setProfile, setCustomSkills, setSkillOverrides, setSpaceContext, setAccountStatus]);
+
+  // Live access poll. Cheap /api/me check on an interval, both directions:
+  //  - waiting for approval → the moment the admin approves, reload into the app
+  //  - active → the moment the admin revokes, reload out to the blocked screen
+  // Faster cadence while waiting (snappier unlock), slower while active.
+  useEffect(() => {
+    const id = setInterval(() => {
+      fetch("/api/me", { cache: "no-store" })
+        .then(r => (r.ok ? r.json() : null))
+        .then(d => { if (d && d.pending !== pending) window.location.reload(); })
+        .catch(() => {});
+    }, pending ? 5000 : 12000);
+    return () => clearInterval(id);
+  }, [pending]);
 
   const openEdit = (id: string) => {
     setEditingId(id);
@@ -98,11 +126,36 @@ export function OfficeCanvas() {
   const toggle = (p: Exclude<SidePanel, null>) =>
     setSidePanel(cur => (cur === p ? null : p));
 
+  // Account created but not yet approved by the admin: show a waiting screen
+  // instead of the app (the AI is hard-blocked server-side regardless).
+  if (pending) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-[#262624] p-6">
+        <div className="max-w-md text-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/icon-512.png" alt="Penguin" className="mx-auto mb-6 h-16 w-16 opacity-80" />
+          <h1 className="text-xl font-semibold text-slate-100">Waiting for approval</h1>
+          <p className="mt-3 text-sm leading-relaxed text-slate-400">
+            Your account{currentSpaceName ? ` “${currentSpaceName}”` : ""} has been created and is
+            waiting for the admin to approve access. You&apos;ll be able to use Penguin once approved.
+          </p>
+          <button
+            onClick={async () => { try { await fetch("/api/auth", { method: "DELETE" }); } catch {} window.location.href = "/login"; }}
+            className="mt-6 rounded-lg border border-white/10 px-4 py-2 text-[13px] text-slate-300 transition hover:bg-white/[0.06]"
+          >
+            Log out
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-[#262624]">
       <ChatSidebar
         onOpenHire={() => { setEditingId(null); setDialogOpen(true); }}
         onOpenSettings={() => setSettingsOpen(true)}
+        onOpenAdmin={() => setAdminOpen(true)}
         onEditAgent={openEdit}
       />
 
@@ -161,6 +214,7 @@ export function OfficeCanvas() {
         onClose={() => { setDialogOpen(false); setEditingId(null); }}
       />
       <SettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <AdminAccounts open={adminOpen} onClose={() => setAdminOpen(false)} />
     </div>
   );
 }

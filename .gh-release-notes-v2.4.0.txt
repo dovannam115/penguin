@@ -1,0 +1,21 @@
+New model option: Fable 5
+- Each employee's model dropdown in Settings now lists Fable 5 at the top of the Claude group, above Opus 4.8, Opus 4.7, Sonnet 4.6, and Haiku 4.5.
+- Claude Max accounts can select it right away, no extra configuration.
+- Switching an employee to Fable 5 busts its cached CLI session (the warm pool id and every task resume id), so the next turn spawns a fresh subprocess on the new model instead of silently resuming on the old one.
+
+Multi-account support
+- Penguin can now host more than one account on a single install. Each account logs in with its own credentials and gets an isolated space: its own employees, tasks, chat history, and files. Accounts never see each other's data.
+- Sign-in issues a signed (HMAC) token; every API route resolves the caller's space from that token and fails closed if it is missing or invalid.
+- Existing single-user installs are unaffected. Your current data stays where it is and your saved login still works.
+
+Admin approval and account management
+- New sign-ups wait in a pending state until an admin approves them. A new Accounts panel lets the admin approve, reject, or remove accounts.
+- Removing or rejecting an account kicks any active session for it immediately.
+
+Admin view-as (read-only)
+- An admin can open another account to inspect its chat history for support or review. The view is strictly read-only and history-only: no sending messages, no edits, no file changes.
+
+Publish a template to the web
+- A finished template can be published to a public URL (Cloudflare Pages) straight from the app, so you can share a single page without sharing the whole workspace.
+
+These changes do not touch existing user data, chats, login, or files.

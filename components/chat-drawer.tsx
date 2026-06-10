@@ -652,6 +652,7 @@ export function ChatDrawer({ onEdit, onToggleFiles, filesOpen, onToggleWorkflow,
   const addPendingInvite = useOffice(s => s.addPendingInvite);
   const removePendingInvite = useOffice(s => s.removePendingInvite);
   const upsertTask = useOffice(s => s.upsertTask);
+  const currentSpaceId = useOffice(s => s.currentSpaceId);
 
   const setCurrentAbort = useOffice(s => s.setCurrentAbort);
   const stopCurrent = useOffice(s => s.stopCurrent);
@@ -1125,6 +1126,7 @@ export function ChatDrawer({ onEdit, onToggleFiles, filesOpen, onToggleWorkflow,
         mode: "direct",
         assignedTo: composeTargets[0],
         pinned: false,
+        ownerId: currentSpaceId,
         createdAt: Date.now(),
       });
       setActiveTask(newTaskId);
@@ -1233,6 +1235,7 @@ export function ChatDrawer({ onEdit, onToggleFiles, filesOpen, onToggleWorkflow,
                 mode: "direct",
                 assignedTo: (body.employeeId as string) ?? null,
                 pinned: false,
+                ownerId: currentSpaceId,
                 createdAt: Date.now(),
               });
             }

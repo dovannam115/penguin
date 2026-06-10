@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import { messages, tasks } from "@/lib/db";
 import { requireAuth } from "@/lib/api-auth";
+import { currentSpaceId, denyIfViewing } from "@/lib/space";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request, ctx: { params: Promise<{ id: string }> }) {
   const denied = await requireAuth(); if (denied) return denied;
+  const ro = await denyIfViewing(); if (ro) return ro;
   const { id: taskId } = await ctx.params;
   const body = await req.json() as { messageId: string; content: string };
 
@@ -16,6 +18,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
 
   const task = tasks.get(taskId);
   if (!task) return NextResponse.json({ error: "task not found" }, { status: 404 });
+  if (task.ownerId !== await currentSpaceId()) return NextResponse.json({ error: "task not found" }, { status: 404 });
 
   const msg = messages.get(body.messageId);
   if (!msg || msg.taskId !== taskId) {

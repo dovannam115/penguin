@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Plus, Settings, MessageSquarePlus, Pencil, GripVertical, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Plus, Settings, MessageSquarePlus, Pencil, GripVertical, PanelLeftClose, PanelLeftOpen, User, LogOut, ShieldCheck, Eye } from "lucide-react";
 import { useOffice } from "@/store/office-store";
 import { TaskHistory } from "./task-history";
 import { ThemeToggle } from "./theme-toggle";
@@ -9,12 +9,13 @@ import { cn } from "@/lib/utils";
 interface Props {
   onOpenHire: () => void;
   onOpenSettings: () => void;
+  onOpenAdmin: () => void;
   onEditAgent: (id: string) => void;
 }
 
 const COLLAPSE_KEY = "penguin.sidebar.collapsed";
 
-export function ChatSidebar({ onOpenHire, onOpenSettings, onEditAgent }: Props) {
+export function ChatSidebar({ onOpenHire, onOpenSettings, onOpenAdmin, onEditAgent }: Props) {
   // Collapse to a thin rail so chat takes the full width. Persisted to
   // localStorage so the choice survives reloads / app restarts. Cmd/Ctrl+B
   // toggles too, matching VSCode muscle memory.
@@ -66,6 +67,20 @@ export function ChatSidebar({ onOpenHire, onOpenSettings, onEditAgent }: Props) 
   const tasks = useOffice(s => s.tasks);
   const profile = useOffice(s => s.profile);
   const nameLabel = profile.name || profile.address;
+  const currentSpaceName = useOffice(s => s.currentSpaceName);
+  const isAdmin = useOffice(s => s.isAdmin);
+  const isViewing = useOffice(s => s.isViewing);
+  const viewingName = useOffice(s => s.viewingName);
+
+  async function logout() {
+    try { await fetch("/api/auth", { method: "DELETE" }); } catch { /* clear anyway */ }
+    window.location.href = "/login";
+  }
+
+  async function exitViewing() {
+    try { await fetch("/api/admin/view-as", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ accountId: null }) }); } catch {}
+    window.location.reload();
+  }
 
   // Drag-to-reorder agents. Native HTML5 DnD — small list (<50), no library
   // needed. dragOverId is which row the pointer is hovering; we visually
@@ -127,6 +142,14 @@ export function ChatSidebar({ onOpenHire, onOpenSettings, onEditAgent }: Props) 
         >
           <MessageSquarePlus size={16} />
         </button>
+        <button
+          onClick={logout}
+          className="rounded-lg p-2 text-slate-400 hover:bg-white/[0.06] hover:text-slate-200 transition"
+          title={`${currentSpaceName} — Log out`}
+          aria-label="Log out"
+        >
+          <LogOut size={16} />
+        </button>
         <div className="my-1 h-px w-6 bg-white/[0.06]" />
         <button
           onClick={onOpenSettings}
@@ -145,6 +168,15 @@ export function ChatSidebar({ onOpenHire, onOpenSettings, onEditAgent }: Props) 
 
   return (
     <aside className="flex w-72 shrink-0 flex-col border-r border-white/[0.06] bg-[#1A1916]">
+      {isViewing && (
+        <div className="flex items-center gap-2 border-b border-amber-400/20 bg-amber-400/10 px-3 py-2 text-[12px] text-amber-200">
+          <Eye size={13} className="shrink-0" />
+          <span className="truncate">Viewing <b className="font-semibold">{viewingName}</b> · read-only</span>
+          <button onClick={exitViewing} className="ml-auto rounded px-1.5 py-0.5 text-[11px] font-medium text-amber-100 transition hover:bg-amber-400/25" title="Back to your account">
+            Exit
+          </button>
+        </div>
+      )}
       <div className="flex items-center justify-between gap-2 px-4 pt-5 pb-3">
         <span className="truncate text-[12px] italic text-slate-500">
           What&apos;s the brief, {nameLabel}?
@@ -176,6 +208,31 @@ export function ChatSidebar({ onOpenHire, onOpenSettings, onEditAgent }: Props) 
           <MessageSquarePlus size={15} />
           New Task
         </button>
+      </div>
+
+      <div className="px-3 pb-2">
+        <div className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-[12px] text-slate-400">
+          <User size={13} className="shrink-0 text-slate-500" />
+          <span className="truncate" title="Signed-in account">{currentSpaceName}</span>
+          <button
+            onClick={logout}
+            className="ml-auto flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] text-slate-500 transition hover:bg-white/[0.06] hover:text-slate-300"
+            title="Log out"
+          >
+            <LogOut size={11} />
+            Log out
+          </button>
+        </div>
+        {isAdmin && (
+          <button
+            onClick={onOpenAdmin}
+            className="mt-1 flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-[12px] text-slate-400 transition hover:bg-white/[0.04] hover:text-slate-200"
+            title="Approve / manage accounts"
+          >
+            <ShieldCheck size={13} className="shrink-0 text-slate-500" />
+            Manage access
+          </button>
+        )}
       </div>
 
       <div className="px-3 pb-2">

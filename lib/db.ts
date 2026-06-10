@@ -3,6 +3,7 @@ import path from "node:path";
 import fs from "node:fs";
 import type { Employee, Message, Task } from "./types";
 import { sweepOrphanWorkspaces } from "./upload";
+import { shortId } from "./utils";
 
 const DB_DIR = path.join(process.cwd(), ".data");
 if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
@@ -83,6 +84,8 @@ export function db(): DatabaseSync {
   } catch (err) { console.warn("[boot] orphan workspace sweep failed", err); }
   // Ship the SLIDE/DECK template-first persona fix to existing users too.
   try { migrateSlideException(_db); } catch (err) { console.warn("[boot] slide-exception migration failed", err); }
+  // Ensure the default space exists and adopt owner-less tasks into it.
+  try { migrateSpaceBackfill(_db); } catch (err) { console.warn("[boot] space backfill failed", err); }
   return _db;
 }
 
@@ -146,6 +149,20 @@ function migrate(d: DatabaseSync) {
     d.exec(`ALTER TABLE tasks ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0;`);
   } catch {
     /* column already exists */
+  }
+  // Multi-space (Mức A) isolation: which space owns this task. NULL on existing
+  // rows is backfilled to the default space in migrateSpaceBackfill(). Forward-
+  // compat for Mức B (real accounts): `spaces` grows password_hash/salt columns
+  // and becomes the users table — owner_id keeps pointing at it, no reshape.
+  try {
+    d.exec(`ALTER TABLE tasks ADD COLUMN owner_id TEXT;`);
+  } catch {
+    /* column already exists */
+  }
+  try {
+    d.exec(`CREATE INDEX IF NOT EXISTS idx_tasks_owner ON tasks(owner_id, pinned DESC, created_at DESC);`);
+  } catch {
+    /* index already exists */
   }
   d.exec(`
 
@@ -214,7 +231,48 @@ function migrate(d: DatabaseSync) {
       prompt TEXT,
       updated_at INTEGER NOT NULL
     );
+
+    -- Mức A "spaces": each person picks a named space so their tasks don't
+    -- collide with others sharing the same login + tunnel. Mức B upgrade path:
+    -- add password_hash/salt here to turn a space into a real user account.
+    CREATE TABLE IF NOT EXISTS spaces (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      created_at INTEGER NOT NULL
+    );
   `);
+}
+
+// Default space every existing/owner-less task falls into. Created lazily so a
+// fresh DB and an upgraded DB both end up with exactly one "Chung" space.
+export const DEFAULT_SPACE_ID = "space_default";
+
+function migrateSpaceBackfill(d: DatabaseSync): void {
+  const now = Date.now();
+  d.prepare(`INSERT OR IGNORE INTO spaces (id, name, created_at) VALUES (?, ?, ?)`)
+    .run(DEFAULT_SPACE_ID, "Chung", now);
+  // Adopt any owner-less tasks (existing installs, or rows created before a
+  // space cookie was set) into the default space.
+  d.prepare(`UPDATE tasks SET owner_id = ? WHERE owner_id IS NULL`).run(DEFAULT_SPACE_ID);
+  // Mức B credentials: a space with a password_hash is a real login account.
+  // The default "Chung" space stays password-less (a holding bucket for legacy
+  // tasks, adopted by the first account on signup — see auth.ts).
+  try { d.exec(`ALTER TABLE spaces ADD COLUMN password_hash TEXT;`); } catch { /* exists */ }
+  try { d.exec(`ALTER TABLE spaces ADD COLUMN salt TEXT;`); } catch { /* exists */ }
+  // Admin approval gate: a new account is created pending (approved=0) and can't
+  // use the AI until an admin approves it. is_admin=1 can approve others.
+  try { d.exec(`ALTER TABLE spaces ADD COLUMN approved INTEGER NOT NULL DEFAULT 0;`); } catch { /* exists */ }
+  try { d.exec(`ALTER TABLE spaces ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0;`); } catch { /* exists */ }
+  // One-time bootstrap: if accounts exist but none is admin yet (upgrading from
+  // before this feature), make the OLDEST account the admin and grandfather all
+  // current accounts as approved so nobody in-flight gets locked out. Runs once
+  // — after an admin exists, this block is skipped, so later signups stay pending.
+  const adminCount = (d.prepare(`SELECT count(*) c FROM spaces WHERE is_admin = 1`).get() as { c: number }).c;
+  const accts = d.prepare(`SELECT id FROM spaces WHERE password_hash IS NOT NULL ORDER BY created_at ASC`).all() as { id: string }[];
+  if (adminCount === 0 && accts.length > 0) {
+    d.prepare(`UPDATE spaces SET approved = 1 WHERE password_hash IS NOT NULL`).run();
+    d.prepare(`UPDATE spaces SET is_admin = 1, approved = 1 WHERE id = ?`).run(accts[0].id);
+  }
 }
 
 export const taskSessions = {
@@ -330,6 +388,7 @@ function mapTask(r: Row): Task {
     mode: r.mode as Task["mode"],
     assignedTo: (r.assigned_to as string | null) ?? null,
     pinned: !!(r.pinned as number | undefined),
+    ownerId: (r.owner_id as string | null) ?? DEFAULT_SPACE_ID,
     createdAt: r.created_at as number,
   };
 }
@@ -407,8 +466,21 @@ export const employees = {
 };
 
 export const tasks = {
-  list(): Task[] {
-    return (db().prepare(`SELECT * FROM tasks ORDER BY pinned DESC, created_at DESC LIMIT 100`).all() as Row[]).map(mapTask);
+  // Scoped to one space. Omit ownerId only for admin/debug — prefer always
+  // passing the caller's current space so people don't see each other's tasks.
+  // historyOnly=true hides the live (in_progress) task — used when an admin is
+  // viewing someone else's workspace, so they only see finished history and
+  // can't touch whatever the user is actively working on.
+  list(ownerId?: string, historyOnly = false): Task[] {
+    const where: string[] = [];
+    const params: string[] = [];
+    if (ownerId) { where.push("owner_id = ?"); params.push(ownerId); }
+    if (historyOnly) { where.push("status != 'in_progress'"); }
+    const clause = where.length ? `WHERE ${where.join(" AND ")}` : "";
+    const rows = db()
+      .prepare(`SELECT * FROM tasks ${clause} ORDER BY pinned DESC, created_at DESC LIMIT 100`)
+      .all(...params) as Row[];
+    return rows.map(mapTask);
   },
   get(id: string): Task | null {
     const r = db().prepare(`SELECT * FROM tasks WHERE id = ?`).get(id) as Row | undefined;
@@ -416,11 +488,12 @@ export const tasks = {
   },
   create(t: Omit<Task, "createdAt" | "pinned">): Task {
     const createdAt = Date.now();
+    const ownerId = t.ownerId || DEFAULT_SPACE_ID;
     db().prepare(`
-      INSERT INTO tasks (id, title, description, status, mode, assigned_to, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(t.id, t.title, t.description, t.status, t.mode, t.assignedTo, createdAt);
-    return { ...t, pinned: false, createdAt };
+      INSERT INTO tasks (id, title, description, status, mode, assigned_to, owner_id, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(t.id, t.title, t.description, t.status, t.mode, t.assignedTo, ownerId, createdAt);
+    return { ...t, ownerId, pinned: false, createdAt };
   },
   setStatus(id: string, status: Task["status"]) {
     db().prepare(`UPDATE tasks SET status=? WHERE id=?`).run(status, id);
@@ -437,6 +510,107 @@ export const tasks = {
     d.prepare(`DELETE FROM tasks WHERE id=?`).run(id);
     // Drop the cached workflow map for this task, if any.
     d.prepare(`DELETE FROM settings WHERE key=?`).run(`workflow:${id}`);
+  },
+};
+
+export interface Space {
+  id: string;
+  name: string;
+  createdAt: number;
+}
+
+function mapSpace(r: Row): Space {
+  return { id: r.id as string, name: r.name as string, createdAt: r.created_at as number };
+}
+
+// Internal account row including credentials (never sent to the client).
+export interface AccountRow extends Space {
+  passwordHash: string | null;
+  salt: string | null;
+  approved: boolean;
+  isAdmin: boolean;
+}
+
+function mapAccount(r: Row): AccountRow {
+  return {
+    id: r.id as string,
+    name: r.name as string,
+    createdAt: r.created_at as number,
+    passwordHash: (r.password_hash as string | null) ?? null,
+    salt: (r.salt as string | null) ?? null,
+    approved: !!(r.approved as number | undefined),
+    isAdmin: !!(r.is_admin as number | undefined),
+  };
+}
+
+// Account info safe to show an admin (no credentials).
+export interface AccountInfo {
+  id: string;
+  name: string;
+  approved: boolean;
+  isAdmin: boolean;
+  createdAt: number;
+}
+
+export const spaces = {
+  list(): Space[] {
+    return (db().prepare(`SELECT * FROM spaces ORDER BY created_at ASC`).all() as Row[]).map(mapSpace);
+  },
+  get(id: string): Space | null {
+    const r = db().prepare(`SELECT * FROM spaces WHERE id = ?`).get(id) as Row | undefined;
+    return r ? mapSpace(r) : null;
+  },
+  // Case-insensitive lookup including credentials, for login.
+  getByName(name: string): AccountRow | null {
+    const r = db().prepare(`SELECT * FROM spaces WHERE LOWER(name) = LOWER(?)`).get(name.trim()) as Row | undefined;
+    return r ? mapAccount(r) : null;
+  },
+  // Create a fresh space row (used for new accounts; auth.ts sets credentials).
+  create(name: string): Space {
+    const createdAt = Date.now();
+    const id = shortId("space");
+    db().prepare(`INSERT INTO spaces (id, name, created_at) VALUES (?, ?, ?)`).run(id, name.trim(), createdAt);
+    return { id, name: name.trim(), createdAt };
+  },
+  setCredentials(id: string, passwordHash: string, salt: string): void {
+    db().prepare(`UPDATE spaces SET password_hash = ?, salt = ? WHERE id = ?`).run(passwordHash, salt, id);
+  },
+  // How many spaces are real login accounts (have a password).
+  countAccounts(): number {
+    return (db().prepare(`SELECT count(*) c FROM spaces WHERE password_hash IS NOT NULL`).get() as { c: number }).c;
+  },
+  // Move legacy "Chung" tasks into the first account on initial signup.
+  adoptDefaultTasks(toOwnerId: string): void {
+    db().prepare(`UPDATE tasks SET owner_id = ? WHERE owner_id = ?`).run(toOwnerId, DEFAULT_SPACE_ID);
+  },
+  // --- Admin approval gate -------------------------------------------------
+  // The first account: admin + auto-approved.
+  setAdminApproved(id: string): void {
+    db().prepare(`UPDATE spaces SET is_admin = 1, approved = 1 WHERE id = ?`).run(id);
+  },
+  setApproved(id: string, approved: boolean): void {
+    db().prepare(`UPDATE spaces SET approved = ? WHERE id = ?`).run(approved ? 1 : 0, id);
+  },
+  isApproved(id: string): boolean {
+    const r = db().prepare(`SELECT approved FROM spaces WHERE id = ?`).get(id) as { approved?: number } | undefined;
+    return !!(r && r.approved);
+  },
+  isAdmin(id: string): boolean {
+    const r = db().prepare(`SELECT is_admin FROM spaces WHERE id = ?`).get(id) as { is_admin?: number } | undefined;
+    return !!(r && r.is_admin);
+  },
+  // All login accounts (no credentials) for the admin panel.
+  listAccounts(): AccountInfo[] {
+    return (db().prepare(
+      `SELECT id, name, approved, is_admin, created_at FROM spaces
+       WHERE password_hash IS NOT NULL ORDER BY created_at ASC`,
+    ).all() as Row[]).map(r => ({
+      id: r.id as string,
+      name: r.name as string,
+      approved: !!(r.approved as number | undefined),
+      isAdmin: !!(r.is_admin as number | undefined),
+      createdAt: r.created_at as number,
+    }));
   },
 };
 
@@ -587,6 +761,18 @@ export const messages = {
   },
   listRecent(limit = 50): Message[] {
     return (db().prepare(`SELECT * FROM messages ORDER BY created_at DESC LIMIT ?`).all(limit) as Row[]).map(mapMessage).reverse();
+  },
+  // Recent messages limited to tasks owned by one space (used by /bootstrap so
+  // a space only hydrates its own conversation history). historyOnly=true also
+  // drops messages of the live in_progress task (admin view-as).
+  listRecentByOwner(ownerId: string, limit = 50, historyOnly = false): Message[] {
+    const extra = historyOnly ? "AND t.status != 'in_progress'" : "";
+    return (db().prepare(
+      `SELECT m.* FROM messages m
+       JOIN tasks t ON t.id = m.task_id
+       WHERE t.owner_id = ? ${extra}
+       ORDER BY m.created_at DESC LIMIT ?`,
+    ).all(ownerId, limit) as Row[]).map(mapMessage).reverse();
   },
   get(id: string): Message | null {
     const r = db().prepare(`SELECT * FROM messages WHERE id=?`).get(id) as Row | undefined;

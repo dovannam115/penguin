@@ -68,15 +68,18 @@ function postProcessHtml(html: string): string {
   return html.replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ');
 }
 
-// Intercept clicks on the #mas-open-template button: ask the local server to
-// open the slide-template menu file in the browser. The app runs on the user's
-// machine, so the server can shell out to open it (no localhost URL shown).
+// The slide-template gallery is hosted as a standalone static site on
+// Cloudflare Pages (always-on, independent of this app / the host PC). Clicking
+// "Open template menu" opens that fixed public address in a new tab of the
+// clicker's OWN browser — works locally and for any remote user, even if the
+// main app is offline.
+const TEMPLATE_GALLERY_URL = "https://penguin-templates.pages.dev";
+
 function handleContentClick(e: MouseEvent<HTMLDivElement>) {
   if (!(e.target as HTMLElement).closest("a[data-open-template]")) return;
   e.preventDefault();
-  fetch("/api/open-template", { method: "POST" })
-    .then(r => toast(r.ok ? "Opening template menu in your browser..." : "Couldn't open template menu", r.ok ? "success" : "error"))
-    .catch(() => toast("Couldn't open template menu", "error"));
+  const w = window.open(TEMPLATE_GALLERY_URL, "_blank", "noopener,noreferrer");
+  if (!w) toast("Allow pop-ups to open the template menu", "error");
 }
 
 // Replace @mentions in the rendered HTML with styled spans, but skip inside

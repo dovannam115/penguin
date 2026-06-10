@@ -109,6 +109,20 @@ interface OfficeState {
   panelCollapsed: boolean;
   setPanelCollapsed: (v: boolean) => void;
 
+  /* Mức B: identity of the logged-in account (used for the sidebar label and
+   * optimistic task ownership). Hydrated from /api/bootstrap. */
+  currentSpaceId: string;
+  currentSpaceName: string;
+  setSpaceContext: (id: string, name: string) => void;
+  /* Admin approval gate: whether this account is awaiting approval, and whether
+   * it is the admin (can approve others). Hydrated from /api/bootstrap. */
+  pending: boolean;
+  isAdmin: boolean;
+  /* Admin view-as: whether this admin is browsing another account, and whose. */
+  isViewing: boolean;
+  viewingName: string;
+  setAccountStatus: (pending: boolean, isAdmin: boolean, isViewing?: boolean, viewingName?: string) => void;
+
   /* Layout: scene PIP + drawer resize */
   sceneMinimized: boolean;
   scenePipPos: { x: number; y: number }; // anchored from bottom-right of viewport
@@ -221,6 +235,16 @@ export const useOffice = create<OfficeState>((set, get) => ({
     if (typeof window !== "undefined") localStorage.setItem("vo.panelCollapsed", v ? "1" : "0");
     set({ panelCollapsed: v });
   },
+
+  currentSpaceId: "",
+  currentSpaceName: "",
+  setSpaceContext: (id, name) => set({ currentSpaceId: id, currentSpaceName: name }),
+  pending: false,
+  isAdmin: false,
+  isViewing: false,
+  viewingName: "",
+  setAccountStatus: (pending, isAdmin, isViewing = false, viewingName = "") =>
+    set({ pending, isAdmin, isViewing, viewingName }),
 
   sceneMinimized: false,
   scenePipPos: { x: 24, y: 220 },

@@ -1,10 +1,11 @@
-import { employees, tasks, messages, getUserProfile } from "@/lib/db";
+import { employees, tasks, messages, getUserProfile, spaces } from "@/lib/db";
 import { runEmployee, extractMentions } from "@/lib/claude";
 import { planAssignments } from "@/lib/orchestrator";
 import { shortId } from "@/lib/utils";
 import type { Employee, ModelId } from "@/lib/types";
 import Anthropic from "@anthropic-ai/sdk";
 import { requireAuth } from "@/lib/api-auth";
+import { currentView } from "@/lib/space";
 import { listFiles, ensureWorkspace, workspaceDir, saveFile } from "@/lib/upload";
 import { renderDeckToImages } from "@/lib/office-tools/deck-to-images";
 
@@ -64,6 +65,26 @@ export async function POST(req: Request) {
   if (!body.message?.trim() && !body.dispatch) {
     return new Response(JSON.stringify({ error: "message required" }), { status: 400 });
   }
+  // Space this turn belongs to: new tasks are stamped with it, and continuing
+  // another space's task is refused.
+  const view = await currentView();
+  const spaceId = view.spaceId;
+  // An admin browsing someone else's workspace is read-only — never run the AI
+  // (or create content) as another account.
+  if (view.viewing) {
+    return new Response(JSON.stringify({ error: "Viewing another account — read-only" }), { status: 403 });
+  }
+  // Hard gate: an account awaiting admin approval cannot run the AI (this is the
+  // expensive, Max-quota-burning path), so block it before anything else.
+  if (!spaces.isApproved(spaceId)) {
+    return new Response(JSON.stringify({ error: "Account pending admin approval" }), { status: 403 });
+  }
+  if (body.taskId) {
+    const existing = tasks.get(body.taskId);
+    if (existing && existing.ownerId !== spaceId) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
+    }
+  }
 
   const sdkAbort = new AbortController();
   req.signal.addEventListener("abort", () => sdkAbort.abort(), { once: true });
@@ -103,6 +124,7 @@ export async function POST(req: Request) {
             status: "in_progress",
             mode: "direct",
             assignedTo: primaryId,
+            ownerId: spaceId,
           });
         } else {
           tasks.setStatus(task.id, "in_progress");

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { tasks, messages, employees, settings } from "@/lib/db";
 import { generateWorkflowMap, sanitize, type WorkflowNode } from "@/lib/workflow-map";
 import { requireAuth } from "@/lib/api-auth";
+import { currentSpaceId, denyIfViewing } from "@/lib/space";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,6 +22,8 @@ const key = (id: string) => `workflow:${id}`;
 export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> }) {
   const denied = await requireAuth(); if (denied) return denied;
   const { id } = await ctx.params;
+  const t = tasks.get(id);
+  if (t && t.ownerId !== await currentSpaceId()) return NextResponse.json({ map: null });
   const raw = settings.get(key(id));
   let map: WorkflowNode | null = null;
   if (raw) {
@@ -33,9 +36,11 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
 export async function POST(_req: Request, ctx: { params: Promise<{ id: string }> }) {
   try {
     const denied = await requireAuth(); if (denied) return denied;
+    const ro = await denyIfViewing(); if (ro) return ro;
     const { id } = await ctx.params;
     const task = tasks.get(id);
     if (!task) return NextResponse.json({ error: "Task không tồn tại" }, { status: 404 });
+    if (task.ownerId !== await currentSpaceId()) return NextResponse.json({ error: "Task không tồn tại" }, { status: 404 });
 
     const msgs = messages.listByTask(id);
     if (msgs.length === 0) {
@@ -57,9 +62,11 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
 /** PUT — save the user-edited workflow map. */
 export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }) {
   const denied = await requireAuth(); if (denied) return denied;
+  const ro = await denyIfViewing(); if (ro) return ro;
   const { id } = await ctx.params;
   const task = tasks.get(id);
   if (!task) return NextResponse.json({ error: "Task không tồn tại" }, { status: 404 });
+  if (task.ownerId !== await currentSpaceId()) return NextResponse.json({ error: "Task không tồn tại" }, { status: 404 });
 
   const body = (await req.json()) as { map?: WorkflowNode };
   if (!body.map || typeof body.map.label !== "string") {

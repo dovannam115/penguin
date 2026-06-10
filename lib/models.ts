@@ -31,6 +31,7 @@ export const PROVIDER_LABEL: Record<Provider, string> = {
 
 export const MODEL_REGISTRY: ModelDef[] = [
   // ── Claude — via Claude Agent SDK, full Bash + filesystem tools ──
+  { id: "claude-fable-5",    label: "Fable 5",    provider: "claude" },
   { id: "claude-opus-4-8",   label: "Opus 4.8",   provider: "claude" },
   { id: "claude-opus-4-7",   label: "Opus 4.7",   provider: "claude" },
   { id: "claude-sonnet-4-6", label: "Sonnet 4.6", provider: "claude" },

@@ -3,6 +3,7 @@
 // the Visual editor splices back over the original char range. Used by the
 // "AI edit" marquee mode in components/file-editor.tsx.
 import { requireAuth } from "@/lib/api-auth";
+import { denyIfViewing } from "@/lib/space";
 import { editHtmlFragment, prewarmAiEdit } from "@/lib/ai-edit";
 
 export const runtime = "nodejs";
@@ -11,6 +12,7 @@ export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   const denied = await requireAuth();
   if (denied) return denied;
+  const ro = await denyIfViewing(); if (ro) return ro;
 
   const body = (await req.json().catch(() => ({}))) as {
     snippet?: string;

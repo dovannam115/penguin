@@ -36,6 +36,9 @@ export interface Task {
   assignedTo: string | null;
   /** Pinned tasks float to the top of the sidebar history list. */
   pinned: boolean;
+  /** Space (Mức A) that owns this task. Defaults to the shared "Chung" space.
+   *  Forward-compat handle for Mức B per-user accounts. */
+  ownerId: string;
   createdAt: number;
 }
 

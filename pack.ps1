@@ -37,7 +37,7 @@ Write-Output "Staging to $stage..."
 #    the embedded Python stdlib, breaking pptx/preview on installed copies.)
 $null = robocopy $src $stage /E `
   /XD node_modules .data .git test-output .claude .update-staging "$src\.next\dev" "$src\.next\cache" `
-  /XF *.tsbuildinfo next-env.d.ts password-backup.txt *.log "Screenshot *.png" a.png b.png c.png "Penguin_v*.zip" "AGENT-P_v*.zip" "mas-ai-office-*.zip" "agentp-update-*.zip" "update-*.zip" ".dev-server.log"
+  /XF *.tsbuildinfo next-env.d.ts password-backup.txt *.log "Screenshot *.png" a.png b.png c.png "Penguin_v*.zip" "AGENT-P_v*.zip" "mas-ai-office-*.zip" "agentp-update-*.zip" "update-*.zip" ".dev-server.log" cloudflared.exe current-url.txt run-server.ps1 run-penguin-web.ps1 start-server.bat start-penguin-web.bat screen-off.bat startup-server.ps1 startup-server.vbs
 # robocopy exits 0-7 = success (with various levels of "files copied"), 8+ = error
 if ($LASTEXITCODE -ge 8) {
     Write-Error "robocopy failed (exit $LASTEXITCODE)"
